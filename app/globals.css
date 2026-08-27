@@ -18,6 +18,15 @@
   --shadow: 0 14px 34px rgba(141, 117, 197, 0.14);
   --radius: 22px;
 }
+html[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #171522;
+  --ink: #f7f3ff;
+  --surface: #252237;
+  --muted: #b4aec8;
+  --line: #3b3453;
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+}
 @theme inline {
   --color-background: var(--bg);
   --color-foreground: var(--ink);
@@ -38,6 +47,9 @@ body {
   color: var(--ink);
   font-family: 'IBM Plex Sans Thai', sans-serif;
   font-size: 16px;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 button {
   font: inherit;
@@ -101,6 +113,29 @@ h3 {
   display: flex;
   gap: 6px;
   align-items: center;
+}
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
+}
+.theme-toggle:hover {
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.theme-toggle:first-letter {
+  font-size: 18px;
 }
 .nav-links button {
   background: transparent;
@@ -955,6 +990,204 @@ h3 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Keep dashboard level colors and exam CTA visible in dark mode. */
+html[data-theme='dark'] .level-card.mint {
+  background: #214b46;
+  border-color: #70d9b7;
+  color: #f3fffb;
+}
+html[data-theme='dark'] .level-card.pink {
+  background: #5a3045;
+  border-color: #f486ac;
+  color: #fff4f8;
+}
+html[data-theme='dark'] .level-card.yellow {
+  background: #5b4823;
+  border-color: #f5c85f;
+  color: #fff9e8;
+}
+html[data-theme='dark'] .level-card.purple {
+  background: #423568;
+  border-color: #ad93ff;
+  color: #f8f5ff;
+}
+html[data-theme='dark'] .level-card.coral {
+  background: #613d3b;
+  border-color: #ff9e88;
+  color: #fff5f2;
+}
+html[data-theme='dark'] .level-card.mint .level-number,
+html[data-theme='dark'] .level-card.pink .level-number,
+html[data-theme='dark'] .level-card.yellow .level-number,
+html[data-theme='dark'] .level-card.purple .level-number,
+html[data-theme='dark'] .level-card.coral .level-number,
+html[data-theme='dark'] .level-card .level-copy strong,
+html[data-theme='dark'] .level-card .level-copy span,
+html[data-theme='dark'] .level-card .level-percent {
+  color: inherit;
+}
+html[data-theme='dark'] .level-card .progress-line {
+  background: rgba(255, 255, 255, 0.22);
+}
+html[data-theme='dark'] .level-card .progress-line span {
+  background: currentColor;
+}
+html[data-theme='dark'] .exam-start {
+  background: #302b43;
+  border-color: #49415f;
+  color: var(--ink);
+}
+html[data-theme='dark'] .exam-start .muted {
+  color: #d0c9df;
+}
+html[data-theme='dark'] .exam-start .primary-button {
+  background: #ffd166;
+  color: #2b2540;
+  border: 2px solid #ffe39a;
+  box-shadow: 0 8px 18px rgba(255, 209, 102, 0.22);
+}
+html[data-theme='dark'] .exam-start .primary-button:hover {
+  background: #ffe39a;
+  color: #2b2540;
+}
+
+/* Dark theme contrast fixes for the dashboard */
+html[data-theme='dark'] .level-card,
+html[data-theme='dark'] .level-card.locked {
+  background: #302b43;
+  color: var(--ink);
+  border-color: #49415f;
+}
+html[data-theme='dark'] .level-card.passed {
+  background: #173b3a;
+  border-color: var(--mint);
+}
+html[data-theme='dark'] .level-card .level-number,
+html[data-theme='dark'] .level-card .level-percent,
+html[data-theme='dark'] .level-card .level-copy strong,
+html[data-theme='dark'] .level-card .level-copy span {
+  color: var(--ink);
+}
+html[data-theme='dark'] .level-card .level-copy span,
+html[data-theme='dark'] .level-card svg {
+  color: var(--muted);
+}
+html[data-theme='dark'] .level-card.passed .level-copy strong,
+html[data-theme='dark'] .level-card.passed .level-copy span {
+  color: #d7fff1;
+}
+html[data-theme='dark'] .path-card,
+html[data-theme='dark'] .quick-card {
+  background: #252237;
+  color: var(--ink);
+}
+html[data-theme='dark'] .continue-card {
+  background: #8066d2;
+  color: #fff;
+}
+html[data-theme='dark'] .continue-card .eyebrow,
+html[data-theme='dark'] .continue-card .muted,
+html[data-theme='dark'] .continue-card h3 {
+  color: #fff;
+}
+html[data-theme='dark'] .continue-card .primary-button {
+  background: #fff;
+  color: #4d3a91;
+}
+html[data-theme='dark'] .streak {
+  background: #3d3420;
+  color: #ffe08a;
+}
+html[data-theme='dark'] .mini-badge {
+  background: #eee8ff;
+  color: #55409a;
+}
+html[data-theme='dark'] .profile-button {
+  background: #eee8ff;
+  color: #332857;
+}
+html[data-theme='dark'] .profile-button span:first-child {
+  color: #332857;
+}
+html[data-theme='dark'] .nav-links button.active {
+  background: #2d2840;
+  color: var(--ink);
+}
+html[data-theme='dark'] .week-bars span {
+  background: #d9ceff;
+}
+html[data-theme='dark'] .week-bars span.today {
+  background: var(--pink);
+}
+html[data-theme='dark'] .ink {
+  color: var(--ink);
+}
+
+/* Practice and category contrast fixes in dark mode */
+html[data-theme='dark'] .capsule.pink,
+html[data-theme='dark'] .mode-button.pink {
+  background: #5a3045;
+  border-color: #f486ac;
+  color: #fff4f8;
+}
+html[data-theme='dark'] .capsule.yellow {
+  background: #5b4823;
+  border-color: #f5c85f;
+  color: #fff9e8;
+}
+html[data-theme='dark'] .capsule.mint,
+html[data-theme='dark'] .mode-button.mint {
+  background: #214b46;
+  border-color: #70d9b7;
+  color: #f3fffb;
+}
+html[data-theme='dark'] .capsule.purple,
+html[data-theme='dark'] .mode-button.purple {
+  background: #423568;
+  border-color: #ad93ff;
+  color: #f8f5ff;
+}
+html[data-theme='dark'] .capsule.coral,
+html[data-theme='dark'] .mode-button.coral {
+  background: #613d3b;
+  border-color: #ff9e88;
+  color: #fff5f2;
+}
+html[data-theme='dark'] .capsule strong,
+html[data-theme='dark'] .capsule small,
+html[data-theme='dark'] .mode-button strong,
+html[data-theme='dark'] .mode-button small {
+  color: inherit;
+}
+html[data-theme='dark'] .quiz-next,
+html[data-theme='dark'] .reveal-button {
+  background: #ffd166;
+  color: #2b2540;
+  border: 2px solid #ffe39a;
+  box-shadow: 0 8px 18px rgba(255, 209, 102, 0.2);
+}
+html[data-theme='dark'] .quiz-next:hover,
+html[data-theme='dark'] .reveal-button:hover {
+  background: #ffe39a;
+  color: #2b2540;
+}
+html[data-theme='dark'] .quiz-next:disabled {
+  background: #4a435d;
+  color: #c2bbd0;
+  border-color: #5c5372;
+  box-shadow: none;
+}
+html[data-theme='dark'] .rating-row .mint-button,
+html[data-theme='dark'] .rating-row .coral-button {
+  color: #2b2540;
+}
+html[data-theme='dark'] .rating-row .mint-button {
+  background: #70d9b7;
+}
+html[data-theme='dark'] .rating-row .coral-button {
+  background: #ff9e88;
 }
 .vocab-level-picker {
   display: flex;
