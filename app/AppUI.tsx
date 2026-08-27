@@ -409,6 +409,16 @@ function Dashboard({
   )
 }
 
+const speak = (hanzi: string) => {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(hanzi)
+    utterance.lang = 'zh-CN'
+    utterance.rate = 0.78
+    window.speechSynthesis.speak(utterance)
+  }
+}
+
 function VocabRoom() {
   const [level, setLevel] = useState(1)
   const [filter, setFilter] = useState<'all' | 'review'>('all')
