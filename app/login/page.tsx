@@ -1,25 +1,14 @@
-'use client'
-
+import { auth, signIn } from '@/lib/auth'
 import { ArrowRight, Globe2, Sparkles } from 'lucide-react'
-import { signIn } from 'next-auth/react'
-import { useState } from 'react'
+import { redirect } from 'next/navigation'
 
-export default function LoginPage() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  async function handleGoogle() {
-    setLoading(true)
-    setError('')
+export default async function LoginPage() {
+  const session = await auth()
 
-    try {
-      await signIn('google', {
-        redirectTo: '/'
-      })
-    } catch {
-      setError('เข้าสู่ระบบไม่สำเร็จ ลองใหม่อีกครั้งนะ')
-      setLoading(false)
-    }
+  if (session) {
+    redirect('/')
   }
+
   return (
     <main className="login-shell">
       <div className="login-orbit orbit-one" />
@@ -47,20 +36,18 @@ export default function LoginPage() {
         <p className="login-copy">
           สะสมคำศัพท์ทีละคำ เก็บตราประทับทีละดวง แล้วค่อยๆ ไปถึง HSK ที่ฝันไว้
         </p>
-        <button
-          className="google-login"
-          onClick={handleGoogle}
-          disabled={loading}
+        <form
+          action={async () => {
+            'use server'
+            await signIn('google', { redirectTo: '/' })
+          }}
         >
-          <span className="google-icon">G</span>
-          {loading ? 'กำลังพาไป...' : 'เข้าสู่ระบบด้วย Google'}
-          <ArrowRight size={18} />
-        </button>
-        {error && (
-          <p className="login-error" role="alert">
-            {error}
-          </p>
-        )}
+          <button type="submit" className="google-login">
+            <span className="google-icon">G</span>
+            เข้าสู่ระบบด้วย Google
+            <ArrowRight size={18} />
+          </button>
+        </form>
         <p className="login-note">
           <Globe2 size={14} /> เรียนได้ทุกที่ ทุกจังหวะของคุณ
         </p>
