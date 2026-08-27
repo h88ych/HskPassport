@@ -2,11 +2,13 @@
 
 import {
   ArrowLeft,
+  ArrowRight,
   BookOpen,
   Check,
   ChevronRight,
   CircleHelp,
   Flame,
+  Layers3,
   LockKeyhole,
   Medal,
   RotateCcw,
@@ -410,6 +412,9 @@ function Dashboard({
 function VocabRoom() {
   const [level, setLevel] = useState(1)
   const [filter, setFilter] = useState<'all' | 'review'>('all')
+  const [view, setView] = useState<'list' | 'flashcard'>('list')
+  const [cardIndex, setCardIndex] = useState(0)
+  const [flipped, setFlipped] = useState(false)
   const [reviewed, setReviewed] = useState<string[]>([])
 
   // เพิ่ม state สำหรับเก็บคำศัพท์จากฐานข้อมูล และสถานะกำลังโหลด
@@ -436,6 +441,7 @@ function VocabRoom() {
   const visibleWords = words.filter(
     (word) => filter === 'all' || reviewed.includes(word.hanzi)
   )
+  const card = visibleWords[cardIndex]
 
   const toggleReview = (hanzi: string) =>
     setReviewed((current) =>
@@ -444,13 +450,30 @@ function VocabRoom() {
         : [...current, hanzi]
     )
 
+  const changeLevel = (item: number) => {
+    setLevel(item)
+    setFilter('all')
+    setCardIndex(0)
+    setFlipped(false)
+  }
+  const changeCard = (step: number) => {
+    setCardIndex(
+      (current) => (current + step + visibleWords.length) % visibleWords.length
+    )
+    setFlipped(false)
+  }
+
   return (
     <div className="room">
       <div className="room-heading">
         <div>
           <p className="eyebrow">ห้องจำศัพท์ · คลังคำศัพท์</p>
-          <h2>อ่านคำศัพท์กันยาวๆ</h2>
-          <p className="muted">เลื่อนอ่านได้ตามจังหวะ ไม่ต้องกดผ่านทีละคำ</p>
+          <h2>{view === 'list' ? 'อ่านคำศัพท์กันยาวๆ' : 'ทวนคำทีละแผ่น'}</h2>
+          <p className="muted">
+            {view === 'list'
+              ? 'เลื่อนอ่านได้ตามจังหวะ ไม่ต้องกดผ่านทีละคำ'
+              : 'แตะการ์ดเพื่อดูคำแปล แล้วค่อยๆ จำไปด้วยกัน'}
+          </p>
         </div>
         <span className="counter">
           HSK {level} · {words.length} คำ
@@ -467,76 +490,158 @@ function VocabRoom() {
             key={item}
             className={level === item ? 'selected' : ''}
             aria-pressed={level === item}
-            onClick={() => {
-              setLevel(item)
-              setFilter('all')
-            }}
+            onClick={() => changeLevel(item)}
           >
             HSK {item}
           </button>
         ))}
       </div>
-      <div className="list-filter" role="group" aria-label="กรองคำศัพท์">
+      <div className="vocab-toolbar">
+        <div className="list-filter" role="group" aria-label="กรองคำศัพท์">
+          <button
+            className={filter === 'all' ? 'selected' : ''}
+            onClick={() => setFilter('all')}
+          >
+            ทั้งหมด <span>{words.length}</span>
+          </button>
+          <button
+            className={filter === 'review' ? 'selected' : ''}
+            onClick={() => setFilter('review')}
+          >
+            ทบทวนแล้ว{' '}
+            <span>
+              {words.filter((word) => reviewed.includes(word.hanzi)).length}
+            </span>
+          </button>
+        </div>
         <button
-          className={filter === 'all' ? 'selected' : ''}
-          onClick={() => setFilter('all')}
+          className="view-toggle"
+          aria-pressed={view === 'flashcard'}
+          onClick={() => {
+            setView(view === 'list' ? 'flashcard' : 'list')
+            setCardIndex(0)
+            setFlipped(false)
+          }}
         >
-          ทั้งหมด <span>{words.length}</span>
-        </button>
-        <button
-          className={filter === 'review' ? 'selected' : ''}
-          onClick={() => setFilter('review')}
-        >
-          ทบทวนแล้ว{' '}
-          <span>
-            {words.filter((word) => reviewed.includes(word.hanzi)).length}
-          </span>
+          <Layers3 size={17} />{' '}
+          {view === 'list' ? 'มุมมอง Flashcard' : 'มุมมองรายการ'}
         </button>
       </div>
-
-      <div className="vocab-list">
-        {loading ? (
-          <div className="empty-list">กำลังโหลดคลังคำศัพท์...</div>
-        ) : visibleWords.length ? (
-          visibleWords.map((word, index) => (
-            <article className="vocab-row" key={word.hanzi}>
-              <div className="vocab-index">
-                {String(index + 1).padStart(2, '0')}
-              </div>
-              <div className="vocab-hanzi">{word.hanzi}</div>
-              <div className="vocab-detail">
-                <p className="pinyin">{word.pinyin}</p>
-                <strong>{word.meaning}</strong>
-                <span>{word.example}</span>
-              </div>
+      {view === 'list' ? (
+        <div className="vocab-list">
+          {visibleWords.length ? (
+            visibleWords.map((word, index) => (
+              <article className="vocab-row" key={word.hanzi}>
+                <div className="vocab-index">
+                  {String(index + 1).padStart(2, '0')}
+                </div>
+                <div className="vocab-hanzi">{word.hanzi}</div>
+                <div className="vocab-detail">
+                  <p className="pinyin">{word.pinyin}</p>
+                  <strong>{word.meaning}</strong>
+                  <span>{word.example}</span>
+                </div>
+                <button
+                  className="sound-button"
+                  aria-label={`ฟังเสียง ${word.hanzi}`}
+                  onClick={() => speak(word.hanzi)}
+                >
+                  <Volume2 size={18} />
+                </button>
+                <button
+                  className={`review-button ${reviewed.includes(word.hanzi) ? 'done' : ''}`}
+                  onClick={() => toggleReview(word.hanzi)}
+                >
+                  {reviewed.includes(word.hanzi) ? (
+                    <Check size={17} />
+                  ) : (
+                    <RotateCcw size={17} />
+                  )}
+                  <span>
+                    {reviewed.includes(word.hanzi) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
+                  </span>
+                </button>
+              </article>
+            ))
+          ) : (
+            <div className="empty-list">
+              ยังไม่มีคำที่ทำเครื่องหมายไว้ ลองอ่านคำศัพท์แล้วกด “ไว้ทบทวน”
+              ได้เลย
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flashcard-stage">
+          {card ? (
+            <>
               <button
-                className="sound-button"
-                aria-label={`ฟังเสียง ${word.hanzi}`}
+                className={`flashcard ${flipped ? 'is-flipped' : ''}`}
+                onClick={() => setFlipped((value) => !value)}
+                aria-label={flipped ? 'แสดงคำจีน' : 'แสดงคำแปล'}
               >
-                <Volume2 size={18} />
+                <span className="flashcard-hint">
+                  {flipped ? 'คำแปล' : 'แตะเพื่อหงายคำแปล'}
+                </span>
+                {flipped ? (
+                  <>
+                    <strong className="flashcard-meaning">
+                      {card.meaning}
+                    </strong>
+                    <span className="flashcard-example">{card.example}</span>
+                  </>
+                ) : (
+                  <>
+                    <strong className="flashcard-hanzi">{card.hanzi}</strong>
+                    <span className="flashcard-pinyin">{card.pinyin}</span>
+                  </>
+                )}
               </button>
               <button
-                className={`review-button ${reviewed.includes(word.hanzi) ? 'done' : ''}`}
-                onClick={() => toggleReview(word.hanzi)}
+                className="sound-button flashcard-sound"
+                aria-label={`ฟังเสียง ${card.hanzi}`}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  speak(card.hanzi)
+                }}
               >
-                {reviewed.includes(word.hanzi) ? (
+                <Volume2 size={19} />
+              </button>
+              <div className="flashcard-controls">
+                <button
+                  className="round-arrow"
+                  aria-label="คำก่อนหน้า"
+                  onClick={() => changeCard(-1)}
+                >
+                  <ArrowLeft size={18} />
+                </button>
+                <span>
+                  {cardIndex + 1} / {visibleWords.length}
+                </span>
+                <button
+                  className="round-arrow"
+                  aria-label="คำถัดไป"
+                  onClick={() => changeCard(1)}
+                >
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+              <button
+                className={`review-button ${reviewed.includes(card.hanzi) ? 'done' : ''}`}
+                onClick={() => toggleReview(card.hanzi)}
+              >
+                {reviewed.includes(card.hanzi) ? (
                   <Check size={17} />
                 ) : (
                   <RotateCcw size={17} />
-                )}
-                <span>
-                  {reviewed.includes(word.hanzi) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
-                </span>
+                )}{' '}
+                {reviewed.includes(card.hanzi) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
               </button>
-            </article>
-          ))
-        ) : (
-          <div className="empty-list">
-            ยังไม่มีคำศัพท์ในระดับนี้
-            หรือยังไม่ได้นำเข้าข้อมูลคำศัพท์ในฐานข้อมูล
-          </div>
-        )}
-      </div>
+            </>
+          ) : (
+            <div className="empty-list">ไม่มีคำในตัวกรองนี้</div>
+          )}
+        </div>
+      )}
       <Mascot text="ค่อยๆ อ่าน ไม่ต้องรีบ จำได้มากน้อยแค่ไหนก็ดีแล้ว!" />
     </div>
   )
