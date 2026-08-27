@@ -241,34 +241,75 @@ function PassportHeader({ name }: { name?: string }) {
   )
 }
 
-function LevelCard({ item }: { item: (typeof levels)[number] }) {
+function LevelCard({ item }: { item: any }) {
+  // คำนวณสถานะและเปอร์เซ็นต์จากข้อมูลจริงใน DB
+  const isUnlocked = item.unlocked === 1 || item.unlocked === true
+  const maxScore = item.max_score || 0
+  const isPassed = maxScore >= 95
+
+  let state = 'locked'
+  if (isPassed) {
+    state = 'passed'
+  } else if (isUnlocked) {
+    state = 'open'
+  }
+
+  const progressPercent = isPassed
+    ? 100
+    : Math.min(Math.round((maxScore / 100) * 100), 99)
+
+  // กำหนดสีสันการ์ดตามระดับ
+  const colors = ['mint', 'pink', 'yellow', 'purple', 'coral', 'mint']
+  const colorClass = colors[(item.level_number - 1) % colors.length]
+
+  // กำหนดจำนวนคำสำรองตามระดับ HSK (1-6) หากฐานข้อมูลไม่ได้ส่งมา
+  const defaultWordsMap: Record<number, number> = {
+    1: 150,
+    2: 150,
+    3: 300,
+    4: 600,
+    5: 1300,
+    6: 2500
+  }
+  const wordCount = item.words || defaultWordsMap[item.level_number] || 150
+
+  const defaultTitleMap: Record<number, string> = {
+    1: 'เริ่มต้นทริป',
+    2: 'ก้าวแรก',
+    3: 'นักสำรวจ',
+    4: 'เมืองใหม่',
+    5: 'นักเดินทาง',
+    6: 'ทั่วโลก'
+  }
+  const cardTitle = defaultTitleMap[item.level_number]
+
   return (
     <button
-      className={`level-card ${item.state} ${item.color}`}
-      disabled={item.state === 'locked'}
+      className={`level-card ${state} ${colorClass}`}
+      disabled={state === 'locked'}
     >
       <div className="level-top">
-        <span className="level-number">HSK {item.level}</span>
-        {item.state === 'locked' ? (
+        <span className="level-number">HSK {item.level_number}</span>
+        {state === 'locked' ? (
           <LockKeyhole size={18} />
-        ) : item.state === 'passed' ? (
+        ) : state === 'passed' ? (
           <span className="passed-dot">
             <Check size={13} />
           </span>
         ) : (
-          <span className="level-percent">{item.progress}%</span>
+          <span className="level-percent">{progressPercent}%</span>
         )}
       </div>
       <div className="level-copy">
-        <strong>{item.title}</strong>
-        <span>{item.words.toLocaleString()} คำ</span>
+        <strong>{cardTitle}</strong>
+        <span>{wordCount.toLocaleString()} คำ</span>
       </div>
-      {item.state !== 'locked' && (
+      {state !== 'locked' && (
         <div className="progress-line">
-          <span style={{ width: `${item.progress}%` }} />
+          <span style={{ width: `${progressPercent}%` }} />
         </div>
       )}
-      {item.state === 'passed' && (
+      {state === 'passed' && (
         <div className="stamp">
           PASSED
           <br />
@@ -282,12 +323,14 @@ function LevelCard({ item }: { item: (typeof levels)[number] }) {
 function Dashboard({
   onNavigate,
   displayName,
-  displayAvatar
+  levelsData
 }: {
   onNavigate: (room: string) => void
   displayName?: string
-  displayAvatar?: string | null
+  levelsData?: any[]
 }) {
+  const passedCount =
+    levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
   return (
     <>
       <PassportHeader name={displayName} />
@@ -313,13 +356,17 @@ function Dashboard({
               <h3>แผนที่พาสปอร์ต</h3>
             </div>
             <span className="mini-badge">
-              <Star size={14} fill="currentColor" /> 2 / 6
+              <Star size={14} fill="currentColor" /> {passedCount} / 6
             </span>
           </div>
           <div className="level-path">
-            {levels.map((level) => (
-              <LevelCard item={level} key={level.level} />
-            ))}
+            {levelsData && levelsData.length > 0 ? (
+              levelsData.map((levelItem) => (
+                <LevelCard item={levelItem} key={levelItem.id} />
+              ))
+            ) : (
+              <p className="muted">กำลังโหลดข้อมูลด่าน...</p>
+            )}
           </div>
         </section>
         <aside className="side-column">
@@ -568,7 +615,7 @@ function QuizCard({
           <p className="eyebrow">
             {exam
               ? 'ภารกิจสอบ · 100 ข้อ'
-              : `แพรคทิค · HSK ${level} · ${category}`}
+              : `ฝึกคำศัพท์ิค · HSK ${level} · ${category}`}
           </p>
           <h2>{exam ? 'ทริปคำศัพท์ 100 ข้อ' : 'ฝึกคำศัพท์กัน'}</h2>
         </div>
@@ -663,7 +710,7 @@ function PracticeRoom() {
       <div className="room">
         <div className="room-heading">
           <div>
-            <p className="eyebrow">ห้องแพรคทิค · ขั้นที่ 1</p>
+            <p className="eyebrow">ห้องฝึกคำศัพท์ิค · ขั้นที่ 1</p>
             <h2>เลือก HSK ที่อยากฝึก</h2>
             <p className="muted">แต่ละระดับมีหมวดคำศัพท์ของตัวเอง</p>
           </div>
@@ -705,7 +752,7 @@ function PracticeRoom() {
         </button>
         <div className="room-heading">
           <div>
-            <p className="eyebrow">ห้องแพรคทิค · ขั้นที่ 2</p>
+            <p className="eyebrow">ห้องฝึกคำศัพท์ิค · ขั้นที่ 2</p>
             <h2>หมวดของ HSK {level}</h2>
             <p className="muted">เลือกหมวดใหญ่ก่อน แล้วค่อยเลือกวิธีฝึก</p>
           </div>
@@ -744,7 +791,7 @@ function PracticeRoom() {
         <div className="room-heading">
           <div>
             <p className="eyebrow">
-              แพรคทิค · HSK {level} · {category}
+              ฝึกคำศัพท์ิค · HSK {level} · {category}
             </p>
             <h2>เขียนตามคำบอก</h2>
           </div>
@@ -791,7 +838,7 @@ function PracticeRoom() {
       <div className="room-heading">
         <div>
           <p className="eyebrow">
-            ห้องแพรคทิค · HSK {level} · {category}
+            ห้องฝึกคำศัพท์ิค · HSK {level} · {category}
           </p>
           <h2>เลือกวิธีฝึก</h2>
           <p className="muted">หมวดนี้มี 12 คำให้ฝึก</p>
@@ -866,11 +913,13 @@ function ExamRoom() {
 export default function AppUI({
   user,
   dbNickname,
-  avatarUrl
+  avatarUrl,
+  levelsData
 }: {
   user: { name?: string | null; image?: string | null }
   dbNickname?: string | null
   avatarUrl?: string | null
+  levelsData?: any[]
 }) {
   const [room, setRoom] = useState('dashboard')
   const displayName = dbNickname || user?.name?.split(' ')[0] || 'นักเดินทาง'
@@ -898,7 +947,7 @@ export default function AppUI({
             className={room === 'practice' ? 'active' : ''}
             onClick={() => setRoom('practice')}
           >
-            แพรคทิค
+            ฝึกคำศัพท์
           </button>
           <button
             className={room === 'exam' ? 'active' : ''}
@@ -920,7 +969,11 @@ export default function AppUI({
       </nav>
       <div className="content">
         {room === 'dashboard' && (
-          <Dashboard onNavigate={setRoom} displayName={displayName} />
+          <Dashboard
+            onNavigate={setRoom}
+            displayName={displayName}
+            levelsData={levelsData}
+          />
         )}
         {room === 'vocab' && <VocabRoom />}
         {room === 'practice' && <PracticeRoom />}
