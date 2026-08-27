@@ -411,16 +411,39 @@ function VocabRoom() {
   const [level, setLevel] = useState(1)
   const [filter, setFilter] = useState<'all' | 'review'>('all')
   const [reviewed, setReviewed] = useState<string[]>([])
-  const words = vocabByLevel[level]
+
+  // เพิ่ม state สำหรับเก็บคำศัพท์จากฐานข้อมูล และสถานะกำลังโหลด
+  const [words, setWords] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // ดึงข้อมูลจาก API ทุกครั้งที่เปลี่ยนระดับ HSK
+  useEffect(() => {
+    async function fetchVocab() {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/vocab?level=${level}`)
+        const data = await res.json()
+        setWords(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load vocab', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchVocab()
+  }, [level])
+
   const visibleWords = words.filter(
     (word) => filter === 'all' || reviewed.includes(word.hanzi)
   )
+
   const toggleReview = (hanzi: string) =>
     setReviewed((current) =>
       current.includes(hanzi)
         ? current.filter((item) => item !== hanzi)
         : [...current, hanzi]
     )
+
   return (
     <div className="room">
       <div className="room-heading">
@@ -470,8 +493,11 @@ function VocabRoom() {
           </span>
         </button>
       </div>
+
       <div className="vocab-list">
-        {visibleWords.length ? (
+        {loading ? (
+          <div className="empty-list">กำลังโหลดคลังคำศัพท์...</div>
+        ) : visibleWords.length ? (
           visibleWords.map((word, index) => (
             <article className="vocab-row" key={word.hanzi}>
               <div className="vocab-index">
@@ -506,7 +532,8 @@ function VocabRoom() {
           ))
         ) : (
           <div className="empty-list">
-            ยังไม่มีคำที่ทำเครื่องหมายไว้ ลองอ่านคำศัพท์แล้วกด “ไว้ทบทวน” ได้เลย
+            ยังไม่มีคำศัพท์ในระดับนี้
+            หรือยังไม่ได้นำเข้าข้อมูลคำศัพท์ในฐานข้อมูล
           </div>
         )}
       </div>
@@ -514,7 +541,6 @@ function VocabRoom() {
     </div>
   )
 }
-
 const categoriesByLevel: Record<number, [string, string, string][]> = {
   1: [
     ['ครอบครัว', '👪', 'pink'],
