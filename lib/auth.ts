@@ -3,7 +3,15 @@ import Google from 'next-auth/providers/google'
 import pool from './db'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [Google],
+  providers: [
+    Google({
+      authorization: {
+        params: {
+          prompt: 'consent select_account' // บังคับให้โชว์หน้าเลือกบัญชีทุกครั้ง
+        }
+      }
+    })
+  ],
   callbacks: {
     async jwt({ token, profile }) {
       if (profile) {

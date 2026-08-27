@@ -67,26 +67,131 @@ const levels = [
     color: 'mint'
   }
 ]
-const words = [
-  {
-    hanzi: '朋友',
-    pinyin: 'péngyou',
-    meaning: 'เพื่อน',
-    example: '我有很多朋友。'
-  },
-  {
-    hanzi: '学习',
-    pinyin: 'xuéxí',
-    meaning: 'เรียน / ศึกษา',
-    example: '我喜欢学习中文。'
-  },
-  {
-    hanzi: '你好',
-    pinyin: 'nǐ hǎo',
-    meaning: 'สวัสดี',
-    example: '你好，很高兴认识你。'
-  }
-]
+const vocabByLevel: Record<
+  number,
+  { hanzi: string; pinyin: string; meaning: string; example: string }[]
+> = {
+  1: [
+    {
+      hanzi: '你好',
+      pinyin: 'nǐ hǎo',
+      meaning: 'สวัสดี',
+      example: '你好，很高兴认识你。'
+    },
+    {
+      hanzi: '朋友',
+      pinyin: 'péngyou',
+      meaning: 'เพื่อน',
+      example: '我有很多朋友。'
+    },
+    {
+      hanzi: '学习',
+      pinyin: 'xuéxí',
+      meaning: 'เรียน / ศึกษา',
+      example: '我喜欢学习中文。'
+    }
+  ],
+  2: [
+    {
+      hanzi: '旅行',
+      pinyin: 'lǚxíng',
+      meaning: 'ท่องเที่ยว',
+      example: '我喜欢旅行。'
+    },
+    {
+      hanzi: '健康',
+      pinyin: 'jiànkāng',
+      meaning: 'สุขภาพ',
+      example: '身体健康很重要。'
+    },
+    {
+      hanzi: '爱好',
+      pinyin: 'àihào',
+      meaning: 'งานอดิเรก',
+      example: '你的爱好是什么？'
+    }
+  ],
+  3: [
+    {
+      hanzi: '环境',
+      pinyin: 'huánjìng',
+      meaning: 'สิ่งแวดล้อม',
+      example: '我们要保护环境。'
+    },
+    {
+      hanzi: '经验',
+      pinyin: 'jīngyàn',
+      meaning: 'ประสบการณ์',
+      example: '他有丰富的经验。'
+    },
+    {
+      hanzi: '感觉',
+      pinyin: 'gǎnjué',
+      meaning: 'ความรู้สึก',
+      example: '我感觉很好。'
+    }
+  ],
+  4: [
+    {
+      hanzi: '社会',
+      pinyin: 'shèhuì',
+      meaning: 'สังคม',
+      example: '社会正在改变。'
+    },
+    {
+      hanzi: '交流',
+      pinyin: 'jiāoliú',
+      meaning: 'สื่อสาร / แลกเปลี่ยน',
+      example: '我们需要多交流。'
+    },
+    {
+      hanzi: '工作',
+      pinyin: 'gōngzuò',
+      meaning: 'ทำงาน',
+      example: '我每天努力工作。'
+    }
+  ],
+  5: [
+    {
+      hanzi: '文化',
+      pinyin: 'wénhuà',
+      meaning: 'วัฒนธรรม',
+      example: '中国文化很有意思。'
+    },
+    {
+      hanzi: '观点',
+      pinyin: 'guāndiǎn',
+      meaning: 'ความคิดเห็น',
+      example: '我同意你的观点。'
+    },
+    {
+      hanzi: '新闻',
+      pinyin: 'xīnwén',
+      meaning: 'ข่าวสาร',
+      example: '我每天看新闻。'
+    }
+  ],
+  6: [
+    {
+      hanzi: '学术',
+      pinyin: 'xuéshù',
+      meaning: 'วิชาการ',
+      example: '这是学术问题。'
+    },
+    {
+      hanzi: '全球',
+      pinyin: 'quánqiú',
+      meaning: 'ทั่วโลก',
+      example: '这是全球性的挑战。'
+    },
+    {
+      hanzi: '现象',
+      pinyin: 'xiànxiàng',
+      meaning: 'ปรากฏการณ์',
+      example: '这种现象很常见。'
+    }
+  ]
+}
 const categories = [
   ['ครอบครัว', '👪', 'pink'],
   ['อาหาร', '🍜', 'yellow'],
@@ -114,13 +219,13 @@ function Mascot({
   )
 }
 
-function PassportHeader() {
+function PassportHeader({ name }: { name?: string }) {
   return (
     <header className="passport-header">
       <div className="avatar">🧢</div>
       <div>
         <p className="eyebrow">STICKER PASSPORT</p>
-        <h1>สวัสดี, มินท์!</h1>
+        <h1>สวัสดี, {name}!</h1>
         <p className="muted">พร้อมออกเดินทางต่อหรือยัง?</p>
       </div>
       <div className="passport-meta">
@@ -174,10 +279,18 @@ function LevelCard({ item }: { item: (typeof levels)[number] }) {
   )
 }
 
-function Dashboard({ onNavigate }: { onNavigate: (room: string) => void }) {
+function Dashboard({
+  onNavigate,
+  displayName,
+  displayAvatar
+}: {
+  onNavigate: (room: string) => void
+  displayName?: string
+  displayAvatar?: string | null
+}) {
   return (
     <>
-      <PassportHeader />
+      <PassportHeader name={displayName} />
       <section className="hero-summary">
         <div>
           <p className="eyebrow">เส้นทางของเรา</p>
@@ -250,8 +363,10 @@ function Dashboard({ onNavigate }: { onNavigate: (room: string) => void }) {
 }
 
 function VocabRoom() {
+  const [level, setLevel] = useState(1)
   const [filter, setFilter] = useState<'all' | 'review'>('all')
   const [reviewed, setReviewed] = useState<string[]>([])
+  const words = vocabByLevel[level]
   const visibleWords = words.filter(
     (word) => filter === 'all' || reviewed.includes(word.hanzi)
   )
@@ -265,11 +380,33 @@ function VocabRoom() {
     <div className="room">
       <div className="room-heading">
         <div>
-          <p className="eyebrow">ห้องจำศัพท์ · ชุดที่ 04</p>
+          <p className="eyebrow">ห้องจำศัพท์ · คลังคำศัพท์</p>
           <h2>อ่านคำศัพท์กันยาวๆ</h2>
           <p className="muted">เลื่อนอ่านได้ตามจังหวะ ไม่ต้องกดผ่านทีละคำ</p>
         </div>
-        <span className="counter">{words.length} คำ</span>
+        <span className="counter">
+          HSK {level} · {words.length} คำ
+        </span>
+      </div>
+      <div
+        className="vocab-level-picker"
+        role="group"
+        aria-label="เลือกระดับ HSK"
+      >
+        <span className="vocab-level-label">เลือกชุดคำ</span>
+        {[1, 2, 3, 4, 5, 6].map((item) => (
+          <button
+            key={item}
+            className={level === item ? 'selected' : ''}
+            aria-pressed={level === item}
+            onClick={() => {
+              setLevel(item)
+              setFilter('all')
+            }}
+          >
+            HSK {item}
+          </button>
+        ))}
       </div>
       <div className="list-filter" role="group" aria-label="กรองคำศัพท์">
         <button
@@ -282,7 +419,10 @@ function VocabRoom() {
           className={filter === 'review' ? 'selected' : ''}
           onClick={() => setFilter('review')}
         >
-          ทบทวนแล้ว <span>{reviewed.length}</span>
+          ทบทวนแล้ว{' '}
+          <span>
+            {words.filter((word) => reviewed.includes(word.hanzi)).length}
+          </span>
         </button>
       </div>
       <div className="vocab-list">
@@ -724,11 +864,17 @@ function ExamRoom() {
 }
 
 export default function AppUI({
-  user
+  user,
+  dbNickname,
+  avatarUrl
 }: {
   user: { name?: string | null; image?: string | null }
+  dbNickname?: string | null
+  avatarUrl?: string | null
 }) {
   const [room, setRoom] = useState('dashboard')
+  const displayName = dbNickname || user?.name?.split(' ')[0] || 'นักเดินทาง'
+  const displayAvatar = avatarUrl || user?.image || '/placeholder-user.jpg'
   return (
     <main className="app-shell">
       <nav className="top-nav">
@@ -762,12 +908,20 @@ export default function AppUI({
           </button>
         </div>
         <a className="profile-button" href="/login">
-          <span>MT</span>
-          <span className="desktop-only">มินท์</span>
+          <span>
+            <img
+              src={displayAvatar}
+              alt="Profile"
+              className="w-full h-full object-cover rounded-full"
+            />
+          </span>
+          <span className="desktop-only">{displayName}</span>
         </a>
       </nav>
       <div className="content">
-        {room === 'dashboard' && <Dashboard onNavigate={setRoom} />}
+        {room === 'dashboard' && (
+          <Dashboard onNavigate={setRoom} displayName={displayName} />
+        )}
         {room === 'vocab' && <VocabRoom />}
         {room === 'practice' && <PracticeRoom />}
         {room === 'exam' && <ExamRoom />}

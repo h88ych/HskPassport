@@ -956,10 +956,51 @@ h3 {
     scroll-behavior: auto !important;
   }
 }
+.vocab-level-picker {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 8px 10px;
+  margin-top: 22px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  width: max-content;
+  max-width: 100%;
+}
+.vocab-level-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  margin-right: 3px;
+}
+.vocab-level-picker button {
+  min-width: 58px;
+  padding: 7px 11px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font: 800 12px Nunito;
+  transition:
+    transform 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+.vocab-level-picker button:hover {
+  background: var(--surface);
+  color: var(--ink);
+  transform: translateY(-1px);
+}
+.vocab-level-picker button.selected {
+  background: var(--ink);
+  color: var(--surface);
+  box-shadow: 0 4px 10px rgba(43, 37, 64, 0.14);
+}
 .list-filter {
   display: flex;
   gap: 8px;
-  margin: 24px 0 14px;
+  margin: 14px 0;
 }
 .list-filter button {
   background: var(--surface);
@@ -1408,6 +1449,67 @@ h3 {
 }
 .quiz-options .mode-grid {
   margin-top: 12px;
+}
+.welcome-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--bg);
+}
+.welcome-card {
+  width: min(100%, 500px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  padding: 34px;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(83, 65, 112, 0.14);
+  animation: login-in 0.7s ease both;
+}
+.welcome-mascot {
+  font-size: 86px;
+  margin: 24px 0 8px;
+  animation: float 3s ease-in-out infinite;
+}
+.welcome-card h1 {
+  font:
+    900 clamp(30px, 7vw, 44px)/1.15 'IBM Plex Sans Thai',
+    Nunito,
+    sans-serif;
+  margin: 8px 0 14px;
+}
+.welcome-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  margin-top: 24px;
+}
+.welcome-card label {
+  font-weight: 800;
+  font-size: 14px;
+}
+.welcome-card input {
+  width: 100%;
+  padding: 15px 16px;
+  border: 2px solid var(--line);
+  border-radius: 15px;
+  background: var(--bg);
+  font: inherit;
+  color: var(--ink);
+  outline: none;
+}
+.welcome-card input:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 4px rgba(180, 156, 255, 0.2);
+}
+.welcome-card form .google-login {
+  margin-top: 6px;
+  justify-content: center;
+}
+.welcome-card form .google-login svg {
+  margin-left: auto;
 }
 @media (max-width: 720px) {
   .login-card {
