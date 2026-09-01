@@ -829,18 +829,42 @@ function QuizCard({
   )
 }
 
-function PracticeRoom() {
+function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   const [level, setLevel] = useState<number | null>(null)
   const [category, setCategory] = useState<string | null>(null)
+  const [categories, setCategories] = useState<any[]>([])
   const [mode, setMode] = useState<'quiz' | 'dictation'>('quiz')
   const [revealed, setRevealed] = useState(false)
+  const [loadingCategories, setLoadingCategories] = useState(false)
+
+  useEffect(() => {
+    if (!level) return
+    async function fetchCategories() {
+      setLoadingCategories(true)
+      try {
+        const res = await fetch(`/api/categories?level=${level}`)
+        const data = await res.json()
+        setCategories(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load categories', err)
+      } finally {
+        setLoadingCategories(false)
+      }
+    }
+    fetchCategories()
+  }, [level])
+
   const goBack = () => {
     if (mode === 'dictation') {
-      setMode('categories')
+      setMode('quiz')
       setRevealed(false)
-    } else if (category) setCategory(null)
-    else setLevel(null)
+    } else if (category) {
+      setCategory(null)
+    } else {
+      setLevel(null)
+    }
   }
+
   if (!level)
     return (
       <div className="room">
@@ -852,31 +876,37 @@ function PracticeRoom() {
           </div>
         </div>
         <div className="level-picker">
-          {[1, 2, 3, 4, 5, 6].map((item) => (
-            <button
-              key={item}
-              className={`practice-level level-${item}`}
-              onClick={() => setLevel(item)}
-            >
-              <span>HSK {item}</span>
-              <strong>
-                {
-                  [
-                    'เริ่มต้น',
-                    'ก้าวแรก',
-                    'นักสำรวจ',
-                    'เมืองใหม่',
-                    'นักเดินทาง',
-                    'ทั่วโลก'
-                  ][item - 1]
-                }
-              </strong>
-              <small>
-                {levels[item - 1].words.toLocaleString()} คำ{' '}
-                <ChevronRight size={15} />
-              </small>
-            </button>
-          ))}
+          {[1, 2, 3, 4, 5, 6].map((item) => {
+            const levelData = levelsData?.find(
+              (lvl) => lvl.level_number === item
+            )
+            const wordCount = levelData?.total_words || 0
+
+            return (
+              <button
+                key={item}
+                className={`practice-level level-${item}`}
+                onClick={() => setLevel(item)}
+              >
+                <span>HSK {item}</span>
+                <strong>
+                  {
+                    [
+                      'เริ่มต้น',
+                      'ก้าวแรก',
+                      'นักสำรวจ',
+                      'เมืองใหม่',
+                      'นักเดินทาง',
+                      'ทั่วโลก'
+                    ][item - 1]
+                  }
+                </strong>
+                <small>
+                  {wordCount} คำ <ChevronRight size={15} />
+                </small>
+              </button>
+            )
+          })}
         </div>
       </div>
     )
@@ -888,25 +918,79 @@ function PracticeRoom() {
         </button>
         <div className="room-heading">
           <div>
-            <p className="eyebrow">ห้องฝึกคำศัพท์ิค · ขั้นที่ 2</p>
+            <p className="eyebrow">ห้องฝึกคำศัพท์ · ขั้นที่ 2</p>
             <h2>หมวดของ HSK {level}</h2>
             <p className="muted">เลือกหมวดใหญ่ก่อน แล้วค่อยเลือกวิธีฝึก</p>
           </div>
         </div>
         <div className="capsule-grid">
-          {categoriesByLevel[level].map(([name, icon, color]) => (
-            <button
-              key={name}
-              className={`capsule ${color}`}
-              onClick={() => setCategory(name)}
-            >
-              <span>{icon}</span>
-              <strong>{name}</strong>
-              <small>
-                12 คำ <ChevronRight size={15} />
-              </small>
-            </button>
-          ))}
+          {loadingCategories ? (
+            <p className="muted">กำลังโหลดหมวดหมู่...</p>
+          ) : categories.length > 0 ? (
+            categories.map((cat, index) => {
+              const colors = ['pink', 'yellow', 'mint', 'purple', 'coral']
+              const colorClass = colors[index % colors.length]
+
+              // ฟังก์ชันเลือกไอคอนอีโมจิให้เข้ากับชื่อหมวดหมู่
+              const getCategoryIcon = (name: string) => {
+                if (name.includes('ตัวเลข')) return '🔢'
+                if (name.includes('เวลา') || name.includes('วัน')) return '⏰'
+                if (name.includes('ครอบครัว') || name.includes('คน'))
+                  return '👪'
+                if (name.includes('อาหาร') || name.includes('เครื่องดื่ม'))
+                  return '🍜'
+                if (name.includes('เดินทาง') || name.includes('สถานที่'))
+                  return '🗺️'
+                if (name.includes('เรียน') || name.includes('โรงเรียน'))
+                  return '📚'
+                if (name.includes('งาน') || name.includes('ชีวิต')) return '💼'
+                if (name.includes('สื่อสาร')) return '💬'
+                if (name.includes('กระทำ')) return '🏃'
+                if (name.includes('ความรู้สึก') || name.includes('ความคิด'))
+                  return '💖'
+                if (
+                  name.includes('ลักษณะ') ||
+                  name.includes('คุณสมบัติ') ||
+                  name.includes('สี') ||
+                  name.includes('รูปร่าง')
+                )
+                  return '✨'
+                if (
+                  name.includes('สิ่งของ') ||
+                  name.includes('อุปกรณ์') ||
+                  name.includes('เครื่องใช้')
+                )
+                  return '🎒'
+                if (name.includes('สัตว์') || name.includes('ธรรมชาติ'))
+                  return '🌿'
+                if (name.includes('ตำแหน่ง') || name.includes('ทิศทาง'))
+                  return '📍'
+                if (name.includes('กีฬา') || name.includes('กิจกรรม'))
+                  return '⚽'
+                if (name.includes('ร่างกาย') || name.includes('สุขภาพ'))
+                  return '💪'
+                if (name.includes('ไวยากรณ์') || name.includes('คำช่วย'))
+                  return '🧩'
+                return '📚' // ค่าสำรอง
+              }
+
+            return (
+                <button
+                  key={cat.id}
+                  className={`capsule ${colorClass}`}
+                  onClick={() => setCategory(cat.name)}
+                >
+                  <span>{getCategoryIcon(cat.name)}</span>
+                  <strong>{cat.name}</strong>
+                  <small>
+                    {cat.word_count || 0} คำ <ChevronRight size={15} />
+                  </small>
+                </button>
+              )
+            })
+          ) : (
+            <p className="muted">ยังไม่มีหมวดหมู่ในระดับนี้</p>
+          )}
         </div>
       </div>
     )
@@ -1126,7 +1210,7 @@ export default function AppUI({
           />
         )}
         {room === 'vocab' && <VocabRoom />}
-        {room === 'practice' && <PracticeRoom />}
+        {room === 'practice' && <PracticeRoom levelsData={levelsData} />}
         {room === 'exam' && <ExamRoom />}
       </div>
     </main>
