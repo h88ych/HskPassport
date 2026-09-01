@@ -2793,6 +2793,8 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
     box-shadow 0.2s;
 }
 .matching-card.hanzi {
+  position: relative;
+  top: 2px;
   font:
     700 27px 'Noto Sans SC',
     sans-serif;
