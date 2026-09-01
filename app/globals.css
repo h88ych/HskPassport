@@ -3223,3 +3223,201 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   color: #8a6a2b;
   font: 800 13px Nunito;
 }
+.exam-start-enhanced {
+  border-radius: 32px;
+  text-align: center;
+  padding: 42px 24px;
+  box-shadow: 0 16px 40px rgba(43, 37, 64, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    background 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.exam-start-enhanced:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 50px rgba(43, 37, 64, 0.15);
+}
+
+/* ธีมสีแยกตามระดับ 1-6 (อิงสีตามประเทศ) */
+.exam-start-enhanced.theme-1 {
+  background: linear-gradient(145deg, #fff0f5, #ffc2d3);
+  border: 2px solid #ffc2d3;
+} /* จีน: โทนแดงชมพู */
+.exam-start-enhanced.theme-2 {
+  background: linear-gradient(145deg, #fff0f5, #ffb8ca);
+  border: 2px solid #ffb8ca;
+} /* ญี่ปุ่น: โทนซากุระ */
+.exam-start-enhanced.theme-3 {
+  background: linear-gradient(145deg, #f3efff, #d4c8ff);
+  border: 2px solid #d4c8ff;
+} /* เกาหลี: โทนม่วง */
+.exam-start-enhanced.theme-4 {
+  background: linear-gradient(145deg, #fff9e8, #ffe39a);
+  border: 2px solid #ffe39a;
+} /* ไทย: โทนเหลือง */
+.exam-start-enhanced.theme-5 {
+  background: linear-gradient(145deg, #edfff8, #b0f2dd);
+  border: 2px solid #b0f2dd;
+} /* ฝรั่งเศส: โทนฟ้ามิ้นต์ */
+.exam-start-enhanced.theme-6 {
+  background: linear-gradient(145deg, #fff2ed, #ffd0c2);
+  border: 2px solid #ffd0c2;
+} /* อิตาลี: โทนส้มคอรัล */
+
+/* ส่วนประกอบย่อยในการ์ด */
+.medal-showcase {
+  position: relative;
+  margin: 0 auto 20px;
+  width: 150px;
+  height: 150px;
+  display: grid;
+  place-items: center;
+}
+.giant-medal {
+  width: 130px;
+  height: 130px;
+  filter: drop-shadow(0 12px 20px rgba(43, 37, 64, 0.18));
+  animation: float 3s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+.medal-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0) 65%
+  );
+  z-index: 1;
+  animation: pulse-glow 2s infinite alternate;
+}
+.exam-destination-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 99px;
+  color: var(--ink);
+  font: 800 13px Nunito;
+}
+.exam-headline {
+  font-size: 28px;
+  line-height: 1.35;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.highlight-text {
+  color: var(--pink);
+}
+.exam-subtext {
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+.action-button {
+  font-size: 18px;
+  padding: 16px 32px;
+  width: 100%;
+  max-width: 320px;
+}
+.pulse-effect {
+  animation: button-pulse 2s infinite;
+}
+
+@keyframes pulse-glow {
+  from {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+@keyframes button-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(43, 37, 64, 0.3);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(43, 37, 64, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(43, 37, 64, 0);
+  }
+}
+
+/* รองรับ Dark Mode และเปลี่ยนสีตามแต่ละระดับเช่นกัน */
+html[data-theme='dark'] .exam-start-enhanced {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+html[data-theme='dark'] .exam-start-enhanced.theme-1 {
+  background: linear-gradient(145deg, #5a3045, #421e2f);
+  border-color: #f486ac;
+}
+html[data-theme='dark'] .exam-start-enhanced.theme-2 {
+  background: linear-gradient(145deg, #5a3045, #421e2f);
+  border-color: #f486ac;
+}
+html[data-theme='dark'] .exam-start-enhanced.theme-3 {
+  background: linear-gradient(145deg, #423568, #2d234a);
+  border-color: #ad93ff;
+}
+html[data-theme='dark'] .exam-start-enhanced.theme-4 {
+  background: linear-gradient(145deg, #5b4823, #3d3015);
+  border-color: #f5c85f;
+}
+html[data-theme='dark'] .exam-start-enhanced.theme-5 {
+  background: linear-gradient(145deg, #214b46, #15322e);
+  border-color: #70d9b7;
+}
+html[data-theme='dark'] .exam-start-enhanced.theme-6 {
+  background: linear-gradient(145deg, #613d3b, #432927);
+  border-color: #ff9e88;
+}
+html[data-theme='dark'] .exam-destination-badge {
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+}
+html[data-theme='dark'] .exam-headline {
+  color: var(--ink);
+}
+/* แก้ไขสีปุ่ม "เริ่มภารกิจสอบ" ใน Dark Mode ให้เห็นชัดเจน */
+html[data-theme='dark'] .exam-start-enhanced .action-button {
+  background: #ffd166;      /* พื้นหลังสีเหลืองสว่าง */
+  color: #2b2540;           /* ตัวอักษรสีเข้ม (สีกรมท่า/ดำ) */
+  border: 2px solid #ffe39a;
+  box-shadow: 0 8px 18px rgba(255, 209, 102, 0.22);
+}
+
+html[data-theme='dark'] .exam-start-enhanced .action-button:hover {
+  background: #ffe39a;
+  color: #2b2540;
+  box-shadow: 0 12px 24px rgba(255, 209, 102, 0.3);
+}
+
+html[data-theme='dark'] .exam-start-enhanced .pulse-effect {
+  animation: button-pulse-dark 2s infinite;
+}
+
+@keyframes button-pulse-dark {
+  0% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.4); }
+  70% { box-shadow: 0 0 0 14px rgba(255, 209, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0); }
+}
+
+.flag-icon-img {
+  width: 20px;
+  height: 15px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(43, 37, 64, 0.15);
+  display: inline-block;
+  vertical-align: middle;
+}

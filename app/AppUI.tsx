@@ -1435,22 +1435,40 @@ function ExamRoom({
         </p>
       </div>
 
-      <div className="exam-start">
-        <img
-          className="large-medal"
-          src={countryByLevel[selectedLevel].stamp}
-          alt={`ตราประทับ ${countryByLevel[selectedLevel].trip} ${countryByLevel[selectedLevel].name}`}
-        />
-        <div className="exam-destination">
+      <div className={`exam-start-enhanced theme-${selectedLevel}`}>
+        <div className="medal-showcase">
+          <div className="medal-glow" />
+          <img
+            className="giant-medal"
+            src={countryByLevel[selectedLevel].stamp}
+            alt={`ตราประทับ ${countryByLevel[selectedLevel].trip} ${countryByLevel[selectedLevel].name}`}
+          />
+        </div>
+        <div className="exam-destination-badge">
+          <img
+            src={`https://flagcdn.com/24x18/${['cn', 'jp', 'kr', 'th', 'fr', 'it'][selectedLevel - 1]}.png`}
+            alt="Flag"
+            className="flag-icon-img"
+          />{' '}
           {countryByLevel[selectedLevel].trip} ·{' '}
-          {countryByLevel[selectedLevel].flag}{' '}
           {countryByLevel[selectedLevel].name} ·{' '}
           {countryByLevel[selectedLevel].thai}
         </div>
-        <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
-        <p className="muted">{countryByLevel[selectedLevel].scene}</p>
-        <button className="primary-button" onClick={() => setStarted(true)}>
-          เริ่มภารกิจสอบ <ChevronRight size={17} />
+
+        <h3 className="exam-headline">
+          HSK {selectedLevel} <br />
+          <span className="highlight-text">ทดสอบคำศัพท์</span>
+        </h3>
+
+        <p className="muted exam-subtext">
+          {countryByLevel[selectedLevel].scene}
+        </p>
+
+        <button
+          className="primary-button action-button pulse-effect"
+          onClick={() => setStarted(true)}
+        >
+          เริ่มภารกิจสอบ <Flame size={19} />
         </button>
       </div>
     </div>
