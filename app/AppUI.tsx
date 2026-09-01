@@ -70,6 +70,15 @@ const levels = [
     color: 'mint'
   }
 ]
+const countryByLevel: Record<number, { flag: string; name: string; thai: string; scene: string; image: string }> = {
+  1: { flag: '🇨🇳', name: 'China', thai: 'จีน', scene: 'โคมแดงและภูเขา', image: '/trips/china.png' },
+  2: { flag: '🇯🇵', name: 'Japan', thai: 'ญี่ปุ่น', scene: 'ซากุระ โทริอิ และภูเขา', image: '/trips/japan.png' },
+  3: { flag: '🇰🇷', name: 'Korea', thai: 'เกาหลี', scene: 'โซล ฮันอก และเมือง', image: '/trips/korea.png' },
+  4: { flag: '🇹🇭', name: 'Thailand', thai: 'ไทย', scene: 'วัด เมืองร้อน และสายน้ำ', image: '/trips/thailand.png' },
+  5: { flag: '🇫🇷', name: 'France', thai: 'ฝรั่งเศส', scene: 'ปารีส คาเฟ่ และสถาปัตยกรรม', image: '/trips/france.png' },
+  6: { flag: '🇮🇹', name: 'Italy', thai: 'อิตาลี', scene: 'ศิลปะ โรม และทะเลเมดิเตอร์เรเนียน', image: '/trips/italy.png' }
+}
+
 const vocabByLevel: Record<
   number,
   { hanzi: string; pinyin: string; meaning: string; example: string }[]
@@ -372,7 +381,10 @@ function Dashboard({
   const passedCount =
     levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
   return (
-    <>
+    <div className="dashboard-scene">
+      <div className="world-collage" aria-hidden="true">
+        <img src="/trips/world-collage.png" alt="" />
+      </div>
       <PassportHeader name={displayName} levelsData={levelsData} />
       <StampDisplay levelsData={levelsData} />
       <section className="hero-summary">
@@ -444,9 +456,9 @@ function Dashboard({
               เรียนไปแล้ว <b className="ink">42 คำ</b> ในสัปดาห์นี้
             </p>
           </div>
-        </aside>
-      </div>
-    </>
+      </aside>
+    </div>
+    </div>
   )
 }
 
@@ -523,7 +535,7 @@ function VocabRoom() {
           <p className="muted">
             {view === 'list'
               ? 'เลื่อนอ่านได้ตามจังหวะ ไม่ต้องกดผ่านทีละคำ'
-              : 'แตะการ์ดเพื่อดูคำแปล แล้วค่อยๆ จำไ��ด้วยกัน'}
+              : 'แตะการ์ดเพื่อดูคำแปล แล้วค่อยๆ จำไ���ด้วยกัน'}
           </p>
         </div>
         <span className="counter">
@@ -909,8 +921,16 @@ function QuizCard({
     )
   }
 
+  const country = exam ? countryByLevel[level || 1] : null
+
   return (
-    <div className="room quiz-room">
+    <div className={`room quiz-room ${country ? 'country-quiz-room' : ''}`} style={country ? { '--trip-art': `url(${country.image})` } as React.CSSProperties : undefined}>
+      {country && (
+        <div className="trip-art" aria-hidden="true">
+          <img src={country.image} alt="" />
+          <div className="trip-art-caption">{country.flag} {country.name} · {country.thai}</div>
+        </div>
+      )}
       <button className="back-link" onClick={onBack}>
         <ArrowLeft size={16} /> ออกจากแบบฝึก
       </button>
@@ -1462,7 +1482,9 @@ function ExamRoom({ levelsData, onHome }: { levelsData?: any[]; onHome?: () => v
 
       <div className="exam-start">
         <div className="large-medal">🏅</div>
+        <div className="exam-destination">{countryByLevel[selectedLevel].flag} {countryByLevel[selectedLevel].name} · {countryByLevel[selectedLevel].thai}</div>
         <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
+        <p className="muted">{countryByLevel[selectedLevel].scene}</p>
         <p className="muted">
           ดึงคำศัพท์ 100 ข้อจากระดับ HSK {selectedLevel} (คลังคำศัพท์ทั้งหมด{' '}
           {totalWords} คำ)
