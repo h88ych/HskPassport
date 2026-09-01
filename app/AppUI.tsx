@@ -7,6 +7,7 @@ import {
   Check,
   ChevronRight,
   CircleHelp,
+  Eraser,
   Flame,
   Layers3,
   LockKeyhole,
@@ -999,6 +1000,13 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
     isDrawing.current = false
   }
 
+  const clearCanvas = () => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+  }
+
   useEffect(() => {
     if (!level) return
     async function fetchCategories() {
@@ -1200,21 +1208,31 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
             {revealed ? (
               <strong>食物</strong>
             ) : (
-              <canvas
-                ref={canvasRef}
-                width={500}
-                height={220}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  touchAction: 'none',
-                  cursor: 'crosshair'
-                }}
-                onPointerDown={startDraw}
-                onPointerMove={draw}
-                onPointerUp={endDraw}
-                onPointerLeave={endDraw}
-              />
+              <>
+                <canvas
+                  ref={canvasRef}
+                  width={500}
+                  height={220}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    touchAction: 'none',
+                    cursor: 'crosshair'
+                  }}
+                  onPointerDown={startDraw}
+                  onPointerMove={draw}
+                  onPointerUp={endDraw}
+                  onPointerLeave={endDraw}
+                />
+                <button
+                  className="clear-button"
+                  onClick={clearCanvas}
+                  aria-label="ลบแล้ววาดใหม่"
+                  type="button"
+                >
+                  <Eraser size={15} /> ลบ
+                </button>
+              </>
             )}
           </div>
           {!revealed ? (
@@ -1243,44 +1261,6 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
         </div>
       </div>
     )
-  return (
-    <div className="room">
-      <button className="back-link" onClick={goBack}>
-        <ArrowLeft size={16} /> เลือกหมวดอื่น
-      </button>
-      <div className="room-heading">
-        <div>
-          <p className="eyebrow">
-            ห้องฝึกคำศัพท์ · HSK {level} · {category}
-          </p>
-          <h2>เลือกวิธีฝึก</h2>
-          <p className="muted">หมวดนี้มี 12 คำให้ฝึก</p>
-        </div>
-      </div>
-      <Mascot text="เลือกโหมดที่เข้ากับวันนี้ได้เลย" />
-      <div className="mode-picker">
-        <p className="eyebrow">ขั้นที่ 3 · วิธีฝึก</p>
-        <div className="mode-grid">
-          <button
-            className="mode-button pink"
-            onClick={() => setMode('dictation')}
-          >
-            <span>🃏</span>
-            <strong>ทวนคำ</strong>
-            <small>Flashcard</small>
-          </button>
-          <button
-            className="mode-button purple"
-            onClick={() => setMode('dictation')}
-          >
-            <span>✍️</span>
-            <strong>เขียนตามคำบอก</strong>
-            <small>Dictation</small>
-          </button>
-        </div>
-      </div>
-    </div>
-  )
 }
 
 function ExamRoom() {
