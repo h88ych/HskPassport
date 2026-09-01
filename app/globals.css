@@ -3068,3 +3068,166 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
     font-size: 32px;
   }
 }
+.stamp-trail-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  margin-bottom: 24px;
+}
+.trail-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.trail-label h3 {
+  margin: 4px 0 0;
+}
+.stamp-trail {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.stamp-item {
+  width: 82px;
+  min-height: 88px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+  border: 2px solid var(--line);
+  color: var(--muted);
+  background: var(--surface);
+  transform: rotate(-2deg);
+}
+.stamp-item strong {
+  font: 900 14px Nunito;
+}
+.stamp-item small {
+  font-size: 10px;
+  text-align: center;
+  line-height: 1.2;
+}
+.stamp-item.passed {
+  background: var(--mint);
+  border-color: #3eaa89;
+  color: #205f50;
+  box-shadow: 0 5px 0 rgba(62, 170, 137, 0.2);
+}
+.stamp-item.unlocked {
+  background: #fff8df;
+  border-color: var(--yellow);
+  color: #8b7200;
+}
+.stamp-item.locked {
+  opacity: 0.55;
+}
+.stamp-badge {
+  position: absolute;
+  top: -9px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 2px solid #8b7200;
+  display: grid;
+  place-items: center;
+}
+.stamp-target {
+  font: 900 20px Nunito;
+}
+.stamp-progress {
+  width: 54px;
+  height: 4px;
+  margin-top: 5px;
+  background: #eadfb0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.stamp-progress i {
+  display: block;
+  height: 100%;
+  background: var(--coral);
+  border-radius: inherit;
+}
+.dashboard-scene {
+  position: relative;
+  isolation: isolate;
+}
+.world-collage {
+  position: absolute;
+  inset: -28px -28px auto;
+  height: 220px;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: 30px;
+  opacity: 0.32;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 95%);
+}
+.world-collage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  mix-blend-mode: multiply;
+}
+.country-quiz-room {
+  position: relative;
+  isolation: isolate;
+  min-height: min(720px, calc(100vh - 100px));
+}
+.country-quiz-room > :not(.trip-art) {
+  position: relative;
+  z-index: 1;
+}
+.trip-art {
+  position: absolute;
+  z-index: 0;
+  left: -18vw;
+  right: -18vw;
+  bottom: -28px;
+  height: min(42vh, 330px);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.9;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 28%,
+    black 86%,
+    transparent 100%
+  );
+}
+.trip-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center bottom;
+  mix-blend-mode: multiply;
+}
+.trip-art-caption {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  padding: 8px 13px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--muted);
+  font: 800 12px Nunito;
+  box-shadow: var(--shadow);
+}
+.exam-destination {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 9px;
+  color: #8a6a2b;
+  font: 800 13px Nunito;
+}

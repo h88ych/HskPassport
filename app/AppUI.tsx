@@ -20,189 +20,53 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
-const levels = [
-  {
-    level: 1,
-    title: 'เริ่มต้นทริป',
-    words: 150,
-    progress: 100,
-    state: 'passed',
-    color: 'mint'
-  },
-  {
-    level: 2,
-    title: 'ก้าวแรก',
-    words: 150,
-    progress: 68,
-    state: 'open',
-    color: 'pink'
-  },
-  {
-    level: 3,
-    title: 'นักสำรวจ',
-    words: 300,
-    progress: 24,
-    state: 'open',
-    color: 'yellow'
-  },
-  {
-    level: 4,
-    title: 'เมืองใหม่',
-    words: 600,
-    progress: 0,
-    state: 'locked',
-    color: 'purple'
-  },
-  {
-    level: 5,
-    title: 'นักเดินทาง',
-    words: 1300,
-    progress: 0,
-    state: 'locked',
-    color: 'coral'
-  },
-  {
-    level: 6,
-    title: 'ทั่วโลก',
-    words: 2500,
-    progress: 0,
-    state: 'locked',
-    color: 'mint'
-  }
-]
-const vocabByLevel: Record<
+const countryByLevel: Record<
   number,
-  { hanzi: string; pinyin: string; meaning: string; example: string }[]
+  { flag: string; name: string; thai: string; scene: string; image: string }
 > = {
-  1: [
-    {
-      hanzi: '你好',
-      pinyin: 'nǐ hǎo',
-      meaning: 'สวัสดี',
-      example: '你好，很高兴认识你。'
-    },
-    {
-      hanzi: '朋友',
-      pinyin: 'péngyou',
-      meaning: 'เพื่อน',
-      example: '我有很多朋友。'
-    },
-    {
-      hanzi: '学习',
-      pinyin: 'xuéxí',
-      meaning: 'เรียน / ศึกษา',
-      example: '我喜欢学习中文。'
-    }
-  ],
-  2: [
-    {
-      hanzi: '旅行',
-      pinyin: 'lǚxíng',
-      meaning: 'ท่องเที่ยว',
-      example: '我喜欢旅行。'
-    },
-    {
-      hanzi: '健康',
-      pinyin: 'jiànkāng',
-      meaning: 'สุขภาพ',
-      example: '身体健康很重要。'
-    },
-    {
-      hanzi: '爱好',
-      pinyin: 'àihào',
-      meaning: 'งานอดิเรก',
-      example: '你的爱好是什么？'
-    }
-  ],
-  3: [
-    {
-      hanzi: '环境',
-      pinyin: 'huánjìng',
-      meaning: 'สิ่งแวดล้อม',
-      example: '我们要保护环境。'
-    },
-    {
-      hanzi: '经验',
-      pinyin: 'jīngyàn',
-      meaning: 'ประสบการณ์',
-      example: '他有丰富的经验。'
-    },
-    {
-      hanzi: '感觉',
-      pinyin: 'gǎnjué',
-      meaning: 'ความรู้สึก',
-      example: '我感觉很好。'
-    }
-  ],
-  4: [
-    {
-      hanzi: '社会',
-      pinyin: 'shèhuì',
-      meaning: 'สังคม',
-      example: '社会正在改变。'
-    },
-    {
-      hanzi: '交流',
-      pinyin: 'jiāoliú',
-      meaning: 'สื่อสาร / แลกเปลี่ยน',
-      example: '我们需要多交流。'
-    },
-    {
-      hanzi: '工作',
-      pinyin: 'gōngzuò',
-      meaning: 'ทำงาน',
-      example: '我每天努力工作。'
-    }
-  ],
-  5: [
-    {
-      hanzi: '文化',
-      pinyin: 'wénhuà',
-      meaning: 'วัฒนธรรม',
-      example: '中国文化很有意思。'
-    },
-    {
-      hanzi: '观点',
-      pinyin: 'guāndiǎn',
-      meaning: 'ความคิดเห็น',
-      example: '我同意你的观点。'
-    },
-    {
-      hanzi: '新闻',
-      pinyin: 'xīnwén',
-      meaning: 'ข่าวสาร',
-      example: '我每天看新闻。'
-    }
-  ],
-  6: [
-    {
-      hanzi: '学术',
-      pinyin: 'xuéshù',
-      meaning: 'วิชาการ',
-      example: '这是学术问题。'
-    },
-    {
-      hanzi: '全球',
-      pinyin: 'quánqiú',
-      meaning: 'ทั่วโลก',
-      example: '这是全球性的挑战。'
-    },
-    {
-      hanzi: '现象',
-      pinyin: 'xiànxiàng',
-      meaning: 'ปรากฏการณ์',
-      example: '这种现象很常见。'
-    }
-  ]
+  1: {
+    flag: '🇨🇳',
+    name: 'China',
+    thai: 'จีน',
+    scene: 'โคมแดงและภูเขา',
+    image: '/trips/china.png'
+  },
+  2: {
+    flag: '🇯🇵',
+    name: 'Japan',
+    thai: 'ญี่ปุ่น',
+    scene: 'ซากุระ โทริอิ และภูเขา',
+    image: '/trips/japan.png'
+  },
+  3: {
+    flag: '🇰🇷',
+    name: 'Korea',
+    thai: 'เกาหลี',
+    scene: 'โซล ฮันอก และเมือง',
+    image: '/trips/korea.png'
+  },
+  4: {
+    flag: '🇹🇭',
+    name: 'Thailand',
+    thai: 'ไทย',
+    scene: 'วัด เมืองร้อน และสายน้ำ',
+    image: '/trips/thailand.png'
+  },
+  5: {
+    flag: '🇫🇷',
+    name: 'France',
+    thai: 'ฝรั่งเศส',
+    scene: 'ปารีส คาเฟ่ และสถาปัตยกรรม',
+    image: '/trips/france.png'
+  },
+  6: {
+    flag: '🇮🇹',
+    name: 'Italy',
+    thai: 'อิตาลี',
+    scene: 'ศิลปะ โรม และทะเลเมดิเตอร์เรเนียน',
+    image: '/trips/italy.png'
+  }
 }
-const categories = [
-  ['ครอบครัว', '👪', 'pink'],
-  ['อาหาร', '🍜', 'yellow'],
-  ['ชีวิตประจำวัน', '☀️', 'mint'],
-  ['สถานที่', '🗺️', 'purple'],
-  ['ตัวเลข', '🔢', 'coral'],
-  ['ธรรมชาติ', '🌿', 'mint']
-]
 
 function Mascot({
   text = 'วันนี้เก่งมากเลย แวะมาเรียนอีกนิดกันไหม?'
@@ -222,13 +86,92 @@ function Mascot({
   )
 }
 
+function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
+  const titleMap: Record<number, string> = {
+    1: 'เริ่มต้นทริป',
+    2: 'ก้าวแรก',
+    3: 'นักสำรวจ',
+    4: 'เมืองใหม่',
+    5: 'นักเดินทาง',
+    6: 'ทั่วโลก'
+  }
+  return (
+    <section className="stamp-trail-card" aria-labelledby="stamp-trail-title">
+      <div className="trail-label">
+        <div>
+          <p className="eyebrow">PASSPORT STAMPS</p>
+          <h3 id="stamp-trail-title">ตราประทับการเดินทาง</h3>
+        </div>
+        <span className="mini-badge">
+          {levelsData.filter((item) => Number(item.max_score || 0) >= 2).length}{' '}
+          / 6 ดวง
+        </span>
+      </div>
+      <div className="stamp-trail">
+        {Array.from({ length: 6 }, (_, index) => {
+          const levelNumber = index + 1
+          const item = levelsData.find(
+            (level) => Number(level.level_number) === levelNumber
+          )
+          const passed = Number(item?.max_score || 0) >= 95
+          const unlocked = item?.unlocked === 1 || item?.unlocked === true
+          const state = passed
+            ? 'passed'
+            : unlocked || levelNumber === 1
+              ? 'unlocked'
+              : 'locked'
+          return (
+            <div
+              className={`stamp-item ${state}`}
+              key={levelNumber}
+              aria-label={`HSK ${levelNumber} ${passed ? 'ผ่านแล้ว' : state === 'unlocked' ? 'เปิดให้สอบ' : `ล็อก รอผ่าน HSK ${levelNumber - 1}`}`}
+            >
+              {passed ? (
+                <span className="stamp-badge">
+                  <Check size={14} />
+                </span>
+              ) : state === 'locked' ? (
+                <LockKeyhole size={19} />
+              ) : (
+                <span className="stamp-target">95</span>
+              )}
+              <strong>HSK {levelNumber}</strong>
+              <small>
+                {passed
+                  ? 'ผ่านแล้ว'
+                  : state === 'unlocked'
+                    ? 'พร้อมสอบ'
+                    : `ผ่าน HSK ${levelNumber - 1}`}
+              </small>
+              {state === 'unlocked' && !passed && (
+                <span className="stamp-progress">
+                  <i
+                    style={{
+                      width: `${(Math.min(Number(item?.max_score || 0), 95) / 95) * 100}%`
+                    }}
+                  />
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
 function PassportHeader({
   name,
-  avatar
+  avatar,
+  levelsData
 }: {
   name?: string
   avatar?: string | null
+  levelsData?: any[]
 }) {
+  const passedCount =
+    levelsData?.filter((item) => Number(item.max_score || 0) >= 95).length || 0
+
   return (
     <header className="passport-header">
       <div className="avatar">🧢</div>
@@ -330,8 +273,12 @@ function Dashboard({
   const passedCount =
     levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
   return (
-    <>
-      <PassportHeader name={displayName} />
+    <div className="dashboard-scene">
+      <div className="world-collage" aria-hidden="true">
+        <img src="/trips/world-collage.png" alt="" />
+      </div>
+      <PassportHeader name={displayName} levelsData={levelsData} />
+      <StampDisplay levelsData={levelsData} />
       <section className="hero-summary">
         <div>
           <p className="eyebrow">เส้นทางของเรา</p>
@@ -403,7 +350,7 @@ function Dashboard({
           </div>
         </aside>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -661,7 +608,8 @@ function QuizCard({
   category,
   onBack,
   onMatching,
-  onDictation
+  onDictation,
+  onHome
 }: {
   exam?: boolean
   level?: number
@@ -669,6 +617,7 @@ function QuizCard({
   onBack: () => void
   onMatching?: () => void
   onDictation?: () => void
+  onHome?: () => void
 }) {
   const [question, setQuestion] = useState(1)
   const [score, setScore] = useState(0)
@@ -676,6 +625,30 @@ function QuizCard({
   const [words, setWords] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [finished, setFinished] = useState(false)
+  const [submitState, setSubmitState] = useState<
+    'idle' | 'saving' | 'saved' | 'error'
+  >('idle')
+  const totalQuestions = words.length
+
+  useEffect(() => {
+    if (!finished || !exam || !level || submitState !== 'idle') return
+    setSubmitState('saving')
+    fetch('/api/exam/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        levelNumber: level,
+        score,
+        totalQuestions,
+        examType: 'hsk-exam'
+      })
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Could not save exam')
+        setSubmitState('saved')
+      })
+      .catch(() => setSubmitState('error'))
+  }, [finished, exam, level, score, totalQuestions, submitState])
 
   // เพิ่ม state สำหรับล็อกช้อยส์ของข้อปัจจุบัน
   const [choices, setChoices] = useState<string[]>([])
@@ -685,7 +658,7 @@ function QuizCard({
       setLoading(true)
       try {
         const url = exam
-          ? `/api/quiz?exam=true`
+          ? `/api/quiz?exam=true&level=${level || 1}`
           : `/api/quiz?level=${level}&category=${encodeURIComponent(category || '')}`
         const res = await fetch(url)
         const data = await res.json()
@@ -699,7 +672,6 @@ function QuizCard({
     fetchQuizWords()
   }, [exam, level, category])
 
-  const totalQuestions = exam ? 100 : words.length
   const word = words.length > 0 ? words[(question - 1) % words.length] : null
   const hanziMode = question % 2 === 1
   const answer = word ? (hanziMode ? word.meaning : word.hanzi) : ''
@@ -806,7 +778,9 @@ function QuizCard({
         <p className="muted">
           {exam
             ? passed
-              ? 'ตราประทับใหม่พร้อมเข้าพาสปอร์ตของคุณแล้ว'
+              ? submitState === 'saving'
+                ? 'กำลังประทับตราในพาสปอร์ตของคุณ...'
+                : 'ตราประทับใหม่พร้อมเข้าพาสปอร์ตของคุณแล้ว'
               : 'ลองทบทวนคำที่พลาด แล้วกลับมาลุยใหม่อีกครั้งนะ'
             : 'คุณสร้างความคุ้นเคยกับคำศัพท์เพิ่มขึ้นอีกหนึ่งก้าว'}
         </p>
@@ -838,16 +812,37 @@ function QuizCard({
           >
             {exam ? 'ลองทำอีกครั้ง' : 'ฝึกชุดใหม่'} <RotateCcw size={17} />
           </button>
-          <button className="secondary-button" onClick={onBack}>
-            กลับไปเลือกห้อง <ArrowLeft size={17} />
+          <button
+            className="secondary-button"
+            onClick={passed && onHome ? onHome : onBack}
+          >
+            {passed ? 'กลับหน้าหลัก ดูตราประทับ' : 'กลับไปเลือกห้อง'}{' '}
+            <ArrowLeft size={17} />
           </button>
         </div>
       </div>
     )
   }
 
+  const country = exam ? countryByLevel[level || 1] : null
+
   return (
-    <div className="room quiz-room">
+    <div
+      className={`room quiz-room ${country ? 'country-quiz-room' : ''}`}
+      style={
+        country
+          ? ({ '--trip-art': `url(${country.image})` } as React.CSSProperties)
+          : undefined
+      }
+    >
+      {country && (
+        <div className="trip-art" aria-hidden="true">
+          <img src={country.image} alt="" />
+          <div className="trip-art-caption">
+            {country.flag} {country.name} · {country.thai}
+          </div>
+        </div>
+      )}
       <button className="back-link" onClick={onBack}>
         <ArrowLeft size={16} /> ออกจากแบบฝึก
       </button>
@@ -1330,13 +1325,24 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   }
 }
 
-function ExamRoom({ levelsData }: { levelsData?: any[] }) {
+function ExamRoom({
+  levelsData,
+  onHome
+}: {
+  levelsData?: any[]
+  onHome?: () => void
+}) {
   const [started, setStarted] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState<number>(1) // เลเวลที่กำลังเลือกสอบ
 
   if (started)
     return (
-      <QuizCard exam level={selectedLevel} onBack={() => setStarted(false)} />
+      <QuizCard
+        exam
+        level={selectedLevel}
+        onBack={() => setStarted(false)}
+        onHome={onHome}
+      />
     )
 
   const currentLevelInfo =
@@ -1399,6 +1405,13 @@ function ExamRoom({ levelsData }: { levelsData?: any[] }) {
 
       <div className="exam-start">
         <div className="large-medal">🏅</div>
+        <div className="exam-destination">
+          {countryByLevel[selectedLevel].flag}{' '}
+          {countryByLevel[selectedLevel].name} ·{' '}
+          {countryByLevel[selectedLevel].thai}
+        </div>
+        <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
+        <p className="muted">{countryByLevel[selectedLevel].scene}</p>
         <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
         <p className="muted">
           ดึงคำศัพท์ 100 ข้อจากระดับ HSK {selectedLevel} (คลังคำศัพท์ทั้งหมด{' '}
@@ -1712,7 +1725,12 @@ export default function AppUI({
         )}
         {room === 'vocab' && <VocabRoom />}
         {room === 'practice' && <PracticeRoom levelsData={levelsData} />}
-        {room === 'exam' && <ExamRoom />}
+        {room === 'exam' && (
+          <ExamRoom
+            levelsData={levelsData}
+            onHome={() => setRoom('dashboard')}
+          />
+        )}
       </div>
     </main>
   )
