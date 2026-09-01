@@ -1299,11 +1299,11 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
   const [seconds, setSeconds] = useState(0)
   useEffect(() => {
     if (matched.length === 6) return
-    // const timer = window.setInterval(
-    //   () => setSeconds((value) => value + 1),
-    //   1000
-    // )
-    // return () => window.clearInterval(timer)
+    const timer = window.setInterval(
+      () => setSeconds((value) => value + 1),
+      1000
+    )
+    return () => window.clearInterval(timer)
   }, [matched.length])
   useEffect(() => {
     if (selected.length !== 2) return
@@ -1353,7 +1353,7 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
           <strong>{seconds}</strong>
           <span>วินาที</span>
         </p>
-        <p className="muted">ยิ่งเร็วยิ่งคล่อง รอบนี้ทำได้ดีมาก</p>
+        <p className="muted" style={{marginBottom:"10px"}}>ยิ่งเร็วยิ่งคล่อง รอบนี้ทำได้ดีมาก</p>
         <div className="result-actions">
           <button className="primary-button" onClick={reset}>
             เล่นอีกรอบ <RotateCcw size={17} />
@@ -1373,13 +1373,15 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
         <div>
           <p className="eyebrow">Matching Game · รีวิวเร็ว</p>
           <h2>จับคู่คำให้ตรงกัน</h2>
-          <p className="muted">คำจีน 6 คำ กับคำแปลไทย 6 คำ</p>
+          <p className="muted" style={{ marginTop: '10px' }}>
+            คำจีน 6 คำ กับคำแปลไทย 6 คำ
+          </p>
         </div>
         <div className="match-timer">
-          {/* <strong>
+          <strong style={{ marginRight: '5px' }}>
             {String(Math.floor(seconds / 60)).padStart(2, '0')}:
             {String(seconds % 60).padStart(2, '0')}
-          </strong> */}
+          </strong>
           <span>{matched.length} / 6 คู่</span>
         </div>
       </div>
