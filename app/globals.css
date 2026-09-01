@@ -3420,4 +3420,56 @@ html[data-theme='dark'] .exam-start-enhanced .pulse-effect {
   box-shadow: 0 1px 3px rgba(43, 37, 64, 0.15);
   display: inline-block;
   vertical-align: middle;
+}.exam-level-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.exam-level-tab {
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font: 800 13px Nunito;
+  transition: transform 0.2s, background 0.2s, color 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 4px rgba(43, 37, 64, 0.04);
+}
+
+/* เอฟเฟกต์ตอนชี้เมาส์ */
+.exam-level-tab:hover {
+  background: #f3efff; /* สีม่วงอ่อน */
+  color: var(--ink);
+  border-color: #d4c8ff;
+  transform: translateY(-2px);
+}
+
+/* ปุ่มที่ถูกเลือก (Active) */
+.exam-level-tab.selected {
+  background: var(--ink);
+  color: var(--surface);
+  border-color: var(--ink);
+  box-shadow: 0 6px 14px rgba(43, 37, 64, 0.16);
+  transform: translateY(-2px);
+}
+
+/* รองรับโหมดมืด (Dark Mode) */
+html[data-theme='dark'] .exam-level-tab {
+  background: #252237;
+  border-color: #49415f;
+  color: var(--muted);
+}
+
+html[data-theme='dark'] .exam-level-tab:hover {
+  background: #423568;
+  color: var(--ink);
+  border-color: #ad93ff;
+}
+
+html[data-theme='dark'] .exam-level-tab.selected {
+  background: #ffd166;
+  color: #2b2540;
+  border-color: #ffe39a;
 }

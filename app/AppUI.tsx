@@ -1393,25 +1393,17 @@ function ExamRoom({
         <span className="target-badge">ผ่านที่ 95 / 100</span>
       </div>
 
-      <div
-        className="level-tabs"
-        style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}
-      >
-        {[1, 2, 3, 4, 5, 6].map((num) => (
-          <button
-            key={num}
-            onClick={() => setSelectedLevel(num)}
-            className={`tab-btn ${selectedLevel === num ? 'active' : ''}`}
-            style={{
-              padding: '6px 12px',
-              borderRadius: '8px',
-              cursor: 'pointer'
-            }}
-          >
-            HSK {num}
-          </button>
-        ))}
-      </div>
+ <div className="exam-level-tabs">
+  {[1, 2, 3, 4, 5, 6].map((num) => (
+    <button
+      key={num}
+      onClick={() => setSelectedLevel(num)}
+      className={`exam-level-tab ${selectedLevel === num ? 'selected' : ''}`}
+    >
+      HSK {num}
+    </button>
+  ))}
+</div>
 
       <div className="trail-card">
         <div className="trail-label">
