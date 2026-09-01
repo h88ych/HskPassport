@@ -653,49 +653,6 @@ function VocabRoom() {
     </div>
   )
 }
-const categoriesByLevel: Record<number, [string, string, string][]> = {
-  1: [
-    ['ครอบครัว', '👪', 'pink'],
-    ['อาหาร', '🍜', 'yellow'],
-    ['ชีวิตประจำวัน', '☀️', 'mint']
-  ],
-  2: [
-    ['การเดินทาง', '🗺️', 'purple'],
-    ['สุขภาพ', '✚', 'coral'],
-    ['งานอดิเรก', '★', 'pink']
-  ],
-  3: [
-    ['ธรรมชาติ', '🌿', 'mint'],
-    ['การเรียน', '书', 'yellow'],
-    ['ความรู้สึก', '♡', 'purple']
-  ],
-  4: [
-    ['สังคม', '◎', 'purple'],
-    ['การทำงาน', '✦', 'yellow'],
-    ['การสื่อสาร', '◌', 'mint']
-  ],
-  5: [
-    ['ข่าวสาร', '▣', 'coral'],
-    ['วัฒนธรรม', '◇', 'pink'],
-    ['ความคิดเห็น', '✎', 'purple']
-  ],
-  6: [
-    ['วิชาการ', '⌘', 'yellow'],
-    ['โลกและสังคม', '◈', 'mint'],
-    ['ภาษาขั้นสูง', '文', 'coral']
-  ]
-}
-
-const quizWords = [
-  { hanzi: '爸爸', pinyin: 'bàba', meaning: 'พ่อ' },
-  { hanzi: '妈妈', pinyin: 'māma', meaning: 'แม่' },
-  { hanzi: '朋友', pinyin: 'péngyou', meaning: 'เพื่อน' },
-  { hanzi: '家', pinyin: 'jiā', meaning: 'บ้าน' },
-  { hanzi: '吃饭', pinyin: 'chīfàn', meaning: 'กินข้าว' },
-  { hanzi: '水', pinyin: 'shuǐ', meaning: 'น้ำ' },
-  { hanzi: '学习', pinyin: 'xuéxí', meaning: 'เรียน' },
-  { hanzi: '老师', pinyin: 'lǎoshī', meaning: 'ครู' }
-]
 
 function QuizCard({
   exam = false,
@@ -711,36 +668,179 @@ function QuizCard({
   const [question, setQuestion] = useState(1)
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState<string | null>(null)
-  const word = quizWords[(question - 1) % quizWords.length]
+  const [words, setWords] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [finished, setFinished] = useState(false)
+
+  // เพิ่ม state สำหรับล็อกช้อยส์ของข้อปัจจุบัน
+  const [choices, setChoices] = useState<string[]>([])
+
+  useEffect(() => {
+    async function fetchQuizWords() {
+      setLoading(true)
+      try {
+        const url = exam
+          ? `/api/quiz?exam=true`
+          : `/api/quiz?level=${level}&category=${encodeURIComponent(category || '')}`
+        const res = await fetch(url)
+        const data = await res.json()
+        setWords(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load quiz words', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchQuizWords()
+  }, [exam, level, category])
+
+  const totalQuestions = exam ? 100 : words.length
+  const word = words.length > 0 ? words[(question - 1) % words.length] : null
   const hanziMode = question % 2 === 1
-  const answer = hanziMode ? word.meaning : word.hanzi
-  const choices = hanziMode
-    ? [
-        word.meaning,
-        ...quizWords
-          .filter((item) => item.meaning !== word.meaning)
-          .slice(0, 3)
-          .map((item) => item.meaning)
-      ]
-    : [
-        word.hanzi,
-        ...quizWords
-          .filter((item) => item.hanzi !== word.hanzi)
-          .slice(0, 3)
-          .map((item) => item.hanzi)
-      ]
+  const answer = word ? (hanziMode ? word.meaning : word.hanzi) : ''
+
+  // ใช้ useEffect คำนวณและล็อกตัวเลือกเฉพาะตอนเปลี่ยนข้อใหม่หรือเปลี่ยนโหมด
+  useEffect(() => {
+    if (!word) return
+
+    const generatedChoices = hanziMode
+      ? [
+          word.meaning,
+          ...words
+            .filter((item) => item.meaning !== word.meaning)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map((item) => item.meaning)
+        ].sort(() => 0.5 - Math.random())
+      : [
+          word.hanzi,
+          ...words
+            .filter((item) => item.hanzi !== word.hanzi)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map((item) => item.hanzi)
+        ].sort(() => 0.5 - Math.random())
+
+    setChoices(generatedChoices)
+  }, [question, word, hanziMode, words])
+
+  if (loading) {
+    return (
+      <div className="room quiz-room">
+        <p className="muted" style={{ textAlign: 'center', marginTop: '50px' }}>
+          กำลังเตรียมข้อสอบและคำศัพท์...
+        </p>
+      </div>
+    )
+  }
+
+  if (words.length === 0 || !word) {
+    return (
+      <div className="room quiz-room">
+        <button className="back-link" onClick={onBack}>
+          <ArrowLeft size={16} /> กลับ
+        </button>
+        <p className="muted" style={{ textAlign: 'center', marginTop: '50px' }}>
+          ยังไม่มีคำศัพท์ในหมวดนี้ หรือฐานข้อมูลยังว่างอยู่ค่ะ
+        </p>
+      </div>
+    )
+  }
+
   const choose = (choice: string) => {
     if (!selected) {
       setSelected(choice)
       if (choice === answer) setScore((value) => value + 1)
     }
   }
+
   const next = () => {
-    if (question < 100) {
+    if (question < totalQuestions) {
       setQuestion((value) => value + 1)
-      setSelected(null)
+      setSelected(null) // รีเซ็ตสถานะการเลือกสำหรับข้อถัดไป
+    } else {
+      setFinished(true)
     }
   }
+
+  // หน้าจอแสดงผลเมื่อทำครบทุกข้อ
+  if (finished) {
+    const passed = exam ? score >= 95 : true
+    return (
+      <div
+        className={`room result-room ${passed ? 'result-pass' : 'result-retry'}`}
+      >
+        <div className="result-confetti" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div className="result-icon" aria-hidden="true">
+          {passed ? (
+            <Check size={32} strokeWidth={3} />
+          ) : (
+            <RotateCcw size={32} strokeWidth={3} />
+          )}
+        </div>
+        <p className="eyebrow">
+          {exam ? 'ภารกิจสอบ · สรุปผล' : 'ห้องฝึกศัพท์ · จบเซสชัน'}
+        </p>
+        <h2>
+          {exam
+            ? passed
+              ? 'ด่านนี้ผ่านแล้ว!'
+              : 'อีกนิดเดียวก็ผ่าน'
+            : 'ฝึกครบแล้ว'}
+        </h2>
+        <p className="result-score">
+          <strong>{score}</strong>
+          <span>/ {totalQuestions}</span>
+        </p>
+        <p className="muted">
+          {exam
+            ? passed
+              ? 'ตราประทับใหม่พร้อมเข้าพาสปอร์ตของคุณแล้ว'
+              : 'ลองทบทวนคำที่พลาด แล้วกลับมาลุยใหม่อีกครั้งนะ'
+            : 'คุณสร้างความคุ้นเคยกับคำศัพท์เพิ่มขึ้นอีกหนึ่งก้าว'}
+        </p>
+        {/* <div
+          className="result-stats"
+        >
+          <div>
+            <strong>{score}</strong>
+            <span>ตอบถูก</span>
+          </div>
+          <div>
+            <strong>{100 - score}</strong>
+            <span>คำที่ทบทวน</span>
+          </div>
+          <div>
+            <strong>{exam ? (passed ? 'ผ่าน' : 'ลองใหม่') : 'ดีมาก'}</strong>
+            <span>สถานะวันนี้</span>
+          </div>
+        </div> */}
+        <div className="result-actions mt-10">
+          <button
+            className="primary-button"
+            onClick={() => {
+              setQuestion(1)
+              setScore(0)
+              setSelected(null)
+              setFinished(false)
+            }}
+          >
+            {exam ? 'ลองทำอีกครั้ง' : 'ฝึกชุดใหม่'} <RotateCcw size={17} />
+          </button>
+          <button className="secondary-button" onClick={onBack}>
+            กลับไปเลือกห้อง <ArrowLeft size={17} />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="room quiz-room">
       <button className="back-link" onClick={onBack}>
@@ -751,14 +851,16 @@ function QuizCard({
           <p className="eyebrow">
             {exam
               ? 'ภารกิจสอบ · 100 ข้อ'
-              : `ฝึกคำศัพท์ิค · HSK ${level} · ${category}`}
+              : `ฝึกคำศัพท์ · HSK ${level} · ${category}`}
           </p>
           <h2>{exam ? 'ทริปคำศัพท์ 100 ข้อ' : 'ฝึกคำศัพท์กัน'}</h2>
         </div>
-        <span className="counter">{question} / 100</span>
+        <span className="counter">
+          {question} / {totalQuestions}
+        </span>
       </div>
       <div className="quiz-progress">
-        <span style={{ width: `${question}%` }} />
+        <span style={{ width: `${(question / totalQuestions) * 100}%` }} />
       </div>
       <article className="question-card">
         <p className="question-label">
@@ -780,7 +882,7 @@ function QuizCard({
         <div className="choice-grid">
           {choices.map((choice, index) => (
             <button
-              key={choice}
+              key={index}
               className={`choice-button ${selected === choice ? (choice === answer ? 'correct' : 'wrong') : ''}`}
               onClick={() => choose(choice)}
             >
@@ -801,30 +903,13 @@ function QuizCard({
           disabled={!selected}
           onClick={next}
         >
-          {question === 100 ? 'ดูผลลัพธ์' : 'ข้อต่อไป'}{' '}
+          {question === totalQuestions ? 'ดูผลลัพธ์' : 'ข้อต่อไป'}{' '}
           <ChevronRight size={17} />
         </button>
       </article>
       <p className="quiz-score">
-        คะแนนตอนนี้ <strong>{score}</strong> / {question}
+        คะแนนตอนนี้ <strong>{score}</strong> / {totalQuestions}
       </p>
-      {!exam && (
-        <div className="mode-picker quiz-options">
-          <p className="eyebrow">ขั้นที่ 3 · วิธีฝึกเพิ่มเติม</p>
-          <div className="mode-grid">
-            <button className="mode-button pink" onClick={onBack}>
-              <span>🃏</span>
-              <strong>ทวนคำ</strong>
-              <small>Flashcard</small>
-            </button>
-            <button className="mode-button purple" onClick={onBack}>
-              <span>✍️</span>
-              <strong>เขียนตามคำบอก</strong>
-              <small>Dictation</small>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -870,7 +955,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
       <div className="room">
         <div className="room-heading">
           <div>
-            <p className="eyebrow">ห้องฝึกคำศัพท์ิค · ขั้นที่ 1</p>
+            <p className="eyebrow">ห้องฝึกคำศัพท์ · ขั้นที่ 1</p>
             <h2>เลือก HSK ที่อยากฝึก</h2>
             <p className="muted">แต่ละระดับมีหมวดคำศัพท์ของตัวเอง</p>
           </div>
@@ -974,7 +1059,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
                 return '📚' // ค่าสำรอง
               }
 
-            return (
+              return (
                 <button
                   key={cat.id}
                   className={`capsule ${colorClass}`}
@@ -1011,7 +1096,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
         <div className="room-heading">
           <div>
             <p className="eyebrow">
-              ฝึกคำศัพท์ิค · HSK {level} · {category}
+              ฝึกคำศัพท์ · HSK {level} · {category}
             </p>
             <h2>เขียนตามคำบอก</h2>
           </div>
@@ -1058,7 +1143,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
       <div className="room-heading">
         <div>
           <p className="eyebrow">
-            ห้องฝึกคำศัพท์ิค · HSK {level} · {category}
+            ห้องฝึกคำศัพท์ · HSK {level} · {category}
           </p>
           <h2>เลือกวิธีฝึก</h2>
           <p className="muted">หมวดนี้มี 12 คำให้ฝึก</p>
