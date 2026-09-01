@@ -18,6 +18,20 @@
   --shadow: 0 14px 34px rgba(141, 117, 197, 0.14);
   --radius: 22px;
 }
+.stamp-trail-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; margin-bottom: 24px; }
+.trail-label { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.trail-label h3 { margin: 4px 0 0; }
+.stamp-trail { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+.stamp-item { width: 82px; min-height: 88px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; position: relative; border: 2px solid var(--line); color: var(--muted); background: var(--surface); transform: rotate(-2deg); }
+.stamp-item strong { font: 900 14px Nunito; }
+.stamp-item small { font-size: 10px; text-align: center; line-height: 1.2; }
+.stamp-item.passed { background: var(--mint); border-color: #3eaa89; color: #205f50; box-shadow: 0 5px 0 rgba(62, 170, 137, .2); }
+.stamp-item.unlocked { background: #fff8df; border-color: var(--yellow); color: #8b7200; }
+.stamp-item.locked { opacity: .55; }
+.stamp-badge { position: absolute; top: -9px; right: -8px; width: 28px; height: 28px; border-radius: 50%; background: var(--yellow); border: 2px solid #8b7200; display: grid; place-items: center; }
+.stamp-target { font: 900 20px Nunito; }
+.stamp-progress { width: 54px; height: 4px; margin-top: 5px; background: #eadfb0; border-radius: 99px; overflow: hidden; }
+.stamp-progress i { display: block; height: 100%; background: var(--coral); border-radius: inherit; }
 html[data-theme='dark'] {
   color-scheme: dark;
   --bg: #171522;

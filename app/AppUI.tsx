@@ -222,13 +222,55 @@ function Mascot({
   )
 }
 
+function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
+  const titleMap: Record<number, string> = {
+    1: 'เริ่มต้นทริป',
+    2: 'ก้าวแรก',
+    3: 'นักสำรวจ',
+    4: 'เมืองใหม่',
+    5: 'นักเดินทาง',
+    6: 'ทั่วโลก'
+  }
+  return (
+    <section className="stamp-trail-card" aria-labelledby="stamp-trail-title">
+      <div className="trail-label">
+        <div>
+          <p className="eyebrow">PASSPORT STAMPS</p>
+          <h3 id="stamp-trail-title">ตราประทับการเดินทาง</h3>
+        </div>
+        <span className="mini-badge">{levelsData.filter((item) => Number(item.max_score || 0) >= 95).length} / 6 ดวง</span>
+      </div>
+      <div className="stamp-trail">
+        {Array.from({ length: 6 }, (_, index) => {
+          const levelNumber = index + 1
+          const item = levelsData.find((level) => Number(level.level_number) === levelNumber)
+          const passed = Number(item?.max_score || 0) >= 95
+          const unlocked = item?.unlocked === 1 || item?.unlocked === true
+          const state = passed ? 'passed' : unlocked || levelNumber === 1 ? 'unlocked' : 'locked'
+          return (
+            <div className={`stamp-item ${state}`} key={levelNumber} aria-label={`HSK ${levelNumber} ${passed ? 'ผ่านแล้ว' : state === 'unlocked' ? 'เปิดให้สอบ' : `ล็อก รอผ่าน HSK ${levelNumber - 1}`}`}>
+              {passed ? <span className="stamp-badge"><Check size={14} /></span> : state === 'locked' ? <LockKeyhole size={19} /> : <span className="stamp-target">95</span>}
+              <strong>HSK {levelNumber}</strong>
+              <small>{passed ? 'ผ่านแล้ว' : state === 'unlocked' ? 'พร้อมสอบ' : `ผ่าน HSK ${levelNumber - 1}`}</small>
+              {state === 'unlocked' && !passed && <span className="stamp-progress"><i style={{ width: `${Math.min(Number(item?.max_score || 0), 95) / 95 * 100}%` }} /></span>}
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
 function PassportHeader({
   name,
-  avatar
+  avatar,
+  levelsData
 }: {
   name?: string
   avatar?: string | null
+  levelsData?: any[]
 }) {
+  const passedCount = levelsData?.filter((item) => Number(item.max_score || 0) >= 95).length || 0
   return (
     <header className="passport-header">
       <div className="avatar">🧢</div>
@@ -331,7 +373,8 @@ function Dashboard({
     levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
   return (
     <>
-      <PassportHeader name={displayName} />
+      <PassportHeader name={displayName} levelsData={levelsData} />
+      <StampDisplay levelsData={levelsData} />
       <section className="hero-summary">
         <div>
           <p className="eyebrow">เส้นทางของเรา</p>
@@ -480,7 +523,7 @@ function VocabRoom() {
           <p className="muted">
             {view === 'list'
               ? 'เลื่อนอ่านได้ตามจังหวะ ไม่ต้องกดผ่านทีละคำ'
-              : 'แตะการ์ดเพื่อดูคำแปล แล้วค่อยๆ จำไปด้วยกัน'}
+              : 'แตะการ์ดเพื่อดูคำแปล แล้วค่อยๆ จำไ��ด้วยกัน'}
           </p>
         </div>
         <span className="counter">
@@ -661,12 +704,14 @@ function QuizCard({
   category,
   onBack,
   onMatching,
-  onDictation
+  onDictation,
+  onHome
 }: {
   exam?: boolean
   level?: number
   category?: string
   onBack: () => void
+  onHome?: () => void
   onMatching?: () => void
   onDictation?: () => void
 }) {
@@ -676,8 +721,25 @@ function QuizCard({
   const [words, setWords] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [finished, setFinished] = useState(false)
+  const [submitState, setSubmitState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const totalQuestions = exam ? 100 : words.length
 
-  // เพิ่ม state สำหรับล็อกช้อยส์ของข้อปัจจุบัน
+  useEffect(() => {
+    if (!finished || !exam || !level || submitState !== 'idle') return
+    setSubmitState('saving')
+    fetch('/api/exam/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ levelNumber: level, score, totalQuestions, examType: 'hsk-exam' })
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Could not save exam')
+        setSubmitState('saved')
+      })
+      .catch(() => setSubmitState('error'))
+  }, [finished, exam, level, score, totalQuestions, submitState])
+
+  // เพิ่ม state สำหรับล็อก���้อยส์ของข้อปัจจุบัน
   const [choices, setChoices] = useState<string[]>([])
 
   useEffect(() => {
@@ -685,7 +747,7 @@ function QuizCard({
       setLoading(true)
       try {
         const url = exam
-          ? `/api/quiz?exam=true`
+          ? `/api/quiz?exam=true&level=${level || 1}`
           : `/api/quiz?level=${level}&category=${encodeURIComponent(category || '')}`
         const res = await fetch(url)
         const data = await res.json()
@@ -699,7 +761,6 @@ function QuizCard({
     fetchQuizWords()
   }, [exam, level, category])
 
-  const totalQuestions = exam ? 100 : words.length
   const word = words.length > 0 ? words[(question - 1) % words.length] : null
   const hanziMode = question % 2 === 1
   const answer = word ? (hanziMode ? word.meaning : word.hanzi) : ''
@@ -770,7 +831,7 @@ function QuizCard({
 
   // หน้าจอแสดงผลเมื่อทำครบทุกข้อ
   if (finished) {
-    const passed = exam ? score >= 1 : true
+    const passed = exam ? score >= 95 : true
     return (
       <div
         className={`room result-room ${passed ? 'result-pass' : 'result-retry'}`}
@@ -806,7 +867,9 @@ function QuizCard({
         <p className="muted">
           {exam
             ? passed
-              ? 'ตราประทับใหม่พร้อมเข้าพาสปอร์ตของคุณแล้ว'
+              ? submitState === 'saving'
+                ? 'กำลังประทับตราในพาสปอร์ตของคุณ...'
+                : 'ตราประทับใหม่พร้อมเข้าพาสปอร์ตของคุณแล้ว'
               : 'ลองทบทวนคำที่พลาด แล้วกลับมาลุยใหม่อีกครั้งนะ'
             : 'คุณสร้างความคุ้นเคยกับคำศัพท์เพิ่มขึ้นอีกหนึ่งก้าว'}
         </p>
@@ -838,8 +901,8 @@ function QuizCard({
           >
             {exam ? 'ลองทำอีกครั้ง' : 'ฝึกชุดใหม่'} <RotateCcw size={17} />
           </button>
-          <button className="secondary-button" onClick={onBack}>
-            กลับไปเลือกห้อง <ArrowLeft size={17} />
+          <button className="secondary-button" onClick={passed && onHome ? onHome : onBack}>
+            {passed ? 'กลับหน้าหลัก ดูตราประทับ' : 'กลับไปเลือกห้อง'} <ArrowLeft size={17} />
           </button>
         </div>
       </div>
@@ -1330,13 +1393,13 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   }
 }
 
-function ExamRoom({ levelsData }: { levelsData?: any[] }) {
+function ExamRoom({ levelsData, onHome }: { levelsData?: any[]; onHome?: () => void }) {
   const [started, setStarted] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState<number>(1) // เลเวลที่กำลังเลือกสอบ
 
   if (started)
     return (
-      <QuizCard exam level={selectedLevel} onBack={() => setStarted(false)} />
+      <QuizCard exam level={selectedLevel} onBack={() => setStarted(false)} onHome={onHome} />
     )
 
   const currentLevelInfo =
@@ -1712,7 +1775,7 @@ export default function AppUI({
         )}
         {room === 'vocab' && <VocabRoom />}
         {room === 'practice' && <PracticeRoom levelsData={levelsData} />}
-        {room === 'exam' && <ExamRoom />}
+        {room === 'exam' && <ExamRoom levelsData={levelsData} onHome={() => setRoom('dashboard')} />}
       </div>
     </main>
   )

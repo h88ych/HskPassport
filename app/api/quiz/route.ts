@@ -18,7 +18,7 @@ export async function GET(request: Request) {
          JOIN hsk_levels hl ON w.level_id = hl.id
          WHERE hl.level_number = ?
          ORDER BY RAND() 
-         LIMIT 5`,
+         LIMIT 100`,
         [level]
       )
     } else {
