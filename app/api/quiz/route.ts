@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const exam = searchParams.get('exam') === 'true'
-  const level = searchParams.get('level')
+  const level = searchParams.get('level') || '1'
   const category = searchParams.get('category')
 
   try {
@@ -13,10 +13,13 @@ export async function GET(request: Request) {
     if (exam) {
       // โหมดสอบ: ดึง 100 ข้อ
       ;[rows] = await pool.query(
-        `SELECT id, hanzi, pinyin, meaning_th AS meaning 
-         FROM words 
+        `SELECT w.id, w.hanzi, w.pinyin, w.meaning_th AS meaning 
+         FROM words w
+         JOIN hsk_levels hl ON w.level_id = hl.id
+         WHERE hl.level_number = ?
          ORDER BY RAND() 
-         LIMIT 100`
+         LIMIT 5`,
+        [level]
       )
     } else {
       // โหมดฝึกตามหมวดหมู่และเลเวล

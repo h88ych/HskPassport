@@ -770,7 +770,7 @@ function QuizCard({
 
   // หน้าจอแสดงผลเมื่อทำครบทุกข้อ
   if (finished) {
-    const passed = exam ? score >= 95 : true
+    const passed = exam ? score >= 1 : true
     return (
       <div
         className={`room result-room ${passed ? 'result-pass' : 'result-retry'}`}
@@ -1319,10 +1319,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
               <button className="mint-button" onClick={handleNextWord}>
                 <Check size={18} /> เขียนถูก
               </button>
-              <button
-                className="coral-button"
-                onClick={handleRewrite} 
-              >
+              <button className="coral-button" onClick={handleRewrite}>
                 <RefreshCw size={18} /> เขียนใหม่
               </button>
             </div>
@@ -1333,40 +1330,82 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   }
 }
 
-function ExamRoom() {
+function ExamRoom({ levelsData }: { levelsData?: any[] }) {
   const [started, setStarted] = useState(false)
-  if (started) return <QuizCard exam onBack={() => setStarted(false)} />
+  const [selectedLevel, setSelectedLevel] = useState<number>(1) // เลเวลที่กำลังเลือกสอบ
+
+  if (started)
+    return (
+      <QuizCard exam level={selectedLevel} onBack={() => setStarted(false)} />
+    )
+
+  const currentLevelInfo =
+    levelsData?.find((l) => l.level_number === selectedLevel) || levelsData?.[0]
+  const totalWords = currentLevelInfo?.total_words || 100
+  const maxScore = currentLevelInfo?.max_score || 0
+  const isPassed = maxScore >= 95
+
   return (
     <div className="room exam-room">
       <div className="room-heading">
         <div>
-          <p className="eyebrow">ภารกิจ 100 ด่าน</p>
+          <p className="eyebrow">ภารกิจทดสอบความรู้</p>
           <h2>พร้อมลุยด่านนี้ไหม?</h2>
         </div>
         <span className="target-badge">ผ่านที่ 95 / 100</span>
       </div>
+
+      <div
+        className="level-tabs"
+        style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}
+      >
+        {[1, 2, 3, 4, 5, 6].map((num) => (
+          <button
+            key={num}
+            onClick={() => setSelectedLevel(num)}
+            className={`tab-btn ${selectedLevel === num ? 'active' : ''}`}
+            style={{
+              padding: '6px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer'
+            }}
+          >
+            HSK {num}
+          </button>
+        ))}
+      </div>
+
       <div className="trail-card">
         <div className="trail-label">
-          <span>ความคืบหน้า</span>
-          <b>42 / 100</b>
+          <span>คะแนนสูงสุดที่ทำได้</span>
+          <b>
+            {maxScore} / {totalWords} {isPassed ? '🎉 (ผ่านแล้ว)' : ''}
+          </b>
         </div>
         <div className="candy-trail">
           {Array.from({ length: 25 }).map((_, i) => (
-            <span className={i < 10 ? 'filled' : ''} key={i}>
-              {i === 9 && '🐼'}
+            <span
+              className={i < Math.round((maxScore / 100) * 25) ? 'filled' : ''}
+              key={i}
+            >
+              {i === Math.min(Math.round((maxScore / 100) * 25), 24) && '🐼'}
             </span>
           ))}
         </div>
-        <p className="muted">ทำไปเรื่อยๆ ไม่ต้องรีบ ค่อยๆ ไปด้วยกัน</p>
+        <p className="muted">
+          สะสมคะแนนให้ถึง 95 คะแนนขึ้นไปเพื่อผ่านภารกิจนี้
+        </p>
       </div>
+
       <div className="exam-start">
         <div className="large-medal">🏅</div>
-        <h3>HSK 2 · ทริปเมืองจีน</h3>
+        <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
         <p className="muted">
-          คำศัพท์ 100 คำจากทุกหมวด สลับ reading และ recognition
+          ดึงคำศัพท์ 100 ข้อจากระดับ HSK {selectedLevel} (คลังคำศัพท์ทั้งหมด{' '}
+          {totalWords} คำ)
         </p>
         <button className="primary-button" onClick={() => setStarted(true)}>
-          เริ่มภารกิจ <ChevronRight size={17} />
+          เริ่มภารกิจสอบ <ChevronRight size={17} />
         </button>
       </div>
     </div>
