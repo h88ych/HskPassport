@@ -658,12 +658,14 @@ function QuizCard({
   exam = false,
   level,
   category,
-  onBack
+  onBack,
+  onMatching
 }: {
   exam?: boolean
   level?: number
   category?: string
   onBack: () => void
+  onMatching?: () => void
 }) {
   const [question, setQuestion] = useState(1)
   const [score, setScore] = useState(0)
@@ -882,7 +884,7 @@ function QuizCard({
         <div className="choice-grid">
           {choices.map((choice, index) => (
             <button
-              key={index}
+              key={choice}
               className={`choice-button ${selected === choice ? (choice === answer ? 'correct' : 'wrong') : ''}`}
               onClick={() => choose(choice)}
             >
@@ -910,6 +912,23 @@ function QuizCard({
       <p className="quiz-score">
         คะแนนตอนนี้ <strong>{score}</strong> / {totalQuestions}
       </p>
+      {!exam && (
+        <div className="mode-picker quiz-options">
+          <p className="eyebrow">วิธีฝึกเพิ่มเติม</p>
+          <div className="mode-grid">
+            <button className="mode-button pink" onClick={onMatching ?? onBack}>
+              <span>🧩</span>
+              <strong>จับคู่คำ</strong>
+              <small>Matching Game</small>
+            </button>
+            <button className="mode-button purple" onClick={onBack}>
+              <span>✍️</span>
+              <strong>เขียนตามคำบอก</strong>
+              <small>Dictation</small>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -918,7 +937,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   const [level, setLevel] = useState<number | null>(null)
   const [category, setCategory] = useState<string | null>(null)
   const [categories, setCategories] = useState<any[]>([])
-  const [mode, setMode] = useState<'quiz' | 'dictation'>('quiz')
+  const [mode, setMode] = useState<'quiz' | 'dictation' | 'matching'>('quiz')
   const [revealed, setRevealed] = useState(false)
   const [loadingCategories, setLoadingCategories] = useState(false)
 
@@ -940,7 +959,7 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   }, [level])
 
   const goBack = () => {
-    if (mode === 'dictation') {
+    if (mode === 'dictation' || mode === 'matching') {
       setMode('quiz')
       setRevealed(false)
     } else if (category) {
@@ -1081,12 +1100,40 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
     )
   if (mode === 'quiz' && category)
     return (
-      <QuizCard
-        level={level}
-        category={category}
-        onBack={() => setMode('dictation')}
-      />
+      <>
+        <QuizCard
+          level={level}
+          category={category}
+          onBack={() => setCategory(null)}
+          onMatching={() => setMode('matching')}
+        />
+        {/* <div className="card practice-more">
+          <p className="eyebrow">ขั้นที่ 3 · วิธีฝึกเพิ่มเติม</p>
+          <div className="mode-grid">
+            <button
+              className="mode-button pink"
+              onClick={() => setMode('dictation')}
+            >
+              <span>🃏</span>
+              <strong>ทวนคำ</strong>
+              <small>Flashcard</small>
+            </button>
+            <button
+              className="mode-button purple"
+              onClick={() => setMode('dictation')}
+            >
+              <span>✍️</span>
+              <strong>เขียนตามคำบอก</strong>
+              <small>Dictation</small>
+            </button>
+          </div>
+        </div> */}
+      </>
     )
+
+  if (mode === 'matching')
+    return <MatchingGame onBack={() => setMode('quiz')} />
+
   if (mode === 'dictation')
     return (
       <div className="room">
@@ -1211,6 +1258,144 @@ function ExamRoom() {
           เริ่มภารกิจ <ChevronRight size={17} />
         </button>
       </div>
+    </div>
+  )
+}
+
+const quizWords = [
+  { hanzi: '爸爸', pinyin: 'bàba', meaning: 'พ่อ' },
+  { hanzi: '妈妈', pinyin: 'māma', meaning: 'แม่' },
+  { hanzi: '朋友', pinyin: 'péngyou', meaning: 'เพื่อน' },
+  { hanzi: '家', pinyin: 'jiā', meaning: 'บ้าน' },
+  { hanzi: '吃饭', pinyin: 'chīfàn', meaning: 'กินข้าว' },
+  { hanzi: '水', pinyin: 'shuǐ', meaning: 'น้ำ' },
+  { hanzi: '学习', pinyin: 'xuéxí', meaning: 'เรียน' },
+  { hanzi: '老师', pinyin: 'lǎoshī', meaning: 'ครู' }
+]
+
+function MatchingGame({ onBack }: { onBack: () => void }) {
+  const createCards = () =>
+    quizWords
+      .slice(0, 6)
+      .flatMap((word) => [
+        {
+          id: `${word.hanzi}-hanzi`,
+          pair: word.hanzi,
+          label: word.hanzi,
+          type: 'hanzi'
+        },
+        {
+          id: `${word.hanzi}-meaning`,
+          pair: word.hanzi,
+          label: word.meaning,
+          type: 'meaning'
+        }
+      ])
+      .sort(() => Math.random() - 0.5)
+  const [cards, setCards] = useState(createCards)
+  const [selected, setSelected] = useState<string[]>([])
+  const [matched, setMatched] = useState<string[]>([])
+  const [wrong, setWrong] = useState<string[]>([])
+  const [seconds, setSeconds] = useState(0)
+  useEffect(() => {
+    if (matched.length === 6) return
+    // const timer = window.setInterval(
+    //   () => setSeconds((value) => value + 1),
+    //   1000
+    // )
+    // return () => window.clearInterval(timer)
+  }, [matched.length])
+  useEffect(() => {
+    if (selected.length !== 2) return
+    const [first, second] = selected.map(
+      (id) => cards.find((card) => card.id === id)!
+    )
+    if (first.pair === second.pair) {
+      window.setTimeout(() => {
+        setMatched((value) => [...value, first.pair])
+        setSelected([])
+      }, 350)
+    } else {
+      setWrong(selected)
+      window.setTimeout(() => {
+        setWrong([])
+        setSelected([])
+      }, 550)
+    }
+  }, [selected, cards])
+  const choose = (id: string) => {
+    if (
+      selected.length >= 2 ||
+      matched.some(
+        (pair) => cards.find((card) => card.id === id)?.pair === pair
+      ) ||
+      selected.includes(id)
+    )
+      return
+    setSelected((value) => [...value, id])
+  }
+  const reset = () => {
+    setCards(createCards())
+    setSelected([])
+    setMatched([])
+    setWrong([])
+    setSeconds(0)
+  }
+  if (matched.length === 6)
+    return (
+      <div className="room result-room result-pass">
+        <div className="result-icon">
+          <Check size={32} strokeWidth={3} />
+        </div>
+        <p className="eyebrow">Matching Game · จบเกม</p>
+        <h2>จับคู่ครบแล้ว!</h2>
+        <p className="result-score">
+          <strong>{seconds}</strong>
+          <span>วินาที</span>
+        </p>
+        <p className="muted">ยิ่งเร็วยิ่งคล่อง รอบนี้ทำได้ดีมาก</p>
+        <div className="result-actions">
+          <button className="primary-button" onClick={reset}>
+            เล่นอีกรอบ <RotateCcw size={17} />
+          </button>
+          <button className="secondary-button" onClick={onBack}>
+            กลับไปแบบฝึก <ArrowLeft size={17} />
+          </button>
+        </div>
+      </div>
+    )
+  return (
+    <div className="room matching-room">
+      <button className="back-link" onClick={onBack}>
+        <ArrowLeft size={16} /> กลับไปแบบฝึก
+      </button>
+      <div className="quiz-top">
+        <div>
+          <p className="eyebrow">Matching Game · รีวิวเร็ว</p>
+          <h2>จับคู่คำให้ตรงกัน</h2>
+          <p className="muted">คำจีน 6 คำ กับคำแปลไทย 6 คำ</p>
+        </div>
+        <div className="match-timer">
+          {/* <strong>
+            {String(Math.floor(seconds / 60)).padStart(2, '0')}:
+            {String(seconds % 60).padStart(2, '0')}
+          </strong> */}
+          <span>{matched.length} / 6 คู่</span>
+        </div>
+      </div>
+      <div className="matching-grid">
+        {cards.map((card) => (
+          <button
+            key={card.id}
+            className={`matching-card ${card.type} ${selected.includes(card.id) ? 'selected' : ''} ${matched.includes(card.pair) ? 'matched' : ''} ${wrong.includes(card.id) ? 'wrong' : ''}`}
+            onClick={() => choose(card.id)}
+            disabled={matched.includes(card.pair)}
+          >
+            {card.label}
+          </button>
+        ))}
+      </div>
+      <Mascot text="จับคู่ให้ครบ 6 คู่ แล้วดูว่ารอบนี้ใช้เวลากี่วินาที" />
     </div>
   )
 }
