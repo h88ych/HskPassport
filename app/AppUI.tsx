@@ -12,11 +12,11 @@ import {
   Layers3,
   LockKeyhole,
   Medal,
+  RefreshCw,
   RotateCcw,
   Search,
   Star,
-  Volume2,
-  X
+  Volume2
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
@@ -947,6 +947,30 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   const [revealed, setRevealed] = useState(false)
   const [loadingCategories, setLoadingCategories] = useState(false)
 
+  const [dictationWords, setDictationWords] = useState<any[]>([])
+  const [dictationIndex, setDictationIndex] = useState(0)
+  const [loadingDictation, setLoadingDictation] = useState(false)
+
+  useEffect(() => {
+    if (mode !== 'dictation' || !level || !category) return
+    async function fetchDictationWords() {
+      setLoadingDictation(true)
+      try {
+        const res = await fetch(
+          `/api/quiz?level=${level}&category=${encodeURIComponent(category!)}`
+        )
+        const data = await res.json()
+        setDictationWords(Array.isArray(data) ? data : [])
+        setDictationIndex(0) // รีเซ็ตไปข้อแรก
+      } catch (err) {
+        console.error('Failed to load dictation words', err)
+      } finally {
+        setLoadingDictation(false)
+      }
+    }
+    fetchDictationWords()
+  }, [mode, level, category])
+
   //drawingPad
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const isDrawing = useRef(false)
@@ -1185,7 +1209,53 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
         onBack={() => setMode('quiz')}
       />
     )
-  if (mode === 'dictation')
+  if (mode === 'dictation') {
+    if (loadingDictation) {
+      return (
+        <div className="room">
+          <p
+            className="muted"
+            style={{ textAlign: 'center', marginTop: '50px' }}
+          >
+            กำลังโหลดคำศัพท์เขียนตามคำบอก...
+          </p>
+        </div>
+      )
+    }
+
+    if (dictationWords.length === 0) {
+      return (
+        <div className="room">
+          <button className="back-link" onClick={goBack}>
+            <ArrowLeft size={16} /> เลือกโหมดอื่น
+          </button>
+          <p
+            className="muted"
+            style={{ textAlign: 'center', marginTop: '50px' }}
+          >
+            ยังไม่มีคำศัพท์ในหมวดนี้ค่ะ
+          </p>
+        </div>
+      )
+    }
+
+    const currentWord = dictationWords[dictationIndex]
+
+    const handleNextWord = () => {
+      setRevealed(false)
+      clearCanvas()
+      if (dictationIndex < dictationWords.length - 1) {
+        setDictationIndex((prev) => prev + 1)
+      } else {
+        setDictationIndex(0) // วนกลับข้อแรก หรือเปลี่ยนหน้าตามต้องการ
+      }
+    }
+
+    const handleRewrite = () => {
+      setRevealed(false)
+      clearCanvas()
+    }
+
     return (
       <div className="room">
         <button className="back-link" onClick={goBack}>
@@ -1198,15 +1268,17 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
             </p>
             <h2>เขียนตามคำบอก</h2>
           </div>
-          <span className="counter">คำที่ 2 / 10</span>
+          <span className="counter">
+            คำที่ {dictationIndex + 1} / {dictationWords.length}
+          </span>
         </div>
         <div className={`dictation-card ${revealed ? 'revealed' : ''}`}>
           <p className="dictation-label">ฟังเสียงในหัว แล้วเขียนลงกระดาษ</p>
-          <p className="pinyin big">shíwù</p>
-          <p className="meaning">อาหาร</p>
+          <p className="pinyin big">{currentWord.pinyin}</p>
+          <p className="meaning">{currentWord.meaning}</p>
           <div className="paper-space">
             {revealed ? (
-              <strong>食物</strong>
+              <strong>{currentWord.hanzi}</strong>
             ) : (
               <>
                 <canvas
@@ -1244,23 +1316,21 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
             </button>
           ) : (
             <div className="rating-row">
-              <button
-                className="mint-button"
-                onClick={() => setRevealed(false)}
-              >
+              <button className="mint-button" onClick={handleNextWord}>
                 <Check size={18} /> เขียนถูก
               </button>
               <button
                 className="coral-button"
-                onClick={() => setRevealed(false)}
+                onClick={handleRewrite} 
               >
-                <X size={18} /> พลาดนิดนึง
+                <RefreshCw size={18} /> เขียนใหม่
               </button>
             </div>
           )}
         </div>
       </div>
     )
+  }
 }
 
 function ExamRoom() {
