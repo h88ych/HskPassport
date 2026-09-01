@@ -268,16 +268,7 @@ function LevelCard({ item }: { item: any }) {
   const colors = ['mint', 'pink', 'yellow', 'purple', 'coral', 'mint']
   const colorClass = colors[(item.level_number - 1) % colors.length]
 
-  // กำหนดจำนวนคำสำรองตามระดับ HSK (1-6) หากฐานข้อมูลไม่ได้ส่งมา
-  const defaultWordsMap: Record<number, number> = {
-    1: 150,
-    2: 150,
-    3: 300,
-    4: 600,
-    5: 1300,
-    6: 2500
-  }
-  const wordCount = item.words || defaultWordsMap[item.level_number] || 150
+  const wordCount = item.total_words || 150
 
   const defaultTitleMap: Record<number, string> = {
     1: 'เริ่มต้นทริป',

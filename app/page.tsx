@@ -29,11 +29,10 @@ export default async function HomePage() {
        hl.name, 
        COALESCE(ulp.unlocked, FALSE) AS unlocked,
        (
-         SELECT COUNT(DISTINCT ewp.word_id) 
-         FROM exam_word_pools p
-         JOIN exam_word_pool_items ewp ON ewp.pool_id = p.id
-         WHERE p.user_id = ? AND p.level_id = hl.id
-       ) AS total_words_in_pool,
+         SELECT COUNT(*) 
+         FROM words w 
+         WHERE w.level_id = hl.id
+       ) AS total_words,
        (
          SELECT MAX(es.score) 
          FROM exam_sessions es 
@@ -42,7 +41,7 @@ export default async function HomePage() {
      FROM hsk_levels hl
      LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
      ORDER BY hl.level_number ASC`,
-    [session.user.id, session.user.id, session.user.id]
+    [session.user.id, session.user.id]
   )
 
   return (
