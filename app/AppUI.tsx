@@ -221,13 +221,19 @@ function Mascot({
   )
 }
 
-function PassportHeader({ name }: { name?: string }) {
+function PassportHeader({
+  name,
+  avatar
+}: {
+  name?: string
+  avatar?: string | null
+}) {
   return (
     <header className="passport-header">
       <div className="avatar">🧢</div>
       <div>
         <p className="eyebrow">STICKER PASSPORT</p>
-        <h1>สวัสดี, {name}!</h1>
+        <h1>สวัสดี, {name || 'นักเดินทาง'}!</h1>
         <p className="muted">พร้อมออกเดินทางต่อหรือยัง?</p>
       </div>
       <div className="passport-meta">
@@ -541,7 +547,7 @@ function VocabRoom() {
         <div className="vocab-list">
           {visibleWords.length ? (
             visibleWords.map((word, index) => (
-              <article className="vocab-row" key={word.hanzi}>
+              <article className="vocab-row" key={`${word.hanzi}-${index}`}>
                 <div className="vocab-index">
                   {String(index + 1).padStart(2, '0')}
                 </div>
@@ -1113,6 +1119,7 @@ export default function AppUI({
             <img
               src={displayAvatar}
               alt="Profile"
+              referrerPolicy="no-referrer"
               className="w-full h-full object-cover rounded-full"
             />
           </span>
