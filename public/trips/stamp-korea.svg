@@ -1,0 +1,944 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 220 220"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">Trip 03 Korea Stamp</title>
+  <desc id="desc">
+    A colorful pastel Korea travel stamp featuring N Seoul Tower,
+    a traditional Korean palace, mountains, mugunghwa flowers,
+    and a character wearing hanbok.
+  </desc>
+
+  <defs>
+    <!-- Curved path for KOREA -->
+    <path
+      id="korea-title-curve"
+      d="M53 43 A74 74 0 0 1 167 43"
+    />
+
+    <!-- Clip artwork inside the stamp -->
+    <clipPath id="stamp-clip">
+      <circle cx="110" cy="110" r="96"/>
+    </clipPath>
+
+    <!-- Soft background gradient -->
+    <linearGradient id="korea-background" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF8FD"/>
+      <stop offset="100%" stop-color="#EEE9FF"/>
+    </linearGradient>
+
+    <!-- Mountain gradient -->
+    <linearGradient id="mountain-gradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#B8ACEB"/>
+      <stop offset="100%" stop-color="#8576C7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- White outer backing -->
+  <circle
+    cx="110"
+    cy="110"
+    r="105"
+    fill="#FFFFFF"
+  />
+
+  <!-- Main stamp background -->
+  <circle
+    cx="110"
+    cy="110"
+    r="100"
+    fill="url(#korea-background)"
+    stroke="#9A87E5"
+    stroke-width="7"
+  />
+
+  <g clip-path="url(#stamp-clip)">
+    <!-- Decorative dotted texture -->
+    <g fill="#CFC6E9" opacity="0.38">
+      <circle cx="28" cy="34" r="1.5"/>
+      <circle cx="49" cy="25" r="1.5"/>
+      <circle cx="76" cy="35" r="1.5"/>
+      <circle cx="108" cy="25" r="1.5"/>
+      <circle cx="138" cy="34" r="1.5"/>
+      <circle cx="169" cy="27" r="1.5"/>
+      <circle cx="194" cy="45" r="1.5"/>
+
+      <circle cx="23" cy="65" r="1.5"/>
+      <circle cx="49" cy="57" r="1.5"/>
+      <circle cx="79" cy="67" r="1.5"/>
+      <circle cx="109" cy="57" r="1.5"/>
+      <circle cx="140" cy="66" r="1.5"/>
+      <circle cx="176" cy="59" r="1.5"/>
+      <circle cx="201" cy="78" r="1.5"/>
+
+      <circle cx="24" cy="99" r="1.5"/>
+      <circle cx="56" cy="91" r="1.5"/>
+      <circle cx="88" cy="101" r="1.5"/>
+      <circle cx="121" cy="91" r="1.5"/>
+      <circle cx="153" cy="100" r="1.5"/>
+      <circle cx="188" cy="93" r="1.5"/>
+
+      <circle cx="25" cy="132" r="1.5"/>
+      <circle cx="57" cy="124" r="1.5"/>
+      <circle cx="89" cy="134" r="1.5"/>
+      <circle cx="122" cy="124" r="1.5"/>
+      <circle cx="155" cy="133" r="1.5"/>
+      <circle cx="190" cy="125" r="1.5"/>
+    </g>
+
+    <!-- Pink rising sun -->
+    <circle
+      cx="164"
+      cy="69"
+      r="29"
+      fill="#FFACC8"
+    />
+
+    <circle
+      cx="164"
+      cy="69"
+      r="21"
+      fill="#FFC2D5"
+      opacity="0.7"
+    />
+
+    <!-- Background clouds -->
+    <g
+      fill="#FFFFFF"
+      stroke="#403653"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+    >
+      <path
+        d="M14 78
+           C16 70 22 66 30 66
+           C37 66 42 70 45 75
+           C48 72 52 71 56 71
+           C64 71 70 76 71 83
+           H14Z"
+      />
+
+      <path
+        d="M155 91
+           C157 84 162 80 169 80
+           C175 80 180 83 183 88
+           C186 86 190 85 194 85
+           C201 85 207 90 208 96
+           H154Z"
+      />
+    </g>
+
+    <!-- Background mountains -->
+    <path
+      d="M7 142
+         L52 91
+         L78 120
+         L111 75
+         L145 121
+         L169 94
+         L215 143Z"
+      fill="url(#mountain-gradient)"
+      stroke="#403653"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+
+    <!-- Mountain highlights -->
+    <path
+      d="M52 91L78 120L66 112L57 119L48 106L38 118Z"
+      fill="#D8D0F5"
+      stroke="#403653"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M111 75L145 121L130 111L120 119L109 101L98 116L88 110Z"
+      fill="#DCD5F8"
+      stroke="#403653"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M169 94L202 132L187 120L178 125L168 110L158 122L150 118Z"
+      fill="#CDC4F0"
+      stroke="#403653"
+      stroke-width="2"
+      stroke-linejoin="round"
+    />
+
+    <!-- Mist between mountains -->
+    <path
+      d="M5 129
+         C31 118 51 121 72 132
+         C94 143 118 143 140 132
+         C163 120 187 120 215 132
+         V156H5Z"
+      fill="#C7EFE5"
+      stroke="#403653"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M4 145
+         C30 136 54 138 75 148
+         C98 159 122 158 145 147
+         C167 137 191 138 216 148
+         V169H4Z"
+      fill="#9DDECB"
+    />
+
+    <!-- N Seoul Tower -->
+    <g
+      stroke="#403653"
+      stroke-width="3"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    >
+      <!-- Antenna -->
+      <path
+        d="M72 37V57"
+        fill="none"
+      />
+
+      <path
+        d="M68 43H76M69 49H75"
+        fill="none"
+        stroke="#FF87AF"
+        stroke-width="2"
+      />
+
+      <!-- Observation top -->
+      <path
+        d="M63 58
+           C66 54 78 54 81 58
+           L79 68
+           C76 72 68 72 65 68Z"
+        fill="#F588AB"
+      />
+
+      <rect
+        x="64"
+        y="59"
+        width="16"
+        height="6"
+        rx="3"
+        fill="#FFD36B"
+      />
+
+      <path
+        d="M66 72H78L76 79H68Z"
+        fill="#8FDCC8"
+      />
+
+      <!-- Tower body -->
+      <path
+        d="M69 79H75
+           L80 139H64Z"
+        fill="#F7F3FF"
+      />
+
+      <path
+        d="M72 79V139"
+        fill="none"
+        stroke="#B1A3E2"
+        stroke-width="2"
+      />
+
+      <path
+        d="M67 105H77M66 118H78"
+        fill="none"
+        stroke="#B1A3E2"
+        stroke-width="2"
+      />
+
+      <!-- Tower base -->
+      <path
+        d="M59 139H85L89 148H55Z"
+        fill="#7865B5"
+      />
+
+      <path
+        d="M61 139L67 128M83 139L77 128"
+        fill="none"
+      />
+    </g>
+
+    <!-- Traditional Korean palace -->
+    <g
+      stroke="#403653"
+      stroke-width="3"
+      stroke-linejoin="round"
+    >
+      <!-- Rear roof -->
+      <path
+        d="M66 115
+           C81 112 92 106 99 98
+           C106 105 117 111 133 115
+           L128 122H71Z"
+        fill="#566F81"
+      />
+
+      <path
+        d="M72 115H128"
+        fill="none"
+        stroke="#FFD26C"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+
+      <circle cx="68" cy="115" r="3" fill="#F183A8"/>
+      <circle cx="132" cy="115" r="3" fill="#F183A8"/>
+
+      <!-- Upper floor -->
+      <rect
+        x="78"
+        y="121"
+        width="44"
+        height="24"
+        rx="2"
+        fill="#F7B6C8"
+      />
+
+      <rect
+        x="83"
+        y="125"
+        width="9"
+        height="16"
+        fill="#FFF8ED"
+      />
+
+      <rect
+        x="96"
+        y="125"
+        width="9"
+        height="16"
+        fill="#FFF8ED"
+      />
+
+      <rect
+        x="109"
+        y="125"
+        width="8"
+        height="16"
+        fill="#FFF8ED"
+      />
+
+      <path
+        d="M87.5 125V141
+           M100.5 125V141
+           M113 125V141"
+        fill="none"
+        stroke="#8B76C7"
+        stroke-width="1.5"
+      />
+
+      <!-- Main roof -->
+      <path
+        d="M55 145
+           C72 141 86 134 94 125
+           C99 130 104 130 109 125
+           C117 134 132 141 149 145
+           L141 154H63Z"
+        fill="#526E7F"
+      />
+
+      <path
+        d="M63 145H141"
+        fill="none"
+        stroke="#FFD26C"
+        stroke-width="5"
+        stroke-linecap="round"
+      />
+
+      <circle cx="58" cy="145" r="3.5" fill="#F183A8"/>
+      <circle cx="146" cy="145" r="3.5" fill="#F183A8"/>
+
+      <!-- Palace lower wall -->
+      <rect
+        x="67"
+        y="153"
+        width="70"
+        height="24"
+        rx="2"
+        fill="#F4A5B9"
+      />
+
+      <!-- Palace columns -->
+      <path
+        d="M75 153V177
+           M88 153V177
+           M102 153V177
+           M116 153V177
+           M129 153V177"
+        fill="none"
+        stroke="#567C70"
+        stroke-width="5"
+      />
+
+      <!-- Palace doors -->
+      <rect
+        x="91"
+        y="156"
+        width="22"
+        height="21"
+        fill="#FFF4E8"
+      />
+
+      <path
+        d="M102 156V177
+           M91 166H113"
+        fill="none"
+        stroke="#9B87D6"
+        stroke-width="2"
+      />
+
+      <!-- Palace base -->
+      <path
+        d="M62 177H142"
+        fill="none"
+        stroke="#FFD26C"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+    </g>
+
+    <!-- Hanbok character -->
+    <g
+      stroke="#403653"
+      stroke-width="3"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    >
+      <!-- Hair bun -->
+      <circle
+        cx="169"
+        cy="106"
+        r="10"
+        fill="#4B3B54"
+      />
+
+      <circle
+        cx="169"
+        cy="99"
+        r="6"
+        fill="#4B3B54"
+      />
+
+      <!-- Hair decoration -->
+      <path
+        d="M163 98L169 93L175 98"
+        fill="#FFD26C"
+      />
+
+      <circle
+        cx="169"
+        cy="93"
+        r="3"
+        fill="#FF8DB1"
+      />
+
+      <!-- Head -->
+      <circle
+        cx="169"
+        cy="116"
+        r="15"
+        fill="#FFF2E7"
+      />
+
+      <!-- Hair framing -->
+      <path
+        d="M155 114
+           C155 101 162 98 169 98
+           C178 98 184 105 184 115
+           C180 109 175 106 169 106
+           C163 106 159 109 155 114Z"
+        fill="#4B3B54"
+      />
+
+      <!-- Ears -->
+      <circle
+        cx="155"
+        cy="118"
+        r="3"
+        fill="#FFF2E7"
+      />
+
+      <circle
+        cx="183"
+        cy="118"
+        r="3"
+        fill="#FFF2E7"
+      />
+
+      <!-- Face -->
+      <path
+        d="M161 118
+           C163 116 165 116 167 118
+           M172 118
+           C174 116 176 116 178 118"
+        fill="none"
+        stroke-width="2"
+      />
+
+      <path
+        d="M166 126
+           C168 128 171 128 173 126"
+        fill="none"
+        stroke="#E7799C"
+        stroke-width="2"
+      />
+
+      <!-- Cheeks -->
+      <ellipse
+        cx="160"
+        cy="124"
+        rx="4"
+        ry="2"
+        fill="#FFADC3"
+        stroke="none"
+      />
+
+      <ellipse
+        cx="178"
+        cy="124"
+        rx="4"
+        ry="2"
+        fill="#FFADC3"
+        stroke="none"
+      />
+
+      <!-- Hanbok jeogori -->
+      <path
+        d="M151 137
+           C156 132 162 130 169 130
+           C176 130 182 132 187 137
+           L184 153H154Z"
+        fill="#FFF5E8"
+      />
+
+      <!-- Pink sleeves -->
+      <path
+        d="M154 136
+           C146 139 141 145 140 153
+           L151 157L161 143Z"
+        fill="#FF9FBC"
+      />
+
+      <path
+        d="M184 136
+           C192 139 197 145 198 153
+           L187 157L177 143Z"
+        fill="#FF9FBC"
+      />
+
+      <!-- Hands -->
+      <circle
+        cx="145"
+        cy="154"
+        r="4"
+        fill="#FFF2E7"
+      />
+
+      <circle
+        cx="193"
+        cy="154"
+        r="4"
+        fill="#FFF2E7"
+      />
+
+      <!-- Collar -->
+      <path
+        d="M159 133L169 144L179 133"
+        fill="none"
+        stroke="#7CCFB9"
+        stroke-width="5"
+      />
+
+      <path
+        d="M169 144L181 151"
+        fill="none"
+        stroke="#F0789C"
+        stroke-width="4"
+      />
+
+      <!-- Hanbok ribbon -->
+      <path
+        d="M178 145
+           C184 147 186 151 183 156
+           C180 153 176 151 173 151Z"
+        fill="#FFD26C"
+      />
+
+      <!-- Hanbok skirt -->
+      <path
+        d="M154 151
+           C158 147 180 147 184 151
+           C188 163 191 174 193 185
+           H145
+           C147 174 150 163 154 151Z"
+        fill="#92DCC8"
+      />
+
+      <!-- Skirt shading -->
+      <path
+        d="M169 153V183
+           M158 155L154 182
+           M180 155L184 182"
+        fill="none"
+        stroke="#BDEBDD"
+        stroke-width="3"
+      />
+
+      <!-- Skirt waist -->
+      <path
+        d="M153 153
+           C161 156 177 156 185 153"
+        fill="none"
+        stroke="#6EBAA6"
+        stroke-width="4"
+      />
+    </g>
+
+    <!-- Mugunghwa branch -->
+    <g
+      stroke="#403653"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path
+        d="M28 119
+           C35 108 41 96 45 82
+           M36 103L25 96
+           M41 94L53 87"
+        fill="none"
+        stroke="#92706D"
+        stroke-width="4"
+      />
+
+      <!-- Flower 1 -->
+      <g transform="translate(25 94)">
+        <ellipse
+          cx="0"
+          cy="-6"
+          rx="5"
+          ry="8"
+          fill="#FF9EBB"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="6"
+          cy="-1"
+          rx="5"
+          ry="8"
+          transform="rotate(72 6 -1)"
+          fill="#FF9EBB"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="4"
+          cy="7"
+          rx="5"
+          ry="8"
+          transform="rotate(144 4 7)"
+          fill="#FF9EBB"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="-4"
+          cy="7"
+          rx="5"
+          ry="8"
+          transform="rotate(216 -4 7)"
+          fill="#FF9EBB"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="-6"
+          cy="-1"
+          rx="5"
+          ry="8"
+          transform="rotate(288 -6 -1)"
+          fill="#FF9EBB"
+          stroke-width="2"
+        />
+        <circle
+          cx="0"
+          cy="1"
+          r="4"
+          fill="#D95D91"
+          stroke-width="2"
+        />
+        <circle
+          cx="0"
+          cy="1"
+          r="1.5"
+          fill="#FFD26C"
+          stroke="none"
+        />
+      </g>
+
+      <!-- Flower 2 -->
+      <g transform="translate(53 84) scale(.85)">
+        <ellipse
+          cx="0"
+          cy="-6"
+          rx="5"
+          ry="8"
+          fill="#FFB1C8"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="6"
+          cy="-1"
+          rx="5"
+          ry="8"
+          transform="rotate(72 6 -1)"
+          fill="#FFB1C8"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="4"
+          cy="7"
+          rx="5"
+          ry="8"
+          transform="rotate(144 4 7)"
+          fill="#FFB1C8"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="-4"
+          cy="7"
+          rx="5"
+          ry="8"
+          transform="rotate(216 -4 7)"
+          fill="#FFB1C8"
+          stroke-width="2"
+        />
+        <ellipse
+          cx="-6"
+          cy="-1"
+          rx="5"
+          ry="8"
+          transform="rotate(288 -6 -1)"
+          fill="#FFB1C8"
+          stroke-width="2"
+        />
+        <circle
+          cx="0"
+          cy="1"
+          r="4"
+          fill="#D95D91"
+          stroke-width="2"
+        />
+        <circle
+          cx="0"
+          cy="1"
+          r="1.5"
+          fill="#FFD26C"
+          stroke="none"
+        />
+      </g>
+
+      <!-- Leaves -->
+      <path
+        d="M36 104
+           C27 105 24 112 25 117
+           C32 117 38 113 36 104Z"
+        fill="#80CDB8"
+        stroke-width="2"
+      />
+
+      <path
+        d="M42 94
+           C47 95 53 92 56 87
+           C50 84 44 87 42 94Z"
+        fill="#80CDB8"
+        stroke-width="2"
+      />
+    </g>
+
+    <!-- Taegeuk-style decorative circle -->
+    <g transform="translate(190 116)">
+      <circle
+        cx="0"
+        cy="0"
+        r="10"
+        fill="#FFFFFF"
+        stroke="#403653"
+        stroke-width="2.5"
+      />
+
+      <path
+        d="M0 -8
+           A8 8 0 0 1 0 8
+           A4 4 0 0 1 0 0
+           A4 4 0 0 0 0 -8Z"
+        fill="#F0789C"
+        stroke="none"
+      />
+
+      <path
+        d="M0 8
+           A8 8 0 0 1 0 -8
+           A4 4 0 0 1 0 0
+           A4 4 0 0 0 0 8Z"
+        fill="#6D8ED7"
+        stroke="none"
+      />
+    </g>
+
+    <!-- Decorative stars -->
+    <g
+      fill="#FFD26C"
+      stroke="#403653"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+    >
+      <path
+        d="M29 129
+           L33 137
+           L42 138
+           L35 144
+           L37 153
+           L29 149
+           L21 153
+           L23 144
+           L16 138
+           L25 137Z"
+      />
+
+      <path
+        d="M196 137
+           L199 143
+           L206 144
+           L201 149
+           L202 156
+           L196 153
+           L190 156
+           L191 149
+           L186 144
+           L193 143Z"
+      />
+    </g>
+
+    <!-- Loose petals -->
+    <g fill="#FF8FB2">
+      <ellipse
+        cx="44"
+        cy="126"
+        rx="5"
+        ry="2.5"
+        transform="rotate(28 44 126)"
+      />
+
+      <ellipse
+        cx="202"
+        cy="105"
+        rx="5"
+        ry="2.5"
+        transform="rotate(-28 202 105)"
+      />
+
+      <ellipse
+        cx="35"
+        cy="163"
+        rx="5"
+        ry="2.5"
+        transform="rotate(-35 35 163)"
+      />
+    </g>
+  </g>
+
+  <!-- Inner dashed border -->
+  <circle
+    cx="110"
+    cy="110"
+    r="88"
+    fill="none"
+    stroke="#FF84AD"
+    stroke-width="3.5"
+    stroke-dasharray="8 6"
+    stroke-linecap="round"
+  />
+
+
+
+  <!-- Trip label -->
+  <g>
+    <rect
+      x="67"
+      y="149"
+      width="116"
+      height="31"
+      rx="15.5"
+      fill="#403653"
+    />
+
+    <rect
+      x="71"
+      y="153"
+      width="108"
+      height="23"
+      rx="11.5"
+      fill="#9986E5"
+    />
+
+    <text
+      x="125"
+      y="170"
+      text-anchor="middle"
+      fill="#FFFFFF"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="14"
+      font-weight="900"
+      letter-spacing="1"
+    >TRIP 03</text>
+  </g>
+
+  <!-- Bottom Korea ribbon -->
+  <g
+    stroke="#403653"
+    stroke-width="4"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M48 179
+         H169
+         L181 192
+         L169 205
+         H48
+         L37 192Z"
+      fill="#FF82AA"
+    />
+
+    <path
+      d="M169 179
+         L181 192
+         L169 205Z"
+      fill="#E96792"
+    />
+
+    <path
+      d="M48 179
+         L37 192
+         L48 205Z"
+      fill="#E96792"
+    />
+  </g>
+
+  <text
+    x="109"
+    y="198"
+    text-anchor="middle"
+    fill="#FFFFFF"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="16"
+    font-weight="900"
+    letter-spacing="1.8"
+  >KOREA</text>
+</svg>

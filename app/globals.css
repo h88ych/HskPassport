@@ -408,17 +408,20 @@ h3 {
   position: absolute;
   right: -5px;
   bottom: 10px;
+  width: 46px;
+  height: 46px;
   transform: rotate(8deg);
-  border: 2px solid #5abb9a;
-  color: #3eaa89;
-  padding: 4px 7px;
-  border-radius: 6px;
-  font: 900 10px Nunito;
-  text-align: center;
-  background: #dffff2;
+  filter: drop-shadow(0 3px 0 rgba(43, 37, 64, 0.12));
 }
 .stamp small {
   font-family: inherit;
+}
+.trip-tag {
+  display: inline-block;
+  margin-top: 2px;
+  font: 800 10px Nunito;
+  letter-spacing: 0.02em;
+  color: var(--muted);
 }
 .side-column {
   display: flex;
@@ -808,14 +811,16 @@ h3 {
 }
 .exam-start,
 .result-card {
-  background: var(--yellow);
+  background: #fff38a;
   border-radius: 24px;
   text-align: center;
   padding: 34px;
 }
 .large-medal {
-  font-size: 52px;
-  margin-bottom: 10px;
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 10px;
+  filter: drop-shadow(0 4px 0 rgba(43, 37, 64, 0.1));
 }
 .exam-start h3,
 .result-card h3 {
@@ -3127,17 +3132,9 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
 .stamp-item.locked {
   opacity: 0.55;
 }
-.stamp-badge {
-  position: absolute;
-  top: -9px;
-  right: -8px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--yellow);
-  border: 2px solid #8b7200;
-  display: grid;
-  place-items: center;
+.stamp-item-emblem {
+  width: 34px;
+  height: 34px;
 }
 .stamp-target {
   font: 900 20px Nunito;
@@ -3163,11 +3160,11 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
 .world-collage {
   position: absolute;
   inset: -28px -28px auto;
-  height: 220px;
+  height: 224px;
   z-index: -1;
   overflow: hidden;
   border-radius: 30px;
-  opacity: 0.32;
+  /* opacity: 0.32; */
   pointer-events: none;
   mask-image: linear-gradient(to bottom, black 0%, transparent 95%);
 }
@@ -3193,24 +3190,19 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   left: -18vw;
   right: -18vw;
   bottom: -28px;
-  height: min(42vh, 330px);
+  height: 100%;
   overflow: hidden;
   pointer-events: none;
-  opacity: 0.9;
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 28%,
-    black 86%,
-    transparent 100%
-  );
+  opacity: 0.5;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 100%);
 }
 .trip-art img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center bottom;
-  mix-blend-mode: multiply;
+  /* เปลี่ยนจาก center bottom เพื่อดันรูปลงมาและซ่อนส่วนล่างสุด */
+  object-position: center 50%;
+  mix-blend-mode: soft-light;
 }
 .trip-art-caption {
   position: absolute;

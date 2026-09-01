@@ -1,0 +1,706 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 220 220"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">Trip 02 Japan Stamp</title>
+  <desc id="desc">
+    A colorful pastel Japan stamp with Mount Fuji, a pagoda,
+    cherry blossoms, and a lucky cat.
+  </desc>
+
+  <!-- Defs for clipping -->
+  <defs>
+    <clipPath id="japanFoothillsClip">
+      <circle cx="110" cy="110" r="96.5"/>
+    </clipPath>
+  </defs>
+
+  <!-- White backing -->
+  <circle
+    cx="110"
+    cy="110"
+    r="104"
+    fill="#FFFFFF"
+  />
+
+  <!-- Main stamp -->
+  <circle
+    cx="110"
+    cy="110"
+    r="100"
+    fill="#F8F5FF"
+    stroke="#A38AF5"
+    stroke-width="7"
+  />
+
+  <!-- Dotted texture -->
+  <g fill="#DCD5EC" opacity="0.42">
+    <circle cx="33" cy="38" r="1.5"/>
+    <circle cx="55" cy="27" r="1.5"/>
+    <circle cx="82" cy="38" r="1.5"/>
+    <circle cx="109" cy="27" r="1.5"/>
+    <circle cx="140" cy="36" r="1.5"/>
+    <circle cx="169" cy="29" r="1.5"/>
+    <circle cx="191" cy="49" r="1.5"/>
+    <circle cx="27" cy="70" r="1.5"/>
+    <circle cx="52" cy="61" r="1.5"/>
+    <circle cx="80" cy="71" r="1.5"/>
+    <circle cx="111" cy="60" r="1.5"/>
+    <circle cx="142" cy="69" r="1.5"/>
+    <circle cx="177" cy="65" r="1.5"/>
+    <circle cx="198" cy="84" r="1.5"/>
+    <circle cx="29" cy="104" r="1.5"/>
+    <circle cx="58" cy="97" r="1.5"/>
+    <circle cx="91" cy="105" r="1.5"/>
+    <circle cx="122" cy="94" r="1.5"/>
+    <circle cx="154" cy="105" r="1.5"/>
+    <circle cx="188" cy="99" r="1.5"/>
+    <circle cx="28" cy="137" r="1.5"/>
+    <circle cx="59" cy="129" r="1.5"/>
+    <circle cx="91" cy="138" r="1.5"/>
+    <circle cx="124" cy="128" r="1.5"/>
+    <circle cx="158" cy="138" r="1.5"/>
+    <circle cx="190" cy="130" r="1.5"/>
+  </g>
+
+  <!-- Inner dashed ring -->
+  <circle
+    cx="110"
+    cy="110"
+    r="88"
+    fill="none"
+    stroke="#FF88AE"
+    stroke-width="3.5"
+    stroke-dasharray="8 6"
+    stroke-linecap="round"
+  />
+  
+  
+
+  <!-- Pink sun -->
+  <circle
+    cx="166"
+    cy="66"
+    r="28"
+    fill="#FFABC1"
+  />
+
+  <circle
+    cx="166"
+    cy="66"
+    r="20"
+    fill="#FFBDD0"
+    opacity="0.65"
+  />
+
+  <!-- Clouds -->
+  <g
+    fill="#FFFFFF"
+    stroke="#44395D"
+    stroke-width="2.5"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M23 83
+         C24 75 30 70 38 70
+         C44 70 49 73 52 78
+         C55 75 59 74 63 74
+         C71 74 77 79 78 86
+         H23Z"
+    />
+
+    <path
+      d="M154 92
+         C156 85 161 81 168 81
+         C174 81 178 84 181 89
+         C184 87 187 86 191 86
+         C198 86 203 91 204 97
+         H153Z"
+    />
+  </g>
+
+  <!-- Mount Fuji -->
+  <g stroke="#342B4B" stroke-linejoin="round">
+    <!-- Mountain body -->
+    <path
+      d="M67 143L132 58L199 143Z"
+      fill="#A99AE4"
+      stroke-width="4"
+    />
+
+    <!-- Mountain shaded side -->
+    <path
+      d="M132 58L199 143H153
+         C151 122 143 91 132 58Z"
+      fill="#8876C8"
+      stroke="none"
+    />
+
+    <!-- Snow cap -->
+    <path
+      d="M105 93L132 58L161 95
+         L151 90
+         L144 101
+         L134 89
+         L124 103
+         L116 90Z"
+      fill="#FFFFFF"
+      stroke-width="3"
+    />
+
+    <!-- Snow detail -->
+    <path
+      d="M132 63L128 88L134 84L144 96L151 90"
+      fill="none"
+      stroke="#E8E2FA"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+
+    <!-- Mountain details -->
+    <path
+      d="M88 139L113 105"
+      fill="none"
+      stroke="#C9C0EE"
+      stroke-width="4"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M176 139L153 107"
+      fill="none"
+      stroke="#7664B4"
+      stroke-width="4"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <!-- Mint foothills clipped to stay within circle -->
+  <g clip-path="url(#japanFoothillsClip)">
+    <path
+      d="M13 137
+         C38 125 60 127 80 138
+         C104 151 128 151 150 139
+         C171 128 190 129 207 138
+         V165H13Z"
+      fill="#C7EFE4"
+      stroke="#342B4B"
+      stroke-width="3"
+      stroke-linejoin="round"
+    />
+
+    <path
+      d="M13 151
+         C40 141 63 144 84 153
+         C106 163 132 163 154 152
+         C174 142 192 144 207 150
+         V170H13Z"
+      fill="#9EDDCB"
+    />
+  </g>
+
+  <!-- Pagoda -->
+  <g
+    stroke="#342B4B"
+    stroke-width="3"
+    stroke-linejoin="round"
+  >
+    <!-- Finial -->
+    <path
+      d="M83 53V42M78 47H88"
+      fill="none"
+      stroke-linecap="round"
+    />
+
+    <circle
+      cx="83"
+      cy="40"
+      r="3.5"
+      fill="#FFD469"
+    />
+
+    <!-- Top floor -->
+    <rect
+      x="72"
+      y="59"
+      width="22"
+      height="20"
+      rx="2"
+      fill="#FFC3D2"
+    />
+
+    <rect
+      x="76"
+      y="64"
+      width="6"
+      height="12"
+      rx="1"
+      fill="#8FE0C7"
+    />
+
+    <rect
+      x="84"
+      y="64"
+      width="6"
+      height="12"
+      rx="1"
+      fill="#8FE0C7"
+    />
+
+    <!-- Top roof -->
+    <path
+      d="M60 59
+         C69 57 76 51 79 45
+         C82 48 85 48 88 45
+         C91 51 98 57 107 59
+         L102 66H65Z"
+      fill="#705AA8"
+    />
+
+    <path
+      d="M65 59H102"
+      fill="none"
+      stroke="#FFD469"
+      stroke-width="4"
+      stroke-linecap="round"
+    />
+
+    <!-- Middle floor -->
+    <rect
+      x="66"
+      y="84"
+      width="34"
+      height="25"
+      rx="2"
+      fill="#8FE0C7"
+    />
+
+    <rect
+      x="71"
+      y="89"
+      width="9"
+      height="16"
+      rx="1"
+      fill="#FFF4EE"
+    />
+
+    <rect
+      x="86"
+      y="89"
+      width="9"
+      height="16"
+      rx="1"
+      fill="#FFF4EE"
+    />
+
+    <!-- Middle roof -->
+    <path
+      d="M52 84
+         C65 81 74 74 78 66
+         C82 69 86 69 90 66
+         C94 74 103 81 116 84
+         L110 92H58Z"
+      fill="#705AA8"
+    />
+
+    <path
+      d="M58 84H110"
+      fill="none"
+      stroke="#FFD469"
+      stroke-width="4"
+      stroke-linecap="round"
+    />
+
+    <circle cx="55" cy="84" r="3" fill="#FFD469"/>
+    <circle cx="113" cy="84" r="3" fill="#FFD469"/>
+
+    <!-- Lower floor -->
+    <rect
+      x="59"
+      y="115"
+      width="49"
+      height="35"
+      rx="2"
+      fill="#F491B0"
+    />
+
+    <!-- Lower windows -->
+    <rect
+      x="65"
+      y="121"
+      width="10"
+      height="20"
+      rx="2"
+      fill="#FFF4EE"
+    />
+
+    <rect
+      x="92"
+      y="121"
+      width="10"
+      height="20"
+      rx="2"
+      fill="#FFF4EE"
+    />
+
+    <path
+      d="M70 121V141M97 121V141"
+      fill="none"
+      stroke="#D7C9EE"
+      stroke-width="2"
+    />
+
+    <!-- Lower roof -->
+    <path
+      d="M44 115
+         C60 111 72 103 77 94
+         C81 98 87 98 91 94
+         C96 103 108 111 124 115
+         L117 124H51Z"
+      fill="#705AA8"
+    />
+
+    <path
+      d="M51 115H117"
+      fill="none"
+      stroke="#FFD469"
+      stroke-width="5"
+      stroke-linecap="round"
+    />
+
+    <circle cx="47" cy="115" r="3.5" fill="#FFD469"/>
+    <circle cx="121" cy="115" r="3.5" fill="#FFD469"/>
+
+    <!-- Door -->
+    <path
+      d="M77 150V135
+         C77 129 80 126 84 126
+         C88 126 91 129 91 135
+         V150Z"
+      fill="#E7E0F8"
+    />
+
+    <path
+      d="M84 127V150"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="2"
+    />
+
+    <!-- Building base -->
+    <path
+      d="M55 150H112"
+      fill="none"
+      stroke="#FFD469"
+      stroke-width="5"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <!-- Lucky cat -->
+  <g
+    stroke="#342B4B"
+    stroke-width="3"
+    stroke-linejoin="round"
+  >
+    <!-- Tail -->
+    <path
+      d="M170 131
+         C184 123 188 137 178 143"
+      fill="none"
+      stroke="#FFFDF8"
+      stroke-width="11"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M170 131
+         C184 123 188 137 178 143"
+      fill="none"
+      stroke="#342B4B"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+
+    <!-- Body -->
+    <ellipse
+      cx="155"
+      cy="135"
+      rx="24"
+      ry="27"
+      fill="#FFFDF8"
+    />
+
+    <!-- Mint clothing -->
+    <path
+      d="M135 135
+         C138 121 145 116 155 116
+         C165 116 172 122 175 135
+         L172 153H138Z"
+      fill="#91DFC8"
+    />
+
+    <path
+      d="M139 132H171"
+      fill="none"
+      stroke="#FFFFFF"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+
+    <!-- Head and ears -->
+    <path
+      d="M134 105L139 90L149 98
+         C153 97 157 97 161 98
+         L171 90L175 106
+         C180 113 180 122 176 129
+         C172 138 164 142 155 142
+         C145 142 137 138 132 129
+         C128 121 129 112 134 105Z"
+      fill="#FFFDF8"
+    />
+
+    <!-- Inner ears -->
+    <path
+      d="M140 95L142 104L149 99Z"
+      fill="#FFABC1"
+      stroke="none"
+    />
+
+    <path
+      d="M170 95L168 104L161 99Z"
+      fill="#FFABC1"
+      stroke="none"
+    />
+
+    <!-- Gold markings -->
+    <path
+      d="M147 99L150 110M163 99L160 110"
+      fill="none"
+      stroke="#FFD469"
+      stroke-width="5"
+      stroke-linecap="round"
+    />
+
+    <!-- Face -->
+    <path
+      d="M141 118C144 115 148 115 151 118
+         M160 118C163 115 167 115 170 118"
+      fill="none"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M152 124L155 126L158 124
+         M155 126V129
+         M149 131C152 135 158 135 161 131"
+      fill="none"
+      stroke-linecap="round"
+    />
+
+    <!-- Cheeks -->
+    <ellipse
+      cx="137"
+      cy="127"
+      rx="5"
+      ry="2.5"
+      fill="#FFABC1"
+      stroke="none"
+    />
+
+    <ellipse
+      cx="173"
+      cy="127"
+      rx="5"
+      ry="2.5"
+      fill="#FFABC1"
+      stroke="none"
+    />
+
+    <!-- Raised paw -->
+    <path
+      d="M171 135
+         C179 129 180 118 178 108"
+      fill="none"
+      stroke="#FFFDF8"
+      stroke-width="12"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M171 135
+         C179 129 180 118 178 108"
+      fill="none"
+      stroke="#342B4B"
+      stroke-width="3"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M174 108C177 105 181 105 184 108"
+      fill="none"
+      stroke-linecap="round"
+    />
+
+    <!-- Collar -->
+    <path
+      d="M134 137
+         C144 142 166 142 176 137"
+      fill="none"
+      stroke="#F47FA5"
+      stroke-width="6"
+      stroke-linecap="round"
+    />
+
+    <!-- Bell -->
+    <circle
+      cx="155"
+      cy="143"
+      r="6"
+      fill="#FFD469"
+    />
+
+    <path
+      d="M152 143H158"
+      fill="none"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </g>
+
+  <!-- Cherry blossom branch -->
+  <g stroke="#342B4B" stroke-linecap="round">
+    <path
+      d="M185 111
+         C192 99 197 88 202 76
+         M194 94L184 86
+         M198 86L198 76"
+      fill="none"
+      stroke="#936B6C"
+      stroke-width="4"
+    />
+
+    <g fill="#FFABC1" stroke-width="2">
+      <circle cx="184" cy="86" r="7"/>
+      <circle cx="198" cy="76" r="7"/>
+      <circle cx="204" cy="74" r="6"/>
+      <circle cx="194" cy="94" r="7"/>
+    </g>
+
+    <g fill="#FFFFFF" stroke="none">
+      <circle cx="184" cy="86" r="2"/>
+      <circle cx="198" cy="76" r="2"/>
+      <circle cx="204" cy="74" r="2"/>
+      <circle cx="194" cy="94" r="2"/>
+    </g>
+  </g>
+
+  <!-- Decorative stars -->
+  <g
+    fill="#FFD469"
+    stroke="#342B4B"
+    stroke-width="3"
+    stroke-linejoin="round"
+  >
+    <path
+      d="M30 87L34 95L43 96L36 102
+         L38 111L30 107L22 111L24 102
+         L17 96L26 95Z"
+    />
+
+    <path
+      d="M190 133L194 141L203 142L196 148
+         L198 157L190 153L182 157L184 148
+         L177 142L186 141Z"
+    />
+  </g>
+
+  <!-- Trip label -->
+  <g>
+    <rect
+      x="68"
+      y="148"
+      width="116"
+      height="31"
+      rx="15.5"
+      fill="#342B4B"
+    />
+
+    <rect
+      x="72"
+      y="152"
+      width="108"
+      height="23"
+      rx="11.5"
+      fill="#A991F1"
+    />
+
+    <text
+      x="126"
+      y="169"
+      text-anchor="middle"
+      fill="#FFFFFF"
+      font-family="Arial, Helvetica, sans-serif"
+      font-size="14"
+      font-weight="900"
+      letter-spacing="1"
+    >
+      TRIP 02
+    </text>
+  </g>
+
+  <!-- Japan ribbon -->
+  <g stroke="#342B4B" stroke-width="4" stroke-linejoin="round">
+    <path
+      d="M48 179H169L180 192L169 205H48L38 192Z"
+      fill="#FF82AA"
+    />
+
+    <path
+      d="M169 179L180 192L169 205Z"
+      fill="#E96591"
+    />
+  </g>
+
+  <text
+    x="108"
+    y="198"
+    text-anchor="middle"
+    fill="#FFFFFF"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="16"
+    font-weight="900"
+    letter-spacing="1.8"
+  >
+    JAPAN
+  </text>
+
+  <!-- Loose petals -->
+  <g fill="#FF82AA">
+    <ellipse
+      cx="32"
+      cy="127"
+      rx="5"
+      ry="2.5"
+      transform="rotate(28 32 127)"
+    />
+
+    <ellipse
+      cx="190"
+      cy="116"
+      rx="5"
+      ry="2.5"
+      transform="rotate(-25 190 116)"
+    />
+
+    <ellipse
+      cx="46"
+      cy="161"
+      rx="5"
+      ry="2.5"
+      transform="rotate(-30 46 161)"
+    />
+  </g>
+</svg>

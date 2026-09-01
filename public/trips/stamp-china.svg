@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-labelledby="stampChinaTitle stampChinaDesc">
+  <title id="stampChinaTitle">Trip 01 China Passport Stamp</title>
+  <desc id="stampChinaDesc">A collectible pastel passport stamp featuring a panda, Chinese gate and lantern.</desc>
+  <defs>
+    <linearGradient id="stampChinaBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF8FC"/>
+      <stop offset=".55" stop-color="#F5F1FF"/>
+      <stop offset="1" stop-color="#E4FBF3"/>
+    </linearGradient>
+    <linearGradient id="stampChinaRoof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF9AB7"/>
+      <stop offset="1" stop-color="#EE779B"/>
+    </linearGradient>
+    <filter id="stampChinaShadow" x="-25%" y="-25%" width="150%" height="165%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#665B88" flood-opacity=".18"/>
+    </filter>
+    <pattern id="stampChinaTexture" width="17" height="17" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="4" r="1.2" fill="#2B2540" opacity=".08"/>
+      <circle cx="13" cy="11" r=".9" fill="#2B2540" opacity=".07"/>
+    </pattern>
+    <clipPath id="stampChinaClip">
+      <circle cx="110" cy="110" r="96.5"/>
+    </clipPath>
+  </defs>
+
+  <!-- Collectible stamp base (Matched sizes to Japan stamp) -->
+  <circle cx="110" cy="110" r="104" fill="#FFFFFF" filter="url(#stampChinaShadow)"/>
+  <circle cx="110" cy="110" r="100" fill="url(#stampChinaBg)" stroke="#A38AF5" stroke-width="7"/>
+  <circle cx="110" cy="110" r="88" fill="none" stroke="#FF88AE" stroke-width="3.5" stroke-dasharray="8 6" stroke-linecap="round"/>
+  <circle cx="110" cy="110" r="78" fill="#FFFFFF" opacity=".42"/>
+  
+  <!-- Content inside the border (Clipped) -->
+  <g clip-path="url(#stampChinaClip)">
+    <rect x="8" y="8" width="204" height="204" fill="url(#stampChinaTexture)"/>
+    <path d="M9 150C47 130 75 140 109 153C143 166 177 160 212 140V218H8Z" fill="#DDF8EE"/>
+    <circle cx="36" cy="61" r="18" fill="#FFD166" opacity=".24"/>
+    <circle cx="185" cy="70" r="25" fill="#FFBFD1" opacity=".26"/>
+
+    <!-- Traditional gate -->
+    <g transform="translate(60 50)" stroke="#2B2540" stroke-width="4" stroke-linejoin="round">
+      <path d="M16 48h68v53H16Z" fill="#FFB199"/>
+      <path d="M27 63h46v38H27Z" fill="#F5F1FF"/>
+      <path d="M7 46C20 42 28 34 31 24C42 30 59 30 70 24C74 35 82 42 94 46L88 55H13Z" fill="url(#stampChinaRoof)"/>
+      <path d="M15 46h72" fill="none" stroke="#FFD166" stroke-width="6" stroke-linecap="round"/>
+      <path d="M30 24h40v23H30Z" fill="#FFF8F2"/>
+      <path d="M23 22C33 19 38 13 40 7C47 11 56 11 63 7C65 14 71 19 78 22L74 28H27Z" fill="#FFB199"/>
+      <rect x="38" y="29" width="25" height="12" rx="4" fill="#B49CFF"/>
+      <path d="M45 35h11" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+    </g>
+
+    <!-- Panda face -->
+    <g transform="translate(25 106)" stroke="#2B2540" stroke-width="4">
+      <circle cx="16" cy="15" r="11" fill="#2B2540"/>
+      <circle cx="53" cy="15" r="11" fill="#2B2540"/>
+      <circle cx="35" cy="31" r="28" fill="#FFFFFF"/>
+      <ellipse cx="24" cy="30" rx="8" ry="11" fill="#2B2540" transform="rotate(22 24 30)"/>
+      <ellipse cx="46" cy="30" rx="8" ry="11" fill="#2B2540" transform="rotate(-22 46 30)"/>
+      <circle cx="26" cy="28" r="2.5" fill="#FFFFFF" stroke="none"/>
+      <circle cx="44" cy="28" r="2.5" fill="#FFFFFF" stroke="none"/>
+      <ellipse cx="35" cy="40" rx="5" ry="3.5" fill="#2B2540"/>
+      <path d="M30 47c4 4 7 4 11 0" fill="none" stroke-linecap="round"/>
+      <path d="M18 54c7 8 27 8 34 0" fill="#7FE7C4"/>
+    </g>
+
+    <!-- Hanging lantern -->
+    <g transform="translate(168 98)" stroke="#2B2540" stroke-width="4" stroke-linecap="round">
+      <path d="M0-14v15" fill="none"/>
+      <rect x="-13" width="26" height="31" rx="12" fill="#FFD166"/>
+      <path d="M-11 11h22M0 31v12" fill="none"/>
+      <circle cy="45" r="3.5" fill="#FF8FB1" stroke="none"/>
+    </g>
+
+    <!-- Tiny travel accents -->
+    <g fill="#FFD166" stroke="#2B2540" stroke-width="2.5" stroke-linejoin="round">
+      <path d="M27 88l3 6l7 1l-5 5l1 7l-6-3l-6 3l1-7l-5-5l7-1Z"/>
+      <path d="M190 132l3 6l7 1l-5 5l1 7l-6-3l-6 3l1-7l-5-5l7-1Z"/>
+    </g>
+    <g fill="#FF8FB1" opacity=".8">
+      <ellipse cx="44" cy="174" rx="5" ry="2.5" transform="rotate(-28 44 174)"/>
+      <ellipse cx="187" cy="89" rx="5" ry="2.5" transform="rotate(32 187 89)"/>
+    </g>
+
+    <!-- Clean rubber-stamp imperfections -->
+    <g fill="#2B2540" opacity=".1">
+      <circle cx="20" cy="113" r="2"/>
+      <circle cx="50" cy="42" r="1.6"/>
+      <circle cx="168" cy="39" r="2"/>
+      <circle cx="201" cy="114" r="1.7"/>
+      <circle cx="153" cy="198" r="1.8"/>
+      <path d="M79 18h13v2H79ZM126 207h16v2h-16ZM13 140h11v2H13Z"/>
+    </g>
+  </g>
+
+  <!-- Trip label (Moved outside clipPath to overlap border properly) -->
+  <g transform="translate(73 145)">
+    <rect width="113" height="27" rx="13.5" fill="#B49CFF" stroke="#2B2540" stroke-width="4"/>
+    <text x="56.5" y="18.5" text-anchor="middle" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="800" letter-spacing="1.5">TRIP 01</text>
+  </g>
+
+  <!-- Country ribbon (Moved outside clipPath to overlap border properly) -->
+  <g transform="translate(53 176)" stroke="#2B2540" stroke-width="4" stroke-linejoin="round">
+    <path d="M8 0H107V27H8L0 13.5Z" fill="#FF8FB1"/>
+    <path d="M107 0l9 13.5l-9 13.5Z" fill="#E87599"/>
+    <text x="58" y="18.5" text-anchor="middle" fill="#FFFFFF" stroke="none" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="900" letter-spacing="2.2">CHINA</text>
+  </g>
+</svg>

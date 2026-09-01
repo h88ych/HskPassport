@@ -22,49 +22,69 @@ import { useEffect, useRef, useState } from 'react'
 
 const countryByLevel: Record<
   number,
-  { flag: string; name: string; thai: string; scene: string; image: string }
+  {
+    flag: string
+    name: string
+    thai: string
+    scene: string
+    image: string
+    trip: string
+    stamp: string
+  }
 > = {
   1: {
     flag: '🇨🇳',
     name: 'China',
     thai: 'จีน',
     scene: 'โคมแดงและภูเขา',
-    image: '/trips/china.png'
+    image: '/trips/china.svg',
+    trip: 'TRIP 01',
+    stamp: '/trips/stamp-china.svg'
   },
   2: {
     flag: '🇯🇵',
     name: 'Japan',
     thai: 'ญี่ปุ่น',
     scene: 'ซากุระ โทริอิ และภูเขา',
-    image: '/trips/japan.png'
+    image: '/trips/japan.svg',
+    trip: 'TRIP 02',
+    stamp: '/trips/stamp-japan.svg'
   },
   3: {
     flag: '🇰🇷',
     name: 'Korea',
     thai: 'เกาหลี',
     scene: 'โซล ฮันอก และเมือง',
-    image: '/trips/korea.png'
+    image: '/trips/korea.svg',
+    trip: 'TRIP 03',
+    stamp: '/trips/stamp-korea.svg'
   },
   4: {
     flag: '🇹🇭',
     name: 'Thailand',
     thai: 'ไทย',
     scene: 'วัด เมืองร้อน และสายน้ำ',
-    image: '/trips/thailand.png'
+    image: '/trips/thailand.svg',
+    trip: 'TRIP 04',
+    stamp: '/trips/stamp-thailand.svg'
   },
   5: {
     flag: '🇫🇷',
     name: 'France',
     thai: 'ฝรั่งเศส',
     scene: 'ปารีส คาเฟ่ และสถาปัตยกรรม',
-    image: '/trips/france.png'
+    image: '/trips/france.svg',
+    trip: 'TRIP 05',
+    stamp: '/trips/stamp-france.svg'
   },
   6: {
     flag: '🇮🇹',
     name: 'Italy',
     thai: 'อิตาลี',
     scene: 'ศิลปะ โรม และทะเลเมดิเตอร์เรเนียน',
-    image: '/trips/italy.png'
+    image: '/trips/italy.svg',
+    trip: 'TRIP 06',
+    stamp: '/trips/stamp-italy.svg'
   }
 }
 
@@ -87,14 +107,20 @@ function Mascot({
 }
 
 function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
-  const titleMap: Record<number, string> = {
-    1: 'เริ่มต้นทริป',
-    2: 'ก้าวแรก',
-    3: 'นักสำรวจ',
-    4: 'เมืองใหม่',
-    5: 'นักเดินทาง',
-    6: 'ทั่วโลก'
+  const flagMap: Record<number, string> = {
+    1: '🐼', // China
+
+    2: '🌸', // Japan
+
+    3: '🏯', // Korea
+
+    4: '🐘', // Thailand
+
+    5: '🥐', // France
+
+    6: '🍕' // Italy
   }
+
   return (
     <section className="stamp-trail-card" aria-labelledby="stamp-trail-title">
       <div className="trail-label">
@@ -113,6 +139,7 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
           const item = levelsData.find(
             (level) => Number(level.level_number) === levelNumber
           )
+          const destination = countryByLevel[levelNumber]
           const passed = Number(item?.max_score || 0) >= 95
           const unlocked = item?.unlocked === 1 || item?.unlocked === true
           const state = passed
@@ -120,38 +147,37 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
             : unlocked || levelNumber === 1
               ? 'unlocked'
               : 'locked'
+
           return (
             <div
               className={`stamp-item ${state}`}
               key={levelNumber}
-              aria-label={`HSK ${levelNumber} ${passed ? 'ผ่านแล้ว' : state === 'unlocked' ? 'เปิดให้สอบ' : `ล็อก รอผ่าน HSK ${levelNumber - 1}`}`}
+              aria-label={`HSK ${levelNumber} ${destination.trip} ${destination.name}`}
             >
-              {passed ? (
-                <span className="stamp-badge">
-                  <Check size={14} />
+              <img
+                className="stamp-item-emblem"
+                src={destination.stamp}
+                alt=""
+                aria-hidden="true"
+                style={{
+                  filter: passed ? 'none' : 'grayscale(100%) opacity(40%)',
+                  transition: 'all 0.3s ease'
+                }}
+              />
+
+              <strong>
+                <span
+                  style={{ fontSize: '13px', marginTop: '2px', lineHeight: 1 }}
+                >
+                  {destination.name}
                 </span>
-              ) : state === 'locked' ? (
-                <LockKeyhole size={19} />
-              ) : (
-                <span className="stamp-target">95</span>
-              )}
-              <strong>HSK {levelNumber}</strong>
-              <small>
-                {passed
-                  ? 'ผ่านแล้ว'
-                  : state === 'unlocked'
-                    ? 'พร้อมสอบ'
-                    : `ผ่าน HSK ${levelNumber - 1}`}
-              </small>
-              {state === 'unlocked' && !passed && (
-                <span className="stamp-progress">
-                  <i
-                    style={{
-                      width: `${(Math.min(Number(item?.max_score || 0), 95) / 95) * 100}%`
-                    }}
-                  />
+
+                <span
+                  style={{ fontSize: '14px', marginTop: '2px', lineHeight: 1 }}
+                >
+                  {flagMap[levelNumber]}
                 </span>
-              )}
+              </strong>
             </div>
           )
         })}
@@ -223,6 +249,7 @@ function LevelCard({ item }: { item: any }) {
     6: 'ทั่วโลก'
   }
   const cardTitle = defaultTitleMap[item.level_number]
+  const destination = countryByLevel[item.level_number]
 
   return (
     <button
@@ -241,6 +268,11 @@ function LevelCard({ item }: { item: any }) {
           <span className="level-percent">{progressPercent}%</span>
         )}
       </div>
+      {destination && (
+        <span className="trip-tag" aria-hidden="true">
+          {destination.trip} · {destination.flag} {destination.name}
+        </span>
+      )}
       <div className="level-copy">
         <strong>{cardTitle}</strong>
         <span>{wordCount.toLocaleString()} คำ</span>
@@ -250,12 +282,12 @@ function LevelCard({ item }: { item: any }) {
           <span style={{ width: `${progressPercent}%` }} />
         </div>
       )}
-      {state === 'passed' && (
-        <div className="stamp">
-          PASSED
-          <br />
-          <small>ผ่านแล้ว</small>
-        </div>
+      {state === 'passed' && destination && (
+        <img
+          className="stamp"
+          src={destination.stamp}
+          alt={`ตราประทับ ${destination.trip} ${destination.name} ผ่านแล้ว`}
+        />
       )}
     </button>
   )
@@ -275,7 +307,7 @@ function Dashboard({
   return (
     <div className="dashboard-scene">
       <div className="world-collage" aria-hidden="true">
-        <img src="/trips/world-collage.png" alt="" />
+        <img src="/trips/world-collage.svg" alt="" />
       </div>
       <PassportHeader name={displayName} levelsData={levelsData} />
       <StampDisplay levelsData={levelsData} />
@@ -839,7 +871,7 @@ function QuizCard({
         <div className="trip-art" aria-hidden="true">
           <img src={country.image} alt="" />
           <div className="trip-art-caption">
-            {country.flag} {country.name} · {country.thai}
+            {country.trip} · {country.flag} {country.name} · {country.thai}
           </div>
         </div>
       )}
@@ -1404,19 +1436,19 @@ function ExamRoom({
       </div>
 
       <div className="exam-start">
-        <div className="large-medal">🏅</div>
+        <img
+          className="large-medal"
+          src={countryByLevel[selectedLevel].stamp}
+          alt={`ตราประทับ ${countryByLevel[selectedLevel].trip} ${countryByLevel[selectedLevel].name}`}
+        />
         <div className="exam-destination">
+          {countryByLevel[selectedLevel].trip} ·{' '}
           {countryByLevel[selectedLevel].flag}{' '}
           {countryByLevel[selectedLevel].name} ·{' '}
           {countryByLevel[selectedLevel].thai}
         </div>
         <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
         <p className="muted">{countryByLevel[selectedLevel].scene}</p>
-        <h3>HSK {selectedLevel} · ทริปทดสอบคำศัพท์</h3>
-        <p className="muted">
-          ดึงคำศัพท์ 100 ข้อจากระดับ HSK {selectedLevel} (คลังคำศัพท์ทั้งหมด{' '}
-          {totalWords} คำ)
-        </p>
         <button className="primary-button" onClick={() => setStarted(true)}>
           เริ่มภารกิจสอบ <ChevronRight size={17} />
         </button>

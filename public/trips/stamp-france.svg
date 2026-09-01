@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-labelledby="stampFranceTitle stampFranceDesc">
+  <title id="stampFranceTitle">Trip 05 France Passport Stamp</title>
+  <desc id="stampFranceDesc">A collectible pastel passport stamp featuring the Eiffel Tower, a cute café, a bicycle, and a croissant.</desc>
+  <defs>
+    <!-- Sky Gradient matching the pastel lavender/pink series -->
+    <linearGradient id="stampFranceBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF0F5"/>
+      <stop offset=".55" stop-color="#F5F1FF"/>
+      <stop offset="1" stop-color="#FFE4F1"/>
+    </linearGradient>
+    
+    <filter id="stampFranceShadow" x="-25%" y="-25%" width="150%" height="165%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#665B88" flood-opacity=".18"/>
+    </filter>
+    
+    <pattern id="stampFranceTexture" width="17" height="17" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="4" r="1.2" fill="#2B2540" opacity=".08"/>
+      <circle cx="13" cy="11" r=".9" fill="#2B2540" opacity=".07"/>
+    </pattern>
+    
+    <clipPath id="stampFranceClip">
+      <circle cx="110" cy="110" r="96.5"/>
+    </clipPath>
+  </defs>
+
+  <!-- Collectible stamp base (Matched sizes to Japan/China stamps) -->
+  <circle cx="110" cy="110" r="104" fill="#FFFFFF" filter="url(#stampFranceShadow)"/>
+  <circle cx="110" cy="110" r="100" fill="url(#stampFranceBg)" stroke="#A38AF5" stroke-width="7"/>
+  <circle cx="110" cy="110" r="88" fill="none" stroke="#FF88AE" stroke-width="3.5" stroke-dasharray="8 6" stroke-linecap="round"/>
+  <circle cx="110" cy="110" r="78" fill="#FFFFFF" opacity=".42"/>
+  
+  <g clip-path="url(#stampFranceClip)">
+    <!-- Base Texture overlay -->
+    <rect x="8" y="8" width="204" height="204" fill="url(#stampFranceTexture)"/>
+    
+    <!-- Clouds -->
+    <path d="M 140 45 a 10 10 0 0 1 20 -5 a 15 15 0 0 1 25 5 a 10 10 0 0 1 10 15 h -55 a 10 10 0 0 1 0 -15 Z" fill="#FFFFFF" opacity=".9"/>
+    <path d="M 20 70 a 8 8 0 0 1 16 -4 a 12 12 0 0 1 20 4 a 8 8 0 0 1 8 10 h -44 a 8 8 0 0 1 0 -10 Z" fill="#FFFFFF" opacity=".7"/>
+
+    <!-- Distant cityscape/hills -->
+    <path d="M -10 125 Q 50 110 110 120 T 230 115 L 230 220 L -10 220 Z" fill="#E0F7FA"/>
+
+    <!-- Eiffel Tower -->
+    <g transform="translate(65 25)" stroke="#2B2540" stroke-width="4" stroke-linejoin="round">
+      <!-- Left Leg -->
+      <path d="M 5 110 L 30 70 H 45 Q 35 90 25 110 Z" fill="#FFB199"/>
+      <!-- Right Leg -->
+      <path d="M 85 110 L 60 70 H 45 Q 55 90 65 110 Z" fill="#FFB199"/>
+      <!-- Connect arch -->
+      <path d="M 25 110 Q 45 80 65 110" fill="none"/>
+      <!-- Balcony 1 -->
+      <rect x="15" y="65" width="60" height="8" rx="3" fill="#B49CFF"/>
+      <!-- Middle tier -->
+      <path d="M 25 65 L 35 25 H 55 L 65 65 Z" fill="#FFBFD1"/>
+      <path d="M 25 65 L 45 25 M 65 65 L 45 25" stroke-width="2" fill="none"/>
+      <!-- Balcony 2 -->
+      <rect x="30" y="22" width="30" height="6" rx="2" fill="#B49CFF"/>
+      <!-- Top tier -->
+      <path d="M 38 22 L 43 -10 H 47 L 52 22 Z" fill="#FFB199"/>
+      <!-- Dome/Spire -->
+      <path d="M 40 -10 Q 45 -20 50 -10 Z" fill="#B49CFF"/>
+      <line x1="45" y1="-15" x2="45" y2="-30" stroke-linecap="round"/>
+      <circle cx="45" cy="-30" r="3" fill="#FFD166"/>
+    </g>
+
+    <!-- Midground Layers -->
+    <path d="M -10 135 Q 60 125 110 145 T 230 135 L 230 220 L -10 220 Z" fill="#DDF8EE"/>
+    
+    <!-- Bush behind Cafe -->
+    <path d="M -5 100 Q 10 70 30 90 Q 50 80 50 110 Z" fill="#7FE7C4" stroke="#2B2540" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Bush on right edge -->
+    <path d="M 180 120 Q 190 90 210 100 Q 230 90 230 130 Z" fill="#FFBFD1" stroke="#2B2540" stroke-width="3" stroke-linejoin="round"/>
+
+    <!-- Paris Café (Left) -->
+    <g transform="translate(0 90)" stroke="#2B2540" stroke-width="3" stroke-linejoin="round">
+      <rect x="0" y="0" width="55" height="50" fill="#FFF8F2"/>
+      <rect x="10" y="15" width="35" height="35" fill="#E4FBF3"/>
+      <path d="M 10 15 L 45 15 M 10 30 L 45 30 M 27.5 15 L 27.5 50" fill="none" stroke-width="2"/>
+      <!-- Awning -->
+      <path d="M 0 -10 L 55 -10 L 65 10 L -10 10 Z" fill="#FF8FB1"/>
+      <!-- White Stripes -->
+      <path d="M 15 -10 L 18 10 M 30 -10 L 33 10 M 45 -10 L 48 10" stroke="#FFFFFF" stroke-width="4"/>
+      <!-- Scallops -->
+      <path d="M -10 10 Q -5 15 0 10 Q 5 15 10 10 Q 15 15 20 10 Q 25 15 30 10 Q 35 15 40 10 Q 45 15 50 10 Q 55 15 60 10 Q 65 15 65 10" fill="none" stroke-width="3"/>
+      <!-- Cafe Sign -->
+      <circle cx="27.5" cy="-18" r="8" fill="#FFD166"/>
+      <path d="M 23 -18 h 9" stroke="#FFFFFF" stroke-width="2"/>
+    </g>
+
+    <!-- Foreground Layer -->
+    <path d="M -10 155 Q 110 145 230 165 L 230 220 L -10 220 Z" fill="#A8E6CF"/>
+
+    <!-- Café Table & Croissant (Foreground Left) -->
+    <g transform="translate(15 140)" stroke="#2B2540" stroke-width="3" stroke-linejoin="round">
+      <line x1="15" y1="5" x2="15" y2="25"/>
+      <line x1="5" y1="25" x2="25" y2="25"/>
+      <rect x="0" y="0" width="30" height="5" rx="2" fill="#9DB4FF"/>
+      <!-- Croissant -->
+      <path d="M 8 -3 C 15 -10 22 -3 22 2 C 15 -2 8 2 8 -3 Z" fill="#FFD166"/>
+      <!-- Coffee cup -->
+      <rect x="23" y="-5" width="6" height="5" rx="1" fill="#FFFFFF"/>
+      <path d="M 29 -4 Q 32 -3 29 -1" fill="none" stroke-width="2"/>
+    </g>
+
+    <!-- Bicycle (Right) -->
+    <g transform="translate(130 105)" stroke="#2B2540" stroke-width="3" stroke-linejoin="round">
+      <!-- Wheels -->
+      <circle cx="15" cy="35" r="12" fill="#F5F1FF"/>
+      <circle cx="65" cy="35" r="12" fill="#F5F1FF"/>
+      <circle cx="15" cy="35" r="4" fill="#2B2540" stroke="none"/>
+      <circle cx="65" cy="35" r="4" fill="#2B2540" stroke="none"/>
+      <!-- Frame -->
+      <path d="M 15 35 L 30 10 L 55 10 L 65 35" fill="none" stroke="#7FE7C4" stroke-width="4"/>
+      <path d="M 30 10 L 45 35 L 65 35" fill="none" stroke="#7FE7C4" stroke-width="4"/>
+      <!-- Seat Tube & Seat -->
+      <line x1="30" y1="10" x2="27" y2="0" stroke-width="4"/>
+      <path d="M 20 0 H 34" fill="#FF8FB1" stroke-width="5" stroke-linecap="round"/>
+      <!-- Handlebar Tube & Handlebar -->
+      <line x1="55" y1="10" x2="52" y2="-5" stroke-width="4"/>
+      <path d="M 45 -5 Q 52 -10 58 -5" fill="none" stroke-width="4" stroke-linecap="round"/>
+      <!-- Basket -->
+      <rect x="62" y="2" width="14" height="12" rx="3" fill="#FFB199"/>
+      <!-- Baguette in basket -->
+      <path d="M 65 2 L 72 -8 L 76 -5 L 69 2 Z" fill="#FFD166"/>
+      <!-- Flower in basket -->
+      <circle cx="65" cy="0" r="3.5" fill="#B49CFF" stroke="none"/>
+    </g>
+  </g>
+
+  <!-- Trip label (Moved outside clipPath to overlap border) -->
+  <g transform="translate(73 145)">
+    <rect width="113" height="27" rx="13.5" fill="#B49CFF" stroke="#2B2540" stroke-width="4"/>
+    <text x="56.5" y="18.5" text-anchor="middle" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="800" letter-spacing="1.5">TRIP 05</text>
+  </g>
+
+  <!-- Country ribbon (Moved outside clipPath to overlap border) -->
+  <g transform="translate(53 176)" stroke="#2B2540" stroke-width="4" stroke-linejoin="round">
+    <path d="M8 0H107V27H8L0 13.5Z" fill="#FF8FB1"/>
+    <path d="M107 0l9 13.5l-9 13.5Z" fill="#E87599"/>
+    <text x="58" y="18.5" text-anchor="middle" fill="#FFFFFF" stroke="none" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="900" letter-spacing="2.2">FRANCE</text>
+  </g>
+
+  <!-- Tiny travel accents (Matched style) -->
+  <g fill="#FFD166" stroke="#2B2540" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M35 55 l3 6 l7 1 l-5 5 l1 7 l-6-3 l-6 3 l1-7 l-5-5 l7-1 Z"/>
+    <path d="M185 85 l3 6 l7 1 l-5 5 l1 7 l-6-3 l-6 3 l1-7 l-5-5 l7-1 Z"/>
+  </g>
+  <g fill="#FF8FB1" opacity=".8">
+    <ellipse cx="30" cy="125" rx="5" ry="2.5" transform="rotate(-20 30 125)"/>
+    <ellipse cx="190" cy="150" rx="5" ry="2.5" transform="rotate(35 190 150)"/>
+  </g>
+
+  <!-- Clean rubber-stamp imperfections (Identical to previous) -->
+  <g fill="#2B2540" opacity=".1">
+    <circle cx="20" cy="113" r="2"/>
+    <circle cx="50" cy="42" r="1.6"/>
+    <circle cx="168" cy="39" r="2"/>
+    <circle cx="201" cy="114" r="1.7"/>
+    <circle cx="153" cy="198" r="1.8"/>
+    <path d="M79 18h13v2H79ZM126 207h16v2h-16ZM13 140h11v2H13Z"/>
+  </g>
+</svg>
