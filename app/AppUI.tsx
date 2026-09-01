@@ -17,7 +17,7 @@ import {
   Volume2,
   X
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const levels = [
   {
@@ -659,13 +659,15 @@ function QuizCard({
   level,
   category,
   onBack,
-  onMatching
+  onMatching,
+  onDictation
 }: {
   exam?: boolean
   level?: number
   category?: string
   onBack: () => void
   onMatching?: () => void
+  onDictation?: () => void
 }) {
   const [question, setQuestion] = useState(1)
   const [score, setScore] = useState(0)
@@ -921,7 +923,10 @@ function QuizCard({
               <strong>จับคู่คำ</strong>
               <small>Matching Game</small>
             </button>
-            <button className="mode-button purple" onClick={onBack}>
+            <button
+              className="mode-button purple"
+              onClick={onDictation ?? onBack}
+            >
               <span>✍️</span>
               <strong>เขียนตามคำบอก</strong>
               <small>Dictation</small>
@@ -940,6 +945,59 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
   const [mode, setMode] = useState<'quiz' | 'dictation' | 'matching'>('quiz')
   const [revealed, setRevealed] = useState(false)
   const [loadingCategories, setLoadingCategories] = useState(false)
+
+  //drawingPad
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const isDrawing = useRef(false)
+
+  const getPos = (
+    canvas: HTMLCanvasElement,
+    event: React.MouseEvent | React.TouchEvent
+  ) => {
+    const rect = canvas.getBoundingClientRect()
+    const scaleX = canvas.width / rect.width
+    const scaleY = canvas.height / rect.height
+
+    if ('touches' in event) {
+      const touch = event.touches[0]
+      return {
+        x: (touch.clientX - rect.left) * scaleX,
+        y: (touch.clientY - rect.top) * scaleY
+      }
+    }
+    return {
+      x: ((event as React.MouseEvent).clientX - rect.left) * scaleX,
+      y: ((event as React.MouseEvent).clientY - rect.top) * scaleY
+    }
+  }
+
+  const startDraw = (event: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+    isDrawing.current = true
+    const { x, y } = getPos(canvas, event)
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+  }
+
+  const draw = (event: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing.current) return
+    event.preventDefault()
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+    const { x, y } = getPos(canvas, event)
+    ctx.lineWidth = 4
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = '#3a2f66'
+    ctx.lineTo(x, y)
+    ctx.stroke()
+  }
+
+  const endDraw = () => {
+    isDrawing.current = false
+  }
 
   useEffect(() => {
     if (!level) return
@@ -1106,34 +1164,19 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
           category={category}
           onBack={() => setCategory(null)}
           onMatching={() => setMode('matching')}
+          onDictation={() => setMode('dictation')}
         />
-        {/* <div className="card practice-more">
-          <p className="eyebrow">ขั้นที่ 3 · วิธีฝึกเพิ่มเติม</p>
-          <div className="mode-grid">
-            <button
-              className="mode-button pink"
-              onClick={() => setMode('dictation')}
-            >
-              <span>🃏</span>
-              <strong>ทวนคำ</strong>
-              <small>Flashcard</small>
-            </button>
-            <button
-              className="mode-button purple"
-              onClick={() => setMode('dictation')}
-            >
-              <span>✍️</span>
-              <strong>เขียนตามคำบอก</strong>
-              <small>Dictation</small>
-            </button>
-          </div>
-        </div> */}
       </>
     )
 
   if (mode === 'matching')
-    return <MatchingGame onBack={() => setMode('quiz')} />
-
+    return (
+      <MatchingGame
+        level={level}
+        category={category || undefined}
+        onBack={() => setMode('quiz')}
+      />
+    )
   if (mode === 'dictation')
     return (
       <div className="room">
@@ -1154,7 +1197,25 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
           <p className="pinyin big">shíwù</p>
           <p className="meaning">อาหาร</p>
           <div className="paper-space">
-            {revealed ? <strong>食物</strong> : <span>พื้นที่สำหรับเขียน</span>}
+            {revealed ? (
+              <strong>食物</strong>
+            ) : (
+              <canvas
+                ref={canvasRef}
+                width={500}
+                height={220}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  touchAction: 'none',
+                  cursor: 'crosshair'
+                }}
+                onPointerDown={startDraw}
+                onPointerMove={draw}
+                onPointerUp={endDraw}
+                onPointerLeave={endDraw}
+              />
+            )}
           </div>
           {!revealed ? (
             <button
@@ -1262,49 +1323,92 @@ function ExamRoom() {
   )
 }
 
-const quizWords = [
-  { hanzi: '爸爸', pinyin: 'bàba', meaning: 'พ่อ' },
-  { hanzi: '妈妈', pinyin: 'māma', meaning: 'แม่' },
-  { hanzi: '朋友', pinyin: 'péngyou', meaning: 'เพื่อน' },
-  { hanzi: '家', pinyin: 'jiā', meaning: 'บ้าน' },
-  { hanzi: '吃饭', pinyin: 'chīfàn', meaning: 'กินข้าว' },
-  { hanzi: '水', pinyin: 'shuǐ', meaning: 'น้ำ' },
-  { hanzi: '学习', pinyin: 'xuéxí', meaning: 'เรียน' },
-  { hanzi: '老师', pinyin: 'lǎoshī', meaning: 'ครู' }
-]
+function MatchingGame({
+  level,
+  category,
+  onBack
+}: {
+  level?: number
+  category?: string
+  onBack: () => void
+}) {
+  const [words, setWords] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-function MatchingGame({ onBack }: { onBack: () => void }) {
-  const createCards = () =>
-    quizWords
-      .slice(0, 6)
-      .flatMap((word) => [
-        {
-          id: `${word.hanzi}-hanzi`,
-          pair: word.hanzi,
-          label: word.hanzi,
-          type: 'hanzi'
-        },
-        {
-          id: `${word.hanzi}-meaning`,
-          pair: word.hanzi,
-          label: word.meaning,
-          type: 'meaning'
-        }
-      ])
+  useEffect(() => {
+    async function fetchWords() {
+      setLoading(true)
+      try {
+        const res = await fetch(
+          `/api/quiz?level=${level}&category=${encodeURIComponent(category || '')}`
+        )
+        const data = await res.json()
+        setWords(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load matching words', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    if (level && category) fetchWords()
+  }, [level, category])
+
+  const createCards = (source: any[]) => {
+    const picked = source.slice(0, 6)
+
+    type MatchCard = {
+      id: string
+      pair: any
+      label: any
+      type: 'hanzi' | 'meaning'
+    }
+
+    const hanziCards: MatchCard[] = picked
+      .map((word) => ({
+        id: `${word.hanzi}-hanzi`,
+        pair: word.hanzi,
+        label: word.hanzi,
+        type: 'hanzi' as const
+      }))
       .sort(() => Math.random() - 0.5)
-  const [cards, setCards] = useState(createCards)
+
+    const meaningCards: MatchCard[] = picked
+      .map((word) => ({
+        id: `${word.hanzi}-meaning`,
+        pair: word.hanzi,
+        label: word.meaning,
+        type: 'meaning' as const
+      }))
+      .sort(() => Math.random() - 0.5)
+
+    const result: MatchCard[] = []
+    for (let i = 0; i < picked.length; i++) {
+      result.push(hanziCards[i], meaningCards[i])
+    }
+    return result
+  }
+
+  const [cards, setCards] = useState<any[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [matched, setMatched] = useState<string[]>([])
   const [wrong, setWrong] = useState<string[]>([])
   const [seconds, setSeconds] = useState(0)
+
   useEffect(() => {
-    if (matched.length === 6) return
+    if (words.length > 0) setCards(createCards(words))
+  }, [words])
+
+  const totalPairs = cards.length / 2 // จำนวนคู่จริง (สูงสุด 6, อาจน้อยกว่าถ้าหมวดมีคำไม่พอ)
+
+  useEffect(() => {
+    if (totalPairs === 0 || matched.length >= totalPairs) return
     const timer = window.setInterval(
       () => setSeconds((value) => value + 1),
       1000
     )
     return () => window.clearInterval(timer)
-  }, [matched.length])
+  }, [matched.length, totalPairs])
+
   useEffect(() => {
     if (selected.length !== 2) return
     const [first, second] = selected.map(
@@ -1323,6 +1427,7 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
       }, 550)
     }
   }, [selected, cards])
+
   const choose = (id: string) => {
     if (
       selected.length >= 2 ||
@@ -1334,14 +1439,39 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
       return
     setSelected((value) => [...value, id])
   }
+
   const reset = () => {
-    setCards(createCards())
+    setCards(createCards(words))
     setSelected([])
     setMatched([])
     setWrong([])
     setSeconds(0)
   }
-  if (matched.length === 6)
+
+  if (loading) {
+    return (
+      <div className="room">
+        <p className="muted" style={{ textAlign: 'center', marginTop: '50px' }}>
+          กำลังเตรียมคำศัพท์...
+        </p>
+      </div>
+    )
+  }
+
+  if (words.length < 2) {
+    return (
+      <div className="room">
+        <button className="back-link" onClick={onBack}>
+          <ArrowLeft size={16} /> กลับไปแบบฝึก
+        </button>
+        <p className="muted" style={{ textAlign: 'center', marginTop: '50px' }}>
+          หมวดนี้มีคำไม่พอสำหรับเล่นจับคู่
+        </p>
+      </div>
+    )
+  }
+
+  if (totalPairs > 0 && matched.length === totalPairs)
     return (
       <div className="room result-room result-pass">
         <div className="result-icon">
@@ -1350,10 +1480,15 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
         <p className="eyebrow">Matching Game · จบเกม</p>
         <h2>จับคู่ครบแล้ว!</h2>
         <p className="result-score">
-          <strong>{seconds}</strong>
-          <span>วินาที</span>
+          <strong>
+            {String(Math.floor(seconds / 60)).padStart(2, '0')}:
+            {String(seconds % 60).padStart(2, '0')}
+          </strong>
+          <span>นาที</span>
         </p>
-        <p className="muted" style={{marginBottom:"10px"}}>ยิ่งเร็วยิ่งคล่อง รอบนี้ทำได้ดีมาก</p>
+        <p className="muted" style={{ marginBottom: '10px' }}>
+          ยิ่งเร็วยิ่งคล่อง รอบนี้ทำได้ดีมาก
+        </p>
         <div className="result-actions">
           <button className="primary-button" onClick={reset}>
             เล่นอีกรอบ <RotateCcw size={17} />
@@ -1364,6 +1499,7 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
         </div>
       </div>
     )
+
   return (
     <div className="room matching-room">
       <button className="back-link" onClick={onBack}>
@@ -1371,10 +1507,12 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
       </button>
       <div className="quiz-top">
         <div>
-          <p className="eyebrow">Matching Game · รีวิวเร็ว</p>
+          <p className="eyebrow">
+            Matching Game · HSK {level} · {category}
+          </p>
           <h2>จับคู่คำให้ตรงกัน</h2>
           <p className="muted" style={{ marginTop: '10px' }}>
-            คำจีน 6 คำ กับคำแปลไทย 6 คำ
+            คำจีน {totalPairs} คำ กับคำแปลไทย {totalPairs} คำ
           </p>
         </div>
         <div className="match-timer">
@@ -1382,7 +1520,9 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
             {String(Math.floor(seconds / 60)).padStart(2, '0')}:
             {String(seconds % 60).padStart(2, '0')}
           </strong>
-          <span>{matched.length} / 6 คู่</span>
+          <span>
+            {matched.length} / {totalPairs} คู่
+          </span>
         </div>
       </div>
       <div className="matching-grid">
@@ -1397,7 +1537,7 @@ function MatchingGame({ onBack }: { onBack: () => void }) {
           </button>
         ))}
       </div>
-      <Mascot text="จับคู่ให้ครบ 6 คู่ แล้วดูว่ารอบนี้ใช้เวลากี่วินาที" />
+      <Mascot text="จับคู่ให้ครบ แล้วดูว่ารอบนี้ใช้เวลากี่วินาที" />
     </div>
   )
 }
