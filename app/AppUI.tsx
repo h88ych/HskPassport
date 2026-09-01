@@ -895,6 +895,16 @@ function QuizCard({
         <span style={{ width: `${(question / totalQuestions) * 100}%` }} />
       </div>
       <article className="question-card">
+        <button
+          className="sound-button flashcard-sound"
+          aria-label={`ฟังเสียง ${word.hanzi}`}
+          onClick={(event) => {
+            event.stopPropagation()
+            speak(word.hanzi)
+          }}
+        >
+          <Volume2 size={19} />
+        </button>
         <p className="question-label">
           {hanziMode
             ? 'เลือกความหมายไทยที่ถูกต้อง'
@@ -1393,17 +1403,17 @@ function ExamRoom({
         <span className="target-badge">ผ่านที่ 95 / 100</span>
       </div>
 
- <div className="exam-level-tabs">
-  {[1, 2, 3, 4, 5, 6].map((num) => (
-    <button
-      key={num}
-      onClick={() => setSelectedLevel(num)}
-      className={`exam-level-tab ${selectedLevel === num ? 'selected' : ''}`}
-    >
-      HSK {num}
-    </button>
-  ))}
-</div>
+      <div className="exam-level-tabs">
+        {[1, 2, 3, 4, 5, 6].map((num) => (
+          <button
+            key={num}
+            onClick={() => setSelectedLevel(num)}
+            className={`exam-level-tab ${selectedLevel === num ? 'selected' : ''}`}
+          >
+            HSK {num}
+          </button>
+        ))}
+      </div>
 
       <div className="trail-card">
         <div className="trail-label">
