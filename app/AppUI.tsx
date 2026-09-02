@@ -18,6 +18,7 @@ import {
   Star,
   Volume2
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 const countryByLevel: Record<
@@ -130,8 +131,10 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
         </div>
         <span className="mini-badge">
           {
-            levelsData.filter((item) => Number(item.max_score || 0) >= 95)
-              .length
+            levelsData.filter(
+              (item) =>
+                Number(item.max_score || 0) >= Number(item.pass_score ?? 95)
+            ).length
           }{' '}
           / 6 ดวง
         </span>
@@ -143,7 +146,8 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
             (level) => Number(level.level_number) === levelNumber
           )
           const destination = countryByLevel[levelNumber]
-          const passed = Number(item?.max_score || 0) >= 95
+          const passed =
+            Number(item?.max_score || 0) >= Number(item?.pass_score ?? 95)
           const unlocked = item?.unlocked === 1 || item?.unlocked === true
           const state = passed
             ? 'passed'
@@ -199,7 +203,9 @@ function PassportHeader({
   levelsData?: any[]
 }) {
   const passedCount =
-    levelsData?.filter((item) => Number(item.max_score || 0) >= 95).length || 0
+    levelsData?.filter(
+      (item) => Number(item.max_score || 0) >= Number(item.pass_score ?? 95)
+    ).length || 0
 
   return (
     <header className="passport-header">
@@ -232,7 +238,7 @@ function LevelCard({
   const isUnlocked =
     item.level_number === 1 || item.unlocked === 1 || item.unlocked === true
   const maxScore = item.max_score || 0
-  const isPassed = maxScore >= 95
+  const isPassed = maxScore >= (item.pass_score ?? 95)
 
   let state = 'locked'
   if (isPassed) {
@@ -363,9 +369,6 @@ function Dashboard({
               <p className="eyebrow">YOUR JOURNEY</p>
               <h3>แผนที่พาสปอร์ต</h3>
             </div>
-            <span className="mini-badge">
-              <Star size={14} fill="currentColor" /> {passedCount} / 6
-            </span>
           </div>
           <div className="level-path">
             {levelsData && levelsData.length > 0 ? (
@@ -790,7 +793,8 @@ function QuizCard({
         levelNumber: level,
         score,
         totalQuestions,
-        examType: 'hsk-exam'
+        examType: 'hsk-exam',
+        sessionId: sessionId
       })
     })
       .then((response) => {
@@ -927,6 +931,8 @@ function QuizCard({
 
   // หน้าจอแสดงผลเมื่อทำครบทุกข้อ
   if (finished) {
+    console.log('Exam finished. Score:', score, '/', totalQuestions)
+    console.log(passScore, 'points needed to pass.')
     const passed = exam ? score >= passScore : true
     return (
       <div
@@ -1558,7 +1564,7 @@ function ExamRoom({
     levelsData?.find((l) => l.level_number === selectedLevel) || levelsData?.[0]
   const totalWords = currentLevelInfo?.total_words || 100
   const maxScore = currentLevelInfo?.max_score || 0
-  const isPassed = maxScore >= 95
+  const isPassed = maxScore >= (currentLevelInfo?.pass_score ?? 95)
 
   if (started)
     return (
@@ -1906,6 +1912,13 @@ export default function AppUI({
   avatarUrl?: string | null
   levelsData?: any[]
 }) {
+  const router = useRouter()
+
+  const handleGoHome = () => {
+    setRoom('dashboard')
+    router.refresh()
+  }
+
   const [room, setRoom] = useState('dashboard')
   const [examLevel, setExamLevel] = useState<number | null>(null)
 
@@ -1930,7 +1943,7 @@ export default function AppUI({
   return (
     <main className="app-shell">
       <nav className="top-nav">
-        <button className="brand" onClick={() => setRoom('dashboard')}>
+        <button className="brand" onClick={handleGoHome}>
           <span>✦</span> HSK Passport
         </button>
         <div className="nav-links">
@@ -1994,7 +2007,7 @@ export default function AppUI({
           <ExamRoom
             initialLevel={examLevel || undefined}
             levelsData={levelsData}
-            onHome={() => setRoom('dashboard')}
+            onHome={handleGoHome}
           />
         )}
       </div>

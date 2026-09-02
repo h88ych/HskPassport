@@ -22,27 +22,29 @@ export default async function HomePage() {
     redirect('/welcome')
   }
 
-  const [levelsRows]: any = await pool.query(
-    `SELECT 
-       hl.id, 
-       hl.level_number, 
-       hl.name, 
-       COALESCE(ulp.unlocked, FALSE) AS unlocked,
-       (
-         SELECT COUNT(*) 
-         FROM words w 
-         WHERE w.level_id = hl.id
-       ) AS total_words,
-       (
-         SELECT MAX(es.score) 
-         FROM exam_sessions es 
-         WHERE es.user_id = ? AND es.level_id = hl.id AND es.passed = TRUE
-       ) AS max_score
-     FROM hsk_levels hl
-     LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
-     ORDER BY hl.level_number ASC`,
-    [session.user.id, session.user.id]
-  )
+const [levelsRows]: any = await pool.query(
+  `SELECT 
+     hl.id, 
+     hl.level_number, 
+     hl.name, 
+     hl.total_questions,
+     hl.pass_score,
+     COALESCE(ulp.unlocked, FALSE) AS unlocked,
+     (
+       SELECT COUNT(*) 
+       FROM words w 
+       WHERE w.level_id = hl.id
+     ) AS total_words,
+     (
+       SELECT MAX(es.score) 
+       FROM exam_sessions es 
+       WHERE es.user_id = ? AND es.level_id = hl.id AND es.passed = TRUE
+     ) AS max_score
+   FROM hsk_levels hl
+   LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
+   ORDER BY hl.level_number ASC`,
+  [session.user.id, session.user.id]
+)
 
   return (
     <AppUI

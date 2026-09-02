@@ -68,7 +68,7 @@ export default function WelcomeClientUI({
             id="display-name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            placeholder="เช่น พระถังซำจั๋ง หรือชื่อเล่นของคุณ"
+            placeholder="เช่น อัครเดช หรือชื่อเล่นของคุณ"
             autoFocus
             maxLength={40}
           />
