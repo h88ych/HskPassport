@@ -315,6 +315,26 @@ function Dashboard({
 }) {
   const passedCount =
     levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
+
+  const [summary, setSummary] = useState<{
+    streak: number
+    weeklyWordsCount: number
+    weekBars: number[]
+  } | null>(null)
+
+  useEffect(() => {
+    async function fetchSummary() {
+      try {
+        const res = await fetch('/api/dashboard/summary')
+        const data = await res.json()
+        setSummary(data)
+      } catch (err) {
+        console.error('Failed to load dashboard summary', err)
+      }
+    }
+    fetchSummary()
+  }, [])
+
   return (
     <div className="dashboard-scene">
       <div className="world-collage" aria-hidden="true">
@@ -332,7 +352,7 @@ function Dashboard({
         </div>
         <div className="streak">
           <Flame size={23} fill="currentColor" />
-          <b>7</b>
+          <b>{summary?.streak ?? 0}</b>
           <span>วันติดกัน</span>
         </div>
       </section>
@@ -383,16 +403,18 @@ function Dashboard({
               <h3>กำลังไปได้สวย!</h3>
             </div>
             <div className="week-bars">
-              {[40, 78, 55, 90, 63, 28, 74].map((height, i) => (
+              {(summary?.weekBars ?? [0, 0, 0, 0, 0, 0, 0]).map((height, i) => (
                 <span
                   key={i}
                   style={{ height: `${height}%` }}
-                  className={i === 4 ? 'today' : ''}
+                  className={i === 6 ? 'today' : ''}
                 />
               ))}
             </div>
             <p className="muted">
-              เรียนไปแล้ว <b className="ink">42 คำ</b> ในสัปดาห์นี้
+              เรียนไปแล้ว{' '}
+              <b className="ink">{summary?.weeklyWordsCount ?? 0} คำ</b>{' '}
+              ในสัปดาห์นี้
             </p>
           </div>
         </aside>
