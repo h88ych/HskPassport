@@ -584,7 +584,7 @@ function VocabRoom() {
     fetchVocab()
   }, [level])
 
-    if (loading) {
+  if (loading) {
     return (
       <div className="room quiz-room">
         <p className="muted" style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -743,66 +743,92 @@ function VocabRoom() {
       </div>
       {view === 'list' ? (
         <>
-          <div className="vocab-list">
-            {pagedWords.length ? (
-              pagedWords.map((word, index) => (
-                <article className="vocab-row" key={`${word.hanzi}-${index}`}>
-                  <div className="vocab-index">
-                    {String(page * WORDS_PER_PAGE + index + 1).padStart(2, '0')}
-                  </div>
-                  <div className="vocab-hanzi">{word.hanzi}</div>
-                  <div className="vocab-detail">
-                    <p className="pinyin">{word.pinyin}</p>
-                    <strong>{word.meaning}</strong>
-                    <span>{word.example}</span>
-                  </div>
-                  <button
-                    className="sound-button"
-                    aria-label={`ฟังเสียง ${word.hanzi}`}
-                    onClick={() => speak(word.hanzi)}
-                  >
-                    <Volume2 size={18} />
-                  </button>
-                  <button
-                    className={`review-button ${reviewedIds.includes(word.id) ? 'done' : ''}`}
-                    onClick={() => toggleReview(word)}
-                  >
-                    {reviewedIds.includes(word.id) ? (
-                      <Check size={17} />
-                    ) : (
-                      <RotateCcw size={17} />
-                    )}
-                    <span>
-                      {reviewedIds.includes(word.id) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
-                    </span>
-                  </button>
-                </article>
-              ))
-            ) : (
-              <div className="empty-list">ไม่พบคำที่ตรงกับคำค้นหา</div>
-            )}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="vocab-pagination">
-              <button
-                className="round-arrow"
-                disabled={page === 0}
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
+          {loading ? (
+            <div className="vocab-list">
+              <p
+                className="muted"
+                style={{
+                  textAlign: 'center',
+                  padding: '60px 20px'
+                }}
               >
-                <ArrowLeft size={16} />
-              </button>
-              <span>
-                หน้า {page + 1} / {totalPages}
-              </span>
-              <button
-                className="round-arrow"
-                disabled={page === totalPages - 1}
-                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-              >
-                <ArrowRight size={16} />
-              </button>
+                กำลังโหลดคลังคำศัพท์...
+              </p>
             </div>
+          ) : (
+            <>
+              <div className="vocab-list">
+                {pagedWords.length ? (
+                  pagedWords.map((word, index) => (
+                    <article
+                      className="vocab-row"
+                      key={`${word.hanzi}-${index}`}
+                    >
+                      <div className="vocab-index">
+                        {String(page * WORDS_PER_PAGE + index + 1).padStart(
+                          2,
+                          '0'
+                        )}
+                      </div>
+                      <div className="vocab-hanzi">{word.hanzi}</div>
+                      <div className="vocab-detail">
+                        <p className="pinyin">{word.pinyin}</p>
+                        <strong>{word.meaning}</strong>
+                        <span>{word.example}</span>
+                      </div>
+                      <button
+                        className="sound-button"
+                        aria-label={`ฟังเสียง ${word.hanzi}`}
+                        onClick={() => speak(word.hanzi)}
+                      >
+                        <Volume2 size={18} />
+                      </button>
+                      <button
+                        className={`review-button ${reviewedIds.includes(word.id) ? 'done' : ''}`}
+                        onClick={() => toggleReview(word)}
+                      >
+                        {reviewedIds.includes(word.id) ? (
+                          <Check size={17} />
+                        ) : (
+                          <RotateCcw size={17} />
+                        )}
+                        <span>
+                          {reviewedIds.includes(word.id)
+                            ? 'ทบทวนแล้ว'
+                            : 'ไว้ทบทวน'}
+                        </span>
+                      </button>
+                    </article>
+                  ))
+                ) : (
+                  <div className="empty-list">ไม่พบคำที่ตรงกับคำค้นหา</div>
+                )}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="vocab-pagination">
+                  <button
+                    className="round-arrow"
+                    disabled={page === 0}
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  >
+                    <ArrowLeft size={16} />
+                  </button>
+                  <span>
+                    หน้า {page + 1} / {totalPages}
+                  </span>
+                  <button
+                    className="round-arrow"
+                    disabled={page === totalPages - 1}
+                    onClick={() =>
+                      setPage((p) => Math.min(totalPages - 1, p + 1))
+                    }
+                  >
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </>
       ) : (
