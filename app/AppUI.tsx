@@ -92,7 +92,7 @@ const countryByLevel: Record<
 }
 
 function Mascot({
-  text = 'วันนี้เก่งมากเลย แวะมาเรียนอีกนิดกันไหม?'
+  text = 'แวะมาเติมคลังศัพท์กันหน่อยไหม?'
 }: {
   text?: string
 }) {
@@ -335,7 +335,7 @@ function Dashboard({
   } | null>(null)
 
   const getWeeklyMessage = (count: number) => {
-    if (count === 0) return 'เริ่มต้นได้ทุกวัน!'
+    if (count === 0) return 'เริ่มวันนี้เลย!'
     if (count < 10) return 'เริ่มก้าวแรกแล้วนะ!'
     if (count < 30) return 'เริ่มติดเครื่องแล้ว!'
     if (count < 60) return 'กำลังไปได้สวย!'
@@ -417,9 +417,9 @@ function Dashboard({
             <div className="continue-icon">
               <BookOpen size={22} />
             </div>
-            <p className="eyebrow">เรียนต่อจากครั้งที่แล้ว</p>
-            <h3>คำทักทาย</h3>
-            <p className="muted">เหลืออีก 8 คำในชุดนี้</p>
+            <p className="eyebrow">มาเจอคำศัพท์ใหม่กันสักหน่อย</p>
+            <h3>คำศัพท์ภาษาจีน</h3>
+            <p className="muted">มีคำศัพท์รอให้เราไปเจออีกเพียบ</p>
             <button
               className="primary-button"
               onClick={() => onNavigate('vocab')}
@@ -436,7 +436,7 @@ function Dashboard({
               {(summary?.weekBars ?? [0, 0, 0, 0, 0, 0, 0]).map((height, i) => (
                 <span
                   key={i}
-                  style={{ height: `${height}%` }}
+                 style={{ height: `${Math.max(height, 15)}%` }}
                   className={i === 6 ? 'today' : ''}
                 />
               ))}
