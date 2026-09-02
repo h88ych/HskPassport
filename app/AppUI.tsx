@@ -417,11 +417,26 @@ function VocabRoom() {
   const [view, setView] = useState<'list' | 'flashcard'>('list')
   const [cardIndex, setCardIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
+
   const [reviewed, setReviewed] = useState<string[]>([])
+  const [reviewedIds, setReviewedIds] = useState<number[]>([])
 
   // เพิ่ม state สำหรับเก็บคำศัพท์จากฐานข้อมูล และสถานะกำลังโหลด
   const [words, setWords] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchReviewed() {
+      try {
+        const res = await fetch('/api/vocab/reviewed')
+        const data = await res.json()
+        setReviewedIds(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error('Failed to load reviewed words', err)
+      }
+    }
+    fetchReviewed()
+  }, [])
 
   // ดึงข้อมูลจาก API ทุกครั้งที่เปลี่ยนระดับ HSK
   useEffect(() => {
@@ -441,16 +456,33 @@ function VocabRoom() {
   }, [level])
 
   const visibleWords = words.filter(
-    (word) => filter === 'all' || reviewed.includes(word.hanzi)
+    (word) => filter === 'all' || reviewedIds.includes(word.id)
   )
   const card = visibleWords[cardIndex]
 
-  const toggleReview = (hanzi: string) =>
-    setReviewed((current) =>
-      current.includes(hanzi)
-        ? current.filter((item) => item !== hanzi)
-        : [...current, hanzi]
+  const toggleReview = async (word: any) => {
+    const currentlyReviewed = reviewedIds.includes(word.id)
+    setReviewedIds((current) =>
+      currentlyReviewed
+        ? current.filter((id) => id !== word.id)
+        : [...current, word.id]
     )
+    try {
+      await fetch('/api/vocab/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wordId: word.id, reviewed: !currentlyReviewed })
+      })
+    } catch (err) {
+      console.error('Failed to save review state', err)
+      // rollback ถ้ายิง API ไม่สำเร็จ
+      setReviewedIds((current) =>
+        currentlyReviewed
+          ? [...current, word.id]
+          : current.filter((id) => id !== word.id)
+      )
+    }
+  }
 
   const changeLevel = (item: number) => {
     setLevel(item)
@@ -512,7 +544,7 @@ function VocabRoom() {
           >
             ทบทวนแล้ว{' '}
             <span>
-              {words.filter((word) => reviewed.includes(word.hanzi)).length}
+              {words.filter((word) => reviewedIds.includes(word.id)).length}
             </span>
           </button>
         </div>
@@ -551,16 +583,16 @@ function VocabRoom() {
                   <Volume2 size={18} />
                 </button>
                 <button
-                  className={`review-button ${reviewed.includes(word.hanzi) ? 'done' : ''}`}
-                  onClick={() => toggleReview(word.hanzi)}
+                  className={`review-button ${reviewedIds.includes(word.id) ? 'done' : ''}`}
+                  onClick={() => toggleReview(word)}
                 >
-                  {reviewed.includes(word.hanzi) ? (
+                  {reviewedIds.includes(word.id) ? (
                     <Check size={17} />
                   ) : (
                     <RotateCcw size={17} />
                   )}
                   <span>
-                    {reviewed.includes(word.hanzi) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
+                    {reviewedIds.includes(word.id) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
                   </span>
                 </button>
               </article>
@@ -1812,6 +1844,11 @@ export default function AppUI({
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? 'dark' : 'light'
   }, [darkMode])
+
+  useEffect(() => {
+    fetch('/api/activity/ping', { method: 'POST' }).catch(() => {})
+  }, [])
+
   return (
     <main className="app-shell">
       <nav className="top-nav">
@@ -1877,7 +1914,7 @@ export default function AppUI({
         {room === 'practice' && <PracticeRoom levelsData={levelsData} />}
         {room === 'exam' && (
           <ExamRoom
-            initialLevel={examLevel}
+            initialLevel={examLevel || undefined}
             levelsData={levelsData}
             onHome={() => setRoom('dashboard')}
           />

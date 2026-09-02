@@ -7,7 +7,7 @@ export async function GET(request: Request) {
 
   try {
     const [rows]: any = await pool.query(
-      `SELECT w.hanzi, w.pinyin, w.meaning_th AS meaning, w.example_sentence AS example 
+      `SELECT w.id, w.hanzi, w.pinyin, w.meaning_th AS meaning, w.example_sentence AS example 
        FROM words w
        JOIN hsk_levels hl ON w.level_id = hl.id
        WHERE hl.level_number = ?`,
