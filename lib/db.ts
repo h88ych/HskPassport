@@ -8,14 +8,14 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
 
   ssl: {
-    rejectUnauthorized: true,
+    rejectUnauthorized: false,
   },
 
   waitForConnections: true,
   connectionLimit: 1,
   maxIdle: 1,
   idleTimeout: 60000,
-  queueLimit: 0
+  queueLimit: 0,
 })
 
 export default pool
