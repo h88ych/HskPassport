@@ -956,6 +956,7 @@ function QuizCard({
         passed={passed}
         score={score}
         totalQuestions={totalQuestions}
+        passScore={passScore}
         submitState={submitState}
         destination={exam && level ? countryByLevel[level] : null}
         levelNumber={level}
@@ -1234,7 +1235,14 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
                 className={`practice-level level-${item}`}
                 onClick={() => setLevel(item)}
               >
-                <span>HSK {item}</span>
+                <img
+                  className="practice-level-stamp"
+                  src={countryByLevel[item].stamp}
+                  alt=""
+                />
+                <span>
+                  HSK {item} · {countryByLevel[item].trip}
+                </span>
                 <strong>
                   {
                     [

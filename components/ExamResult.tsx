@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeft, Check, RotateCcw, Sparkles } from 'lucide-react'
+import { ArrowLeft, Check, Heart, RotateCcw, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type Destination = {
@@ -16,6 +16,8 @@ type Props = {
   passed: boolean
   score: number
   totalQuestions: number
+  /** คะแนนที่ต้องได้ถึงจึงจะผ่าน (ใช้บอกว่า "ขาดอีกกี่ข้อ") */
+  passScore?: number
   submitState: 'idle' | 'saving' | 'saved' | 'error'
   destination?: Destination | null
   levelNumber?: number
@@ -123,6 +125,7 @@ export default function ExamResult({
   passed,
   score,
   totalQuestions,
+  passScore,
   submitState,
   destination,
   levelNumber,
@@ -280,7 +283,148 @@ export default function ExamResult({
     )
   }
 
-  // ---------- โหมดปกติ: ฝึกจบ / สอบไม่ผ่าน ----------
+  // ---------- โหมดปลอบใจ: สอบไม่ผ่าน ----------
+  if (exam && !passed) {
+    const target = passScore ?? Math.ceil(totalQuestions * 0.95)
+    const gap = Math.max(0, target - score)
+    const missed = totalQuestions - score
+    const fillPercent = Math.min(100, percent)
+    const markerPercent =
+      totalQuestions > 0 ? Math.min(100, (target / totalQuestions) * 100) : 95
+
+    const headline =
+      gap <= 3
+        ? 'เฉียดสุดๆ แล้วน้า'
+        : gap <= 10
+          ? 'ใกล้มากแล้วนะ'
+          : 'วันนี้ยังไม่ผ่าน แต่ไม่เป็นไรเลย'
+    const subline =
+      gap <= 3
+        ? `ขาดอีกแค่ ${gap} ข้อเอง รอบหน้าได้ตราแน่นอน`
+        : gap <= 10
+          ? `อีก ${gap} ข้อก็ถึงเส้นผ่านแล้ว ทบทวนคำที่พลาดนิดเดียวพอ`
+          : `เก็บคำใหม่ไปได้ ${score} คำแล้ว ค่อยๆ สะสมไปด้วยกันนะ`
+    const bubble =
+      gap <= 3
+        ? 'อีกนิดเดียวเอง ลูบหลังให้ก่อน'
+        : gap <= 10
+          ? 'ไม่เป็นไรน้า เอาใหม่ได้เสมอ'
+          : 'พักก่อนก็ได้ เดี๋ยวค่อยลุยใหม่'
+
+    return (
+      <div className="room result-room result-comfort" aria-live="polite">
+        <div className="comfort-hearts" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5].map((index) => (
+            <Heart
+              key={index}
+              size={14}
+              fill="currentColor"
+              strokeWidth={0}
+              style={{ '--i': index } as React.CSSProperties}
+            />
+          ))}
+        </div>
+
+        <p className="eyebrow comfort-eyebrow">
+          {destination
+            ? `${destination.trip} · ${destination.flag} ${destination.thai}`
+            : `ภารกิจสอบ · ด่านที่ ${levelNumber ?? ''}`}
+        </p>
+
+        <div className="comfort-scene" aria-hidden="true">
+          <div className="comfort-bubble">
+            {bubble}
+            <span className="comfort-bubble-tail" />
+          </div>
+
+          {/* ตัวเล็ก: นักเดินทางที่กำลังเศร้านิดๆ */}
+          <div className="buddy">
+            <span className="buddy-cap">
+              <i />
+            </span>
+            <div className="buddy-body">
+              <span className="buddy-eye left" />
+              <span className="buddy-eye right" />
+              <span className="buddy-blush left" />
+              <span className="buddy-blush right" />
+              <span className="buddy-mouth" />
+            </div>
+            <span className="buddy-tear" />
+            <span className="buddy-foot left" />
+            <span className="buddy-foot right" />
+          </div>
+
+          {/* แพนด้า: นั่งลูบหลังปลอบ */}
+          <div className="panda">
+            <span className="panda-ear left" />
+            <span className="panda-ear right" />
+            <div className="panda-head">
+              <span className="panda-patch left">
+                <i />
+              </span>
+              <span className="panda-patch right">
+                <i />
+              </span>
+              <span className="panda-nose" />
+              <span className="panda-smile" />
+              <span className="panda-blush left" />
+              <span className="panda-blush right" />
+            </div>
+            <div className="panda-body">
+              <span className="panda-belly" />
+            </div>
+            <span className="panda-arm rest" />
+            <span className="panda-arm pat" />
+            <span className="panda-foot left" />
+            <span className="panda-foot right" />
+          </div>
+
+          <div className="comfort-ground" />
+        </div>
+
+        <h2 className="comfort-title">
+          <span className="comfort-title-line">{headline}</span>
+          <span className="comfort-title-sub">{subline}</span>
+        </h2>
+
+        <div className="comfort-score">
+          <div className="comfort-score-main">
+            <strong>{score}</strong>
+            <span>/ {totalQuestions} ข้อ</span>
+          </div>
+          <div
+            className="comfort-track"
+            role="img"
+            aria-label={`ตอบถูก ${score} จาก ${totalQuestions} ข้อ ต้องได้ ${target} ข้อจึงจะผ่าน`}
+          >
+            <span className="comfort-track-fill" style={{ width: `${fillPercent}%` }} />
+            <span className="comfort-track-goal" style={{ left: `${markerPercent}%` }}>
+              <i>ผ่านที่ {target}</i>
+            </span>
+          </div>
+          <div className="comfort-chips">
+            <span className="comfort-chip good">
+              <Check size={13} strokeWidth={3} aria-hidden="true" />
+              ถูก {score} ข้อ
+            </span>
+            <span className="comfort-chip soft">พลาด {missed} ข้อ</span>
+            <span className="comfort-chip goal">ขาดอีก {gap} ข้อ</span>
+          </div>
+        </div>
+
+        <div className="result-actions comfort-actions">
+          <button className="primary-button" onClick={onRetry}>
+            ลุยใหม่อีกรอบ <RotateCcw size={17} />
+          </button>
+          <button className="secondary-button" onClick={onBack}>
+            พักก่อน กลับไปเลือกห้อง <ArrowLeft size={17} />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ---------- โหมดปกติ: ฝึกจบ ----------
   return (
     <div
       className={`room result-room ${passed ? 'result-pass' : 'result-retry'}`}

@@ -2,6 +2,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+@import './polish.css';
 
 :root {
   color-scheme: light;
@@ -536,7 +537,7 @@ h3 {
   margin: 0 auto;
 }
 .room-heading {
-   margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 .room-heading h2 {
   margin-top: 5px;
@@ -3226,7 +3227,7 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
 .exam-start-enhanced {
   border-radius: 32px;
   text-align: center;
- padding: 24px 16px;
+  padding: 24px 16px;
   box-shadow: 0 16px 40px rgba(43, 37, 64, 0.08);
   position: relative;
   overflow: hidden;
@@ -3826,8 +3827,17 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
 }
 .grand-title-line {
   display: block;
-  font: 900 clamp(44px, 8vw, 68px) / 1 Nunito, 'IBM Plex Sans Thai', sans-serif;
-  background: linear-gradient(90deg, #ffd166, #ff8fb1 45%, #b49cff 80%, #7fe7c4);
+  font:
+    900 clamp(44px, 8vw, 68px) / 1 Nunito,
+    'IBM Plex Sans Thai',
+    sans-serif;
+  background: linear-gradient(
+    90deg,
+    #ffd166,
+    #ff8fb1 45%,
+    #b49cff 80%,
+    #7fe7c4
+  );
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -3841,7 +3851,9 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
 }
 .grand-title-sub {
   display: block;
-  font: 500 16px/1.5 'IBM Plex Sans Thai', sans-serif;
+  font:
+    500 16px/1.5 'IBM Plex Sans Thai',
+    sans-serif;
   color: rgba(255, 247, 255, 0.78);
   animation: grand-fade-up 0.6s ease 1.8s both;
 }
@@ -3963,7 +3975,8 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
   background: var(--p-color);
   box-shadow: 0 0 10px var(--p-color);
   transform: rotate(var(--angle)) translateX(0) scale(0);
-  animation: fw-particle 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) var(--fw-delay) both;
+  animation: fw-particle 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) var(--fw-delay)
+    both;
 }
 .grand-confetti {
   position: absolute;
@@ -4120,8 +4133,8 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
     opacity: 1;
   }
   15% {
-    transform: rotate(var(--angle)) translateX(calc(var(--fw-size) * var(--dist) * 0.55))
-      scale(1.2);
+    transform: rotate(var(--angle))
+      translateX(calc(var(--fw-size) * var(--dist) * 0.55)) scale(1.2);
     opacity: 1;
   }
   100% {
@@ -4141,7 +4154,8 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
   }
   100% {
     opacity: 0.6;
-    transform: translate(var(--c-drift), 110vh) rotate(calc(var(--c-rotate) + 540deg));
+    transform: translate(var(--c-drift), 110vh)
+      rotate(calc(var(--c-rotate) + 540deg));
   }
 }
 
@@ -4183,4 +4197,3 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
     display: none;
   }
 }
-
