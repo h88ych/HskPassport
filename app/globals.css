@@ -4807,3 +4807,29 @@ html[data-theme='dark'] .shuffle-button {
     justify-content: center;
   }
 }
+/* Default = Desktop */
+.help-fab {
+  display: grid;
+}
+
+.icon-button {
+  display: none;
+  background: var(--surface);
+  width: 42px;
+  height: 42px;
+  box-shadow: var(--shadow);
+  color: var(--muted);
+  border-radius: 50%;
+  place-items: center;
+}
+
+/* Mobile + Tablet */
+@media (max-width: 1023px) {
+  .help-fab {
+    display: none;
+  }
+
+  .icon-button {
+    display: grid;
+  }
+}
