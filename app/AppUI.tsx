@@ -17,8 +17,9 @@ import {
   Search,
   Volume2
 } from 'lucide-react'
-import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import ExamResult from '@/components/ExamResult'
+import ProfileMenu from '@/components/ProfileMenu'
 import { useEffect, useRef, useState } from 'react'
 
 const countryByLevel: Record<
@@ -482,6 +483,16 @@ const playWrongSound = () => {
   playTone(220, 0.22, 0, 0.055) // A3
 }
 
+// เสียงสอบผ่าน: ตุ้บ (ปั๊มตรา) ตามด้วยแฟนแฟร์สั้นๆ
+const playStampFanfare = () => {
+  playTone(110, 0.18, 1.15, 0.12) // เสียงปั๊มตราทุ้มๆ
+  playTone(523.25, 0.16, 1.45, 0.06) // C5
+  playTone(659.25, 0.16, 1.6, 0.06) // E5
+  playTone(783.99, 0.16, 1.75, 0.06) // G5
+  playTone(1046.5, 0.45, 1.9, 0.07) // C6
+  playTone(1318.5, 0.6, 2.05, 0.05) // E6
+}
+
 function VocabRoom() {
   const [level, setLevel] = useState(1)
   const [filter, setFilter] = useState<'all' | 'review'>('all')
@@ -804,6 +815,11 @@ function QuizCard({
       .catch(() => setSubmitState('error'))
   }, [finished, exam, level, score, totalQuestions, submitState])
 
+  // เล่นเสียงฉลองเมื่อสอบผ่าน (ครั้งเดียวต่อการจบชุด)
+  useEffect(() => {
+    if (finished && exam && score >= passScore) playStampFanfare()
+  }, [finished, exam, score, passScore])
+
   // เพิ่ม state สำหรับล็อกช้อยส์ของข้อปัจจุบัน
   const [choices, setChoices] = useState<string[]>([])
 
@@ -935,83 +951,23 @@ function QuizCard({
     console.log(passScore, 'points needed to pass.')
     const passed = exam ? score >= passScore : true
     return (
-      <div
-        className={`room result-room ${passed ? 'result-pass' : 'result-retry'}`}
-      >
-        <div className="result-confetti" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div className="result-icon" aria-hidden="true">
-          {passed ? (
-            <Check size={32} strokeWidth={3} />
-          ) : (
-            <RotateCcw size={32} strokeWidth={3} />
-          )}
-        </div>
-        <p className="eyebrow">
-          {exam ? 'ภารกิจสอบ · สรุปผล' : 'ห้องฝึกศัพท์ · จบเซสชัน'}
-        </p>
-        <h2>
-          {exam
-            ? passed
-              ? 'ด่านนี้ผ่านแล้ว!'
-              : 'อีกนิดเดียวก็ผ่าน'
-            : 'ฝึกครบแล้ว'}
-        </h2>
-        <p className="result-score">
-          <strong>{score}</strong>
-          <span>/ {totalQuestions}</span>
-        </p>
-        <p className="muted">
-          {exam
-            ? passed
-              ? submitState === 'saving'
-                ? 'กำลังประทับตราในพาสปอร์ตของคุณ...'
-                : 'ตราประทับใหม่พร้อมเข้าพาสปอร์ตของคุณแล้ว'
-              : 'ลองทบทวนคำที่พลาด แล้วกลับมาลุยใหม่อีกครั้งนะ'
-            : 'คุณสร้างความคุ้นเคยกับคำศัพท์เพิ่มขึ้นอีกหนึ่งก้าว'}
-        </p>
-        {/* <div
-          className="result-stats"
-        >
-          <div>
-            <strong>{score}</strong>
-            <span>ตอบถูก</span>
-          </div>
-          <div>
-            <strong>{100 - score}</strong>
-            <span>คำที่ทบทวน</span>
-          </div>
-          <div>
-            <strong>{exam ? (passed ? 'ผ่าน' : 'ลองใหม่') : 'ดีมาก'}</strong>
-            <span>สถานะวันนี้</span>
-          </div>
-        </div> */}
-        <div className="result-actions mt-10">
-          <button
-            className="primary-button"
-            onClick={() => {
-              setQuestion(1)
-              setScore(0)
-              setSelected(null)
-              setFinished(false)
-            }}
-          >
-            {exam ? 'ลองทำอีกครั้ง' : 'ฝึกชุดใหม่'} <RotateCcw size={17} />
-          </button>
-          <button
-            className="secondary-button"
-            onClick={passed && onHome ? onHome : onBack}
-          >
-            {passed ? 'กลับหน้าหลัก ดูตราประทับ' : 'กลับไปเลือกห้อง'}{' '}
-            <ArrowLeft size={17} />
-          </button>
-        </div>
-      </div>
+      <ExamResult
+        exam={exam}
+        passed={passed}
+        score={score}
+        totalQuestions={totalQuestions}
+        submitState={submitState}
+        destination={exam && level ? countryByLevel[level] : null}
+        levelNumber={level}
+        onRetry={() => {
+          setQuestion(1)
+          setScore(0)
+          setSelected(null)
+          setFinished(false)
+        }}
+        onBack={onBack}
+        onHome={onHome}
+      />
     )
   }
 
@@ -1907,7 +1863,7 @@ export default function AppUI({
   avatarUrl,
   levelsData
 }: {
-  user: { name?: string | null; image?: string | null }
+  user: { name?: string | null; image?: string | null; email?: string | null }
   dbNickname?: string | null
   avatarUrl?: string | null
   levelsData?: any[]
@@ -1981,20 +1937,12 @@ export default function AppUI({
             <span className="desktop-only">{darkMode ? 'สว่าง' : 'มืด'}</span>
           </button>
         </div>
-        <button
-          className="profile-button"
-          onClick={() => signOut({ callbackUrl: '/login' })}
-        >
-          <span>
-            <img
-              src={displayAvatar}
-              alt="Profile"
-              referrerPolicy="no-referrer"
-              className="w-full h-full object-cover rounded-full"
-            />
-          </span>
-          <span className="desktop-only">{displayName}</span>
-        </button>
+        <ProfileMenu
+          displayName={displayName}
+          displayAvatar={displayAvatar}
+          email={user?.email}
+          room={room}
+        />
       </nav>
       <div className="content">
         {room === 'dashboard' && (
