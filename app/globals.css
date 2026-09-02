@@ -3226,7 +3226,7 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
 .exam-start-enhanced {
   border-radius: 32px;
   text-align: center;
-  padding: 42px 24px;
+  padding: 30px 20px;
   box-shadow: 0 16px 40px rgba(43, 37, 64, 0.08);
   position: relative;
   overflow: hidden;
