@@ -7,7 +7,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       authorization: {
         params: {
-          prompt: 'consent select_account' // บังคับให้โชว์หน้าเลือกบัญชีทุกครั้ง
+          prompt: 'select_account' 
         }
       }
     })
