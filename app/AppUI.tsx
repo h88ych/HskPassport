@@ -15,9 +15,9 @@ import {
   RefreshCw,
   RotateCcw,
   Search,
-  Star,
   Volume2
 } from 'lucide-react'
+import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
@@ -1981,7 +1981,10 @@ export default function AppUI({
             <span className="desktop-only">{darkMode ? 'สว่าง' : 'มืด'}</span>
           </button>
         </div>
-        <a className="profile-button" href="/login">
+        <button
+          className="profile-button"
+          onClick={() => signOut({ callbackUrl: '/login' })}
+        >
           <span>
             <img
               src={displayAvatar}
@@ -1991,7 +1994,7 @@ export default function AppUI({
             />
           </span>
           <span className="desktop-only">{displayName}</span>
-        </a>
+        </button>
       </nav>
       <div className="content">
         {room === 'dashboard' && (

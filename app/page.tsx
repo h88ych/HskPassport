@@ -15,6 +15,10 @@ export default async function HomePage() {
     [session.user.id]
   )
 
+  if (userRows.length === 0) {
+    redirect('/api/auth/signout?callbackUrl=/login')
+  }
+
   const nickname = userRows[0]?.nickname
   const avatarUrl = userRows[0]?.avatar_url
 
@@ -22,8 +26,8 @@ export default async function HomePage() {
     redirect('/welcome')
   }
 
-const [levelsRows]: any = await pool.query(
-  `SELECT 
+  const [levelsRows]: any = await pool.query(
+    `SELECT 
      hl.id, 
      hl.level_number, 
      hl.name, 
@@ -43,8 +47,8 @@ const [levelsRows]: any = await pool.query(
    FROM hsk_levels hl
    LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
    ORDER BY hl.level_number ASC`,
-  [session.user.id, session.user.id]
-)
+    [session.user.id, session.user.id]
+  )
 
   return (
     <AppUI
