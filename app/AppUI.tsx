@@ -930,6 +930,35 @@ function QuizCard({
     'idle' | 'saving' | 'saved' | 'error'
   >('idle')
   const totalQuestions = words.length
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false)
+  const [restarting, setRestarting] = useState(false)
+
+  const handleRestart = async () => {
+    if (exam && sessionId) {
+      setRestarting(true)
+      try {
+        const res = await fetch('/api/exam/restart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId })
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setSessionId(data.sessionId)
+        }
+      } catch (err) {
+        console.error('Failed to restart exam', err)
+      } finally {
+        setRestarting(false)
+      }
+    }
+    setQuestion(1)
+    setScore(0)
+    setSelected(null)
+    setFinished(false)
+    setSubmitState('idle')
+    setShowRestartConfirm(false)
+  }
 
   useEffect(() => {
     if (!finished || !exam || !level || submitState !== 'idle') return
@@ -1097,12 +1126,7 @@ function QuizCard({
         submitState={submitState}
         destination={exam && level ? countryByLevel[level] : null}
         levelNumber={level}
-        onRetry={() => {
-          setQuestion(1)
-          setScore(0)
-          setSelected(null)
-          setFinished(false)
-        }}
+        onRetry={handleRestart}
         onBack={onBack}
         onHome={onHome}
       />

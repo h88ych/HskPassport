@@ -40,11 +40,11 @@ export default async function HomePage() {
        FROM words w 
        WHERE w.level_id = hl.id
      ) AS total_words,
-     (
-       SELECT MAX(es.score) 
-       FROM exam_sessions es 
-       WHERE es.user_id = ? AND es.level_id = hl.id AND es.passed = TRUE
-     ) AS max_score
+    (
+  SELECT MAX(es.score) 
+  FROM exam_sessions es 
+  WHERE es.user_id = ? AND es.level_id = hl.id AND es.completed_at IS NOT NULL
+) AS max_score
    FROM hsk_levels hl
    LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
    ORDER BY hl.level_number ASC`,
