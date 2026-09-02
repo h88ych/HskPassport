@@ -334,6 +334,16 @@ function Dashboard({
     weekBars: number[]
   } | null>(null)
 
+  const getWeeklyMessage = (count: number) => {
+    if (count === 0) return 'เริ่มต้นได้ทุกวัน!'
+    if (count < 10) return 'เริ่มก้าวแรกแล้วนะ!'
+    if (count < 30) return 'เริ่มติดเครื่องแล้ว!'
+    if (count < 60) return 'กำลังไปได้สวย!'
+    if (count < 100) return 'ขยันมากขึ้นเรื่อย ๆ!'
+    if (count < 200) return 'สัปดาห์นี้ไฟแรงมาก!'
+    return 'โหดมาก สัปดาห์นี้สุดจัด!'
+  }
+
   useEffect(() => {
     async function fetchSummary() {
       try {
@@ -420,7 +430,7 @@ function Dashboard({
           <div className="card quick-card">
             <div>
               <p className="eyebrow">สรุปสัปดาห์นี้</p>
-              <h3>กำลังไปได้สวย!</h3>
+              <h3>{getWeeklyMessage(summary?.weeklyWordsCount ?? 0)}</h3>
             </div>
             <div className="week-bars">
               {(summary?.weekBars ?? [0, 0, 0, 0, 0, 0, 0]).map((height, i) => (
