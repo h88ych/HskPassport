@@ -1,7 +1,9 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import SiteFooter from '@/components/SiteFooter'
 import Providers from './providers'
+
 
 export const metadata: Metadata = {
   title: 'HSK Passport — เรียนจีนแบบค่อยเป็นค่อยไป',
@@ -43,7 +45,9 @@ export default function RootLayout({
     <html lang="th" className="bg-background" suppressHydrationWarning>
       <body className="antialiased" suppressHydrationWarning>
         <Providers>{children}</Providers>
+        <SiteFooter />
         {process.env.NODE_ENV === 'production' && <Analytics />}
+
       </body>
     </html>
   )

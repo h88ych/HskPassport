@@ -57,9 +57,6 @@ export default function LandingPage() {
           />
         </section>
       </div>
-      <p className="login-footer landing-footer">
-        HSK Passport · เรียนจีนแบบค่อยเป็นค่อยไป
-      </p>
     </main>
   )
 }

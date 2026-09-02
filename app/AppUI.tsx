@@ -2,6 +2,7 @@
 
 import ExamResult from '@/components/ExamResult'
 import ProfileMenu from '@/components/ProfileMenu'
+import TutorialModal from '@/components/TutorialModal'
 import {
   ArrowLeft,
   ArrowRight,
@@ -197,11 +198,13 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
 function PassportHeader({
   name,
   avatar,
-  levelsData
+  levelsData,
+  onHelp
 }: {
   name?: string
   avatar?: string | null
   levelsData?: any[]
+  onHelp?: () => void
 }) {
   const passedCount =
     levelsData?.filter(
@@ -221,7 +224,7 @@ function PassportHeader({
           <Medal size={17} /> <b>{passedCount}</b>
           <span>ตราประทับ</span>
         </div>
-        <button className="icon-button" aria-label="ช่วยเหลือ">
+        <button className="icon-button" aria-label="ช่วยเหลือ" onClick={onHelp}>
           <CircleHelp size={21} />
         </button>
       </div>
@@ -314,11 +317,13 @@ function LevelCard({
 function Dashboard({
   onNavigate,
   displayName,
-  levelsData
+  levelsData,
+  onHelp
 }: {
   onNavigate: (room: string, level?: number) => void
   displayName?: string
   levelsData?: any[]
+  onHelp: () => void
 }) {
   const passedCount =
     levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
@@ -347,8 +352,19 @@ function Dashboard({
       <div className="world-collage" aria-hidden="true">
         <img src="/trips/world-collage.svg" alt="" />
       </div>
-      <PassportHeader name={displayName} levelsData={levelsData} />
+      <PassportHeader
+        name={displayName}
+        levelsData={levelsData}
+        onHelp={onHelp}
+      />
       <StampDisplay levelsData={levelsData} />
+      <button
+        className="help-fab"
+        onClick={onHelp}
+        aria-label="เปิดหน้าสอนใช้งาน"
+      >
+        <CircleHelp size={24} />
+      </button>
       <section className="hero-summary">
         <div>
           <p className="eyebrow">เส้นทางของเรา</p>
@@ -1968,6 +1984,7 @@ export default function AppUI({
 
   const [room, setRoom] = useState('dashboard')
   const [examLevel, setExamLevel] = useState<number | null>(null)
+  const [showTutorial, setShowTutorial] = useState(false)
 
   const displayName = dbNickname || user?.name?.split(' ')[0] || 'นักเดินทาง'
   const displayAvatar = avatarUrl || user?.image || '/placeholder-user.jpg'
@@ -2041,6 +2058,7 @@ export default function AppUI({
             onNavigate={handleNavigate}
             displayName={displayName}
             levelsData={levelsData}
+            onHelp={() => setShowTutorial(true)}
           />
         )}
         {room === 'vocab' && <VocabRoom />}
@@ -2053,6 +2071,10 @@ export default function AppUI({
           />
         )}
       </div>
+      <TutorialModal
+        open={showTutorial}
+        onClose={() => setShowTutorial(false)}
+      />
     </main>
   )
 }

@@ -1082,6 +1082,347 @@ h3 {
 .review-progress strong {
   color: var(--purple);
 }
+.onboard-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 32px 20px 40px;
+  position: relative;
+}
+.onboard-skip {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 99px;
+  padding: 9px 15px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+}
+.onboard-track-wrap {
+  width: min(100%, 460px);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+.onboard-track {
+  display: flex;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.onboard-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+.onboard-art {
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+.onboard-art.purple {
+  background: #f0ebff;
+  color: #765cd0;
+}
+.onboard-art.mint {
+  background: #e9fff7;
+  color: #2fae86;
+}
+.onboard-art.yellow {
+  background: #fff8de;
+  color: #c99312;
+}
+.onboard-chip {
+  background: #f3efff;
+  color: #765cd0;
+  border-radius: 99px;
+  padding: 6px 13px;
+  font: 700 12px Nunito;
+}
+.onboard-slide h1 {
+  font-size: 26px;
+  margin-top: 2px;
+}
+.onboard-desc {
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 340px;
+}
+.onboard-dots {
+  display: flex;
+  gap: 9px;
+}
+.onboard-dots button {
+  width: 9px;
+  height: 9px;
+  border-radius: 99px;
+  background: var(--line);
+  padding: 0;
+  transition:
+    width 0.25s ease,
+    background-color 0.25s ease;
+}
+.onboard-dots button.active {
+  width: 26px;
+  background: var(--purple);
+}
+.onboard-cta {
+  width: min(100%, 460px);
+  min-height: 52px;
+  border-radius: 99px;
+  background: var(--ink);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+}
+.onboard-cta:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.help-fab {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--purple);
+  color: white;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 26px rgba(141, 117, 197, 0.4);
+  z-index: 40;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.help-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 14px 30px rgba(141, 117, 197, 0.48);
+}
+.tut-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 21, 34, 0.65); /* เพิ่ม opacity ชดเชยที่ไม่มี blur */
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 100;
+  /* ลบ backdrop-filter: blur(2px); ออก */
+}
+.tut-modal {
+  position: relative;
+  width: min(100%, 420px);
+  background: var(--surface);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  padding: 20px 0 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  overflow: hidden;
+}
+.tut-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+.tut-track {
+  display: flex;
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.tut-track::-webkit-scrollbar {
+  display: none;
+}
+.tut-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+  scroll-snap-align: center;
+  padding: 34px 30px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.tut-icon-badge {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+}
+.tut-icon-badge.purple {
+  background: #f0ebff;
+  color: #765cd0;
+}
+.tut-icon-badge.mint {
+  background: #e9fff7;
+  color: #2fae86;
+}
+.tut-icon-badge.coral {
+  background: #fff2ed;
+  color: #e17a4f;
+}
+.tut-icon-badge.pink {
+  background: #fff0f5;
+  color: #e0688f;
+}
+.tut-eyebrow {
+  color: var(--muted);
+}
+.tut-title {
+  font-size: 21px;
+}
+.tut-desc {
+  line-height: 1.6;
+  max-width: 300px;
+}
+.tut-trio {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tut-trio-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.tut-trio-icon.purple {
+  background: #f0ebff;
+  color: #765cd0;
+}
+.tut-trio-icon.mint {
+  background: #e9fff7;
+  color: #2fae86;
+}
+.tut-trio-icon.coral {
+  background: #fff2ed;
+  color: #e17a4f;
+}
+.tut-trio-arrow {
+  color: var(--line);
+}
+.tut-dots {
+  display: flex;
+  gap: 8px;
+}
+.tut-dots button {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--line);
+  padding: 0;
+  transition:
+    width 0.25s ease,
+    background-color 0.25s ease;
+}
+.tut-dots button.active {
+  width: 22px;
+  background: var(--purple);
+}
+.tut-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0 28px;
+}
+.tut-nav-back {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.tut-nav-back:disabled {
+  opacity: 0.35;
+}
+.tut-start {
+  flex: 1;
+  min-height: 46px;
+}
+@media (max-width: 480px) {
+  .tut-modal {
+    border-radius: 22px;
+  }
+  .tut-slide {
+    padding: 28px 22px 4px;
+  }
+  .tut-icon-badge {
+    width: 72px;
+    height: 72px;
+  }
+  .help-fab {
+    right: 16px;
+    bottom: 16px;
+    width: 50px;
+    height: 50px;
+  }
+}
+@media (max-width: 480px) {
+  .onboard-shell {
+    padding: 24px 16px 32px;
+    gap: 22px;
+  }
+  .onboard-slide {
+    padding: 32px 22px;
+    border-radius: 24px;
+  }
+  .onboard-art {
+    width: 90px;
+    height: 90px;
+  }
+  .onboard-slide h1 {
+    font-size: 22px;
+  }
+  .onboard-skip {
+    top: 14px;
+    right: 14px;
+  }
+}
 html[data-theme='dark'] .review-card {
   background: linear-gradient(145deg, #252237, #332b51);
   border-color: #49415f;
@@ -2052,6 +2393,15 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   bottom: 20px;
   color: var(--muted);
   font-size: 12px;
+}
+.site-footer {
+  width: 100%;
+  padding: 12px 20px 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  background: var(--bg);
 }
 .login-back {
   position: absolute;

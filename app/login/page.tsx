@@ -56,7 +56,6 @@ export default async function LoginPage() {
           <Globe2 size={14} /> เรียนได้ทุกที่ ทุกจังหวะของคุณ
         </p>
       </section>
-      <p className="login-footer">HSK Passport · เรียนจีนแบบค่อยเป็นค่อยไป</p>
     </main>
   )
 }
