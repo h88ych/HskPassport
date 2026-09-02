@@ -436,7 +436,7 @@ function Dashboard({
               {(summary?.weekBars ?? [0, 0, 0, 0, 0, 0, 0]).map((height, i) => (
                 <span
                   key={i}
-                 style={{ height: `${Math.max(height, 15)}%` }}
+                  style={{ height: `${Math.max(height, 15)}%` }}
                   className={i === 6 ? 'today' : ''}
                 />
               ))}
@@ -1164,10 +1164,70 @@ function QuizCard({
           </p>
           <h2>{exam ? 'ทริปคำศัพท์ 100 ข้อ' : 'ฝึกคำศัพท์กัน'}</h2>
         </div>
-        <span className="counter">
-          {question} / {totalQuestions}
-        </span>
+        <div className="quiz-top-actions">
+          <span className="counter">
+            {question} / {totalQuestions}
+          </span>
+          {exam && (
+            <button
+              className="restart-button"
+              type="button"
+              onClick={() => setShowRestartConfirm(true)}
+              aria-label="เริ่มภารกิจสอบใหม่"
+            >
+              <RotateCcw size={16} aria-hidden="true" />
+              เริ่มใหม่
+            </button>
+          )}
+        </div>
       </div>
+      {showRestartConfirm &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            className="confirm-backdrop"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget)
+                setShowRestartConfirm(false)
+            }}
+          >
+            <div
+              className="confirm-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="restart-dialog-title"
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <p className="eyebrow">เริ่มภารกิจใหม่</p>
+              <h3 id="restart-dialog-title">แน่ใจไหมว่าจะเริ่มใหม่?</h3>
+              <p className="muted">
+                คะแนนและคำตอบของรอบนี้จะถูกรีเซ็ต
+                แล้วเริ่มข้อสอบชุดเดิมตั้งแต่ข้อแรก
+              </p>
+              <div className="confirm-actions">
+                <button
+                  className="secondary-button"
+                  type="button"
+                  onClick={() => setShowRestartConfirm(false)}
+                  disabled={restarting}
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  className="primary-button"
+                  type="button"
+                  onClick={handleRestart}
+                  disabled={restarting}
+                >
+                  {restarting ? 'กำลังเริ่มใหม่...' : 'ยืนยันเริ่มใหม่'}
+                  {!restarting && <RotateCcw size={16} aria-hidden="true" />}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
       <div className="quiz-progress">
         <span style={{ width: `${(question / totalQuestions) * 100}%` }} />
       </div>
