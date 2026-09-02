@@ -776,24 +776,24 @@ function QuizCard({
     )
   }
 
- const choose = (choice: string) => {
-  if (selected) return
-  setSelected(choice)
-  const isCorrect = choice === answer
-  if (isCorrect) setScore((value) => value + 1)
+  const choose = (choice: string) => {
+    if (selected) return
+    setSelected(choice)
+    const isCorrect = choice === answer
+    if (isCorrect) setScore((value) => value + 1)
 
-  if (exam && sessionId && word) {
-    fetch('/api/exam/answer', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId,
-        wordId: word.id,
-        isCorrect
-      })
-    }).catch((err) => console.error('Failed to save answer', err))
+    if (exam && sessionId && word) {
+      fetch('/api/exam/answer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          wordId: word.id,
+          isCorrect
+        })
+      }).catch((err) => console.error('Failed to save answer', err))
+    }
   }
-}
   const next = () => {
     if (question < totalQuestions) {
       setQuestion((value) => value + 1)
@@ -1408,6 +1408,22 @@ function ExamRoom({
   const [started, setStarted] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState<number>(1) // เลเวลที่กำลังเลือกสอบ
 
+  const isLevelUnlocked = (levelNumber: number) => {
+    if (levelNumber === 1) return true
+    const item = levelsData?.find((lvl) => lvl.level_number === levelNumber)
+    return item?.unlocked === 1 || item?.unlocked === true
+  }
+
+  useEffect(() => {
+    if (!levelsData || levelsData.length === 0) return
+    // หาเลเวลที่ปลดล็อกสูงสุด เพื่อเลือกไว้เป็นค่าเริ่มต้น
+    let highestUnlocked = 1
+    for (let lvl = 1; lvl <= 6; lvl++) {
+      if (isLevelUnlocked(lvl)) highestUnlocked = lvl
+    }
+    setSelectedLevel(highestUnlocked)
+  }, [levelsData])
+
   if (started)
     return (
       <QuizCard
@@ -1435,15 +1451,25 @@ function ExamRoom({
       </div>
 
       <div className="exam-level-tabs">
-        {[1, 2, 3, 4, 5, 6].map((num) => (
-          <button
-            key={num}
-            onClick={() => setSelectedLevel(num)}
-            className={`exam-level-tab ${selectedLevel === num ? 'selected' : ''}`}
-          >
-            HSK {num}
-          </button>
-        ))}
+        {[1, 2, 3, 4, 5, 6].map((num) => {
+          const unlocked = isLevelUnlocked(num)
+          return (
+            <button
+              key={num}
+              onClick={() => unlocked && setSelectedLevel(num)}
+              disabled={!unlocked}
+              className={`exam-level-tab ${selectedLevel === num ? 'selected' : ''} ${!unlocked ? 'locked' : ''}`}
+              aria-disabled={!unlocked}
+              title={
+                !unlocked
+                  ? 'ต้องผ่าน HSK ก่อนหน้าก่อนถึงจะสอบด่านนี้ได้'
+                  : undefined
+              }
+            >
+              {!unlocked && <LockKeyhole size={13} />} HSK {num}
+            </button>
+          )
+        })}
       </div>
 
       <div className="trail-card">
@@ -1499,9 +1525,18 @@ function ExamRoom({
 
         <button
           className="primary-button action-button pulse-effect"
-          onClick={() => setStarted(true)}
+          onClick={() => isLevelUnlocked(selectedLevel) && setStarted(true)}
+          disabled={!isLevelUnlocked(selectedLevel)}
         >
-          เริ่มภารกิจสอบ <Flame size={19} />
+          {isLevelUnlocked(selectedLevel) ? (
+            <>
+              เริ่มภารกิจสอบ <Flame size={19} />
+            </>
+          ) : (
+            <>
+              ต้องผ่าน HSK {selectedLevel - 1} ก่อน <LockKeyhole size={19} />
+            </>
+          )}
         </button>
       </div>
     </div>

@@ -20,6 +20,17 @@ export async function GET(request: Request) {
     if (!levelRow)
       return NextResponse.json({ error: 'Level not found' }, { status: 404 })
 
+    if (levelNumber > 1) {
+      const [[progress]]: any = await connection.query(
+        `SELECT unlocked FROM user_level_progress
+     WHERE user_id = ? AND level_id = ?`,
+        [userId, levelRow.id]
+      )
+      if (!progress || !progress.unlocked) {
+        return NextResponse.json({ error: 'Level locked' }, { status: 403 })
+      }
+    }
+
     // มี pool ที่ active อยู่ไหม
     const [[activePool]]: any = await connection.query(
       `SELECT id FROM exam_word_pools WHERE user_id=? AND level_id=? AND status='active'`,
