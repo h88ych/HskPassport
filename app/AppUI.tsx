@@ -1,5 +1,7 @@
 'use client'
 
+import ExamResult from '@/components/ExamResult'
+import ProfileMenu from '@/components/ProfileMenu'
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,8 +20,6 @@ import {
   Volume2
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import ExamResult from '@/components/ExamResult'
-import ProfileMenu from '@/components/ProfileMenu'
 import { useEffect, useRef, useState } from 'react'
 
 const countryByLevel: Record<
@@ -742,15 +742,15 @@ function VocabRoom() {
                 </button>
               </div>
               <button
-                className={`review-button ${reviewed.includes(card.hanzi) ? 'done' : ''}`}
-                onClick={() => toggleReview(card.hanzi)}
+                className={`review-button ${reviewedIds.includes(card.id) ? 'done' : ''}`}
+                onClick={() => toggleReview(card)}
               >
-                {reviewed.includes(card.hanzi) ? (
+                {reviewedIds.includes(card.id) ? (
                   <Check size={17} />
                 ) : (
                   <RotateCcw size={17} />
                 )}{' '}
-                {reviewed.includes(card.hanzi) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
+                {reviewedIds.includes(card.id) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
               </button>
             </>
           ) : (
