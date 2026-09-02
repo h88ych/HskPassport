@@ -4197,3 +4197,66 @@ html[data-theme='dark'] .profile-dropdown-item.danger {
     display: none;
   }
 }
+.vocab-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 220px;
+  min-width: 180px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--muted);
+}
+.vocab-search input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+}
+.shuffle-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.shuffle-button:hover {
+  background: var(--purple);
+  transform: translateY(-1px);
+}
+.vocab-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 18px;
+  color: var(--muted);
+  font-weight: 700;
+}
+html[data-theme='dark'] .vocab-search,
+html[data-theme='dark'] .shuffle-button {
+  background: #252237;
+  border-color: #49415f;
+  color: var(--ink);
+}
+@media (max-width: 720px) {
+  .vocab-search {
+    flex: 1 1 100%;
+  }
+  .shuffle-button {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}

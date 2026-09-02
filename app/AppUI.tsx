@@ -507,6 +507,27 @@ function VocabRoom() {
   const [words, setWords] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
+  const [searchQuery, setSearchQuery] = useState('')
+  const [displayWords, setDisplayWords] = useState<any[]>([])
+  const [page, setPage] = useState(0)
+  const WORDS_PER_PAGE = 24
+
+  useEffect(() => {
+    setDisplayWords(words)
+    setPage(0)
+  }, [words])
+  const shuffleWords = () => {
+    setDisplayWords((current) => {
+      const copy = [...current]
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[copy[i], copy[j]] = [copy[j], copy[i]]
+      }
+      return copy
+    })
+    setPage(0)
+  }
+
   useEffect(() => {
     async function fetchReviewed() {
       try {
@@ -537,9 +558,26 @@ function VocabRoom() {
     fetchVocab()
   }, [level])
 
-  const visibleWords = words.filter(
-    (word) => filter === 'all' || reviewedIds.includes(word.id)
+  const visibleWords = displayWords.filter((word) => {
+    const matchesFilter = filter === 'all' || reviewedIds.includes(word.id)
+    const q = searchQuery.trim().toLowerCase()
+    const matchesSearch =
+      q === '' ||
+      word.hanzi?.includes(searchQuery.trim()) ||
+      word.pinyin?.toLowerCase().includes(q) ||
+      word.meaning?.toLowerCase().includes(q)
+    return matchesFilter && matchesSearch
+  })
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(visibleWords.length / WORDS_PER_PAGE)
   )
+  const pagedWords = visibleWords.slice(
+    page * WORDS_PER_PAGE,
+    (page + 1) * WORDS_PER_PAGE
+  )
+
   const card = visibleWords[cardIndex]
 
   const toggleReview = async (word: any) => {
@@ -616,20 +654,44 @@ function VocabRoom() {
         <div className="list-filter" role="group" aria-label="กรองคำศัพท์">
           <button
             className={filter === 'all' ? 'selected' : ''}
-            onClick={() => setFilter('all')}
+            onClick={() => {
+              setFilter('all')
+              setPage(0)
+            }}
           >
             ทั้งหมด <span>{words.length}</span>
           </button>
           <button
             className={filter === 'review' ? 'selected' : ''}
-            onClick={() => setFilter('review')}
+            onClick={() => {
+              setFilter('review')
+              setPage(0)
+            }}
           >
             ทบทวนแล้ว{' '}
             <span>
-              {words.filter((word) => reviewedIds.includes(word.id)).length}
+              {words.filter((w) => reviewedIds.includes(w.id)).length}
             </span>
           </button>
         </div>
+
+        <div className="vocab-search">
+          <Search size={16} />
+          <input
+            type="text"
+            placeholder="ค้นหา คำจีน / พินอิน / ความหมาย"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
+              setPage(0)
+            }}
+          />
+        </div>
+
+        <button className="shuffle-button" onClick={shuffleWords}>
+          <RefreshCw size={16} /> สุ่มลำดับ
+        </button>
+
         <button
           className="view-toggle"
           aria-pressed={view === 'flashcard'}
@@ -644,48 +706,69 @@ function VocabRoom() {
         </button>
       </div>
       {view === 'list' ? (
-        <div className="vocab-list">
-          {visibleWords.length ? (
-            visibleWords.map((word, index) => (
-              <article className="vocab-row" key={`${word.hanzi}-${index}`}>
-                <div className="vocab-index">
-                  {String(index + 1).padStart(2, '0')}
-                </div>
-                <div className="vocab-hanzi">{word.hanzi}</div>
-                <div className="vocab-detail">
-                  <p className="pinyin">{word.pinyin}</p>
-                  <strong>{word.meaning}</strong>
-                  <span>{word.example}</span>
-                </div>
-                <button
-                  className="sound-button"
-                  aria-label={`ฟังเสียง ${word.hanzi}`}
-                  onClick={() => speak(word.hanzi)}
-                >
-                  <Volume2 size={18} />
-                </button>
-                <button
-                  className={`review-button ${reviewedIds.includes(word.id) ? 'done' : ''}`}
-                  onClick={() => toggleReview(word)}
-                >
-                  {reviewedIds.includes(word.id) ? (
-                    <Check size={17} />
-                  ) : (
-                    <RotateCcw size={17} />
-                  )}
-                  <span>
-                    {reviewedIds.includes(word.id) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
-                  </span>
-                </button>
-              </article>
-            ))
-          ) : (
-            <div className="empty-list">
-              ยังไม่มีคำที่ทำเครื่องหมายไว้ ลองอ่านคำศัพท์แล้วกด “ไว้ทบทวน”
-              ได้เลย
+        <>
+          <div className="vocab-list">
+            {pagedWords.length ? (
+              pagedWords.map((word, index) => (
+                <article className="vocab-row" key={`${word.hanzi}-${index}`}>
+                  <div className="vocab-index">
+                    {String(page * WORDS_PER_PAGE + index + 1).padStart(2, '0')}
+                  </div>
+                  <div className="vocab-hanzi">{word.hanzi}</div>
+                  <div className="vocab-detail">
+                    <p className="pinyin">{word.pinyin}</p>
+                    <strong>{word.meaning}</strong>
+                    <span>{word.example}</span>
+                  </div>
+                  <button
+                    className="sound-button"
+                    aria-label={`ฟังเสียง ${word.hanzi}`}
+                    onClick={() => speak(word.hanzi)}
+                  >
+                    <Volume2 size={18} />
+                  </button>
+                  <button
+                    className={`review-button ${reviewedIds.includes(word.id) ? 'done' : ''}`}
+                    onClick={() => toggleReview(word)}
+                  >
+                    {reviewedIds.includes(word.id) ? (
+                      <Check size={17} />
+                    ) : (
+                      <RotateCcw size={17} />
+                    )}
+                    <span>
+                      {reviewedIds.includes(word.id) ? 'ทบทวนแล้ว' : 'ไว้ทบทวน'}
+                    </span>
+                  </button>
+                </article>
+              ))
+            ) : (
+              <div className="empty-list">ไม่พบคำที่ตรงกับคำค้นหา</div>
+            )}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="vocab-pagination">
+              <button
+                className="round-arrow"
+                disabled={page === 0}
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+              >
+                <ArrowLeft size={16} />
+              </button>
+              <span>
+                หน้า {page + 1} / {totalPages}
+              </span>
+              <button
+                className="round-arrow"
+                disabled={page === totalPages - 1}
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              >
+                <ArrowRight size={16} />
+              </button>
             </div>
           )}
-        </div>
+        </>
       ) : (
         <div className="flashcard-stage">
           {card ? (
