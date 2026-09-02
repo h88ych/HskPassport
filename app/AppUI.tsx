@@ -753,6 +753,7 @@ function QuizCard({
   exam = false,
   level,
   category,
+  passScore = 95,
   onBack,
   onMatching,
   onDictation,
@@ -761,6 +762,7 @@ function QuizCard({
   exam?: boolean
   level?: number
   category?: string
+  passScore?: number
   onBack: () => void
   onMatching?: () => void
   onDictation?: () => void
@@ -925,7 +927,7 @@ function QuizCard({
 
   // หน้าจอแสดงผลเมื่อทำครบทุกข้อ
   if (finished) {
-    const passed = exam ? score >= 1 : true
+    const passed = exam ? score >= passScore : true
     return (
       <div
         className={`room result-room ${passed ? 'result-pass' : 'result-retry'}`}
@@ -1552,21 +1554,22 @@ function ExamRoom({
     setSelectedLevel(highestUnlocked)
   }, [levelsData, initialLevel])
 
-  if (started)
-    return (
-      <QuizCard
-        exam
-        level={selectedLevel}
-        onBack={() => setStarted(false)}
-        onHome={onHome}
-      />
-    )
-
   const currentLevelInfo =
     levelsData?.find((l) => l.level_number === selectedLevel) || levelsData?.[0]
   const totalWords = currentLevelInfo?.total_words || 100
   const maxScore = currentLevelInfo?.max_score || 0
   const isPassed = maxScore >= 95
+
+  if (started)
+    return (
+      <QuizCard
+        exam
+        level={selectedLevel}
+        passScore={currentLevelInfo?.pass_score ?? 95}
+        onBack={() => setStarted(false)}
+        onHome={onHome}
+      />
+    )
 
   return (
     <div className="room exam-room">
