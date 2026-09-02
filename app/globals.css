@@ -2169,6 +2169,7 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   right: 62px;
   bottom: 20px;
 }
+
 @media (max-width: 720px) {
   .flashcard > .sound-button {
     top: 14px;
@@ -2177,9 +2178,10 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   .vocab-row {
     padding-right: 14px;
     padding-bottom: 58px;
+    margin-top:10px
   }
   .vocab-row > .sound-button {
-    top: 50%;
+    top: 80%;
     right: 14px;
     transform: translateY(-50%);
   }
@@ -2192,19 +2194,37 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   }
 }
 
-/* Audio stays inside each card and aligns beside review. */
-.vocab-row > .sound-button {
-  top: 50% !important;
-  right: 18px !important;
-  bottom: auto !important;
-  transform: translateY(-50%) !important;
+
+@media (min-width: 721px) {
+  .vocab-row > .sound-button {
+    top: 50% !important;
+    right: 18px !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+  }
+  .vocab-row > .review-button {
+    top: 50% !important;
+    right: 62px !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: translateY(-50%) !important;
+  }
 }
-.vocab-row > .review-button {
-  top: 50% !important;
-  right: 62px !important;
-  bottom: auto !important;
-  left: auto !important;
-  transform: translateY(-50%) !important;
+
+@media (max-width: 720px) {
+  .vocab-row > .sound-button {
+    top: 70% !important;
+    right: 18px !important;
+    bottom: auto !important;
+    transform: translateY(-50%) !important;
+  }
+  .vocab-row > .review-button {
+    top: 56% !important;
+    right: 62px !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: translateY(-50%) !important;
+  }
 }
 .flashcard-stage {
   position: relative;
