@@ -10,62 +10,56 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const levelNumber = Number(body.levelNumber)
-    const score = Number(body.score)
-    const totalQuestions = Number(body.totalQuestions)
-    const examType = body.examType === 'practice' ? 'practice' : 'hsk-exam'
+    const sessionId = Number(body.sessionId)
 
-    if (!Number.isInteger(levelNumber) || levelNumber < 1 || levelNumber > 6) {
-      return NextResponse.json({ error: 'Invalid level' }, { status: 400 })
-    }
-    if (
-      !Number.isInteger(score) ||
-      !Number.isInteger(totalQuestions) ||
-      score < 0 ||
-      totalQuestions < 1 ||
-      score > totalQuestions
-    ) {
-      return NextResponse.json({ error: 'Invalid score' }, { status: 400 })
+    if (!Number.isInteger(sessionId) || sessionId < 1) {
+      return NextResponse.json({ error: 'Invalid sessionId' }, { status: 400 })
     }
 
-    const passed =
-      examType === 'hsk-exam' ? score >= 95 : score / totalQuestions >= 0.8
     const connection = await pool.getConnection()
-
     try {
       await connection.beginTransaction()
-      const [levelRows]: any = await connection.query(
-        'SELECT id FROM hsk_levels WHERE level_number = ? LIMIT 1',
-        [levelNumber]
+
+      // ดึง session ที่มีอยู่ ต้องเป็นของ user คนนี้เท่านั้น
+      const [[examSession]]: any = await connection.query(
+        `SELECT es.id, es.user_id, es.level_id, es.pool_id, es.score,
+                es.total_questions, hl.pass_score, hl.level_number
+         FROM exam_sessions es
+         JOIN hsk_levels hl ON hl.id = es.level_id
+         WHERE es.id = ? AND es.user_id = ?`,
+        [sessionId, session.user.id]
       )
-      const levelId = levelRows[0]?.id
-      if (!levelId) {
+
+      if (!examSession) {
         await connection.rollback()
-        return NextResponse.json({ error: 'Level not found' }, { status: 404 })
+        return NextResponse.json(
+          { error: 'Session not found' },
+          { status: 404 }
+        )
       }
 
+      const passed = examSession.score >= examSession.pass_score
+
       await connection.query(
-        `INSERT INTO exam_sessions (user_id, level_id, score, total_questions, passed, badge_awarded, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, NOW())`,
-        [session.user.id, levelId, score, totalQuestions, passed, passed]
+        `UPDATE exam_sessions SET passed = ?, completed_at = NOW() WHERE id = ?`,
+        [passed, sessionId]
       )
 
       if (passed) {
+        // ปิด pool เดิม (trigger trg_after_exam_pass จะปลดล็อกเลเวลถัดไปให้อัตโนมัติ)
         await connection.query(
-          `INSERT INTO user_level_progress (user_id, level_id, unlocked)
-           SELECT ?, next_level.id, TRUE
-           FROM hsk_levels next_level
-           WHERE next_level.level_number = ?
-           ON DUPLICATE KEY UPDATE unlocked = TRUE`,
-          [session.user.id, levelNumber + 1]
+          `UPDATE exam_word_pools SET status='passed', passed_at=NOW() WHERE id=?`,
+          [examSession.pool_id]
         )
       }
 
       await connection.commit()
       return NextResponse.json({
         passed,
-        levelNumber,
-        nextLevelUnlocked: passed && levelNumber < 6
+        score: examSession.score,
+        totalQuestions: examSession.total_questions,
+        levelNumber: examSession.level_number,
+        nextLevelUnlocked: passed && examSession.level_number < 6
       })
     } catch (error) {
       await connection.rollback()

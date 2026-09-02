@@ -655,6 +655,7 @@ function QuizCard({
   const [score, setScore] = useState(0)
   const [selected, setSelected] = useState<string | null>(null)
   const [words, setWords] = useState<any[]>([])
+  const [sessionId, setSessionId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [finished, setFinished] = useState(false)
   const [submitState, setSubmitState] = useState<
@@ -686,12 +687,26 @@ function QuizCard({
   const [choices, setChoices] = useState<string[]>([])
 
   useEffect(() => {
-    async function fetchQuizWords() {
+    async function fetchExamState() {
       setLoading(true)
       try {
-        const url = exam
-          ? `/api/quiz?exam=true&level=${level || 1}`
-          : `/api/quiz?level=${level}&category=${encodeURIComponent(category || '')}`
+        const res = await fetch(`/api/exam/state?level=${level || 1}`)
+        const data = await res.json()
+        setWords(Array.isArray(data.words) ? data.words : [])
+        setSessionId(data.sessionId)
+        setScore(data.score || 0)
+        setQuestion((data.answeredCount || 0) + 1)
+      } catch (err) {
+        console.error('Failed to load exam state', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    async function fetchPracticeWords() {
+      setLoading(true)
+      try {
+        const url = `/api/quiz?level=${level}&category=${encodeURIComponent(category || '')}`
         const res = await fetch(url)
         const data = await res.json()
         setWords(Array.isArray(data) ? data : [])
@@ -701,7 +716,12 @@ function QuizCard({
         setLoading(false)
       }
     }
-    fetchQuizWords()
+
+    if (exam) {
+      fetchExamState()
+    } else {
+      fetchPracticeWords()
+    }
   }, [exam, level, category])
 
   const word = words.length > 0 ? words[(question - 1) % words.length] : null
@@ -756,13 +776,24 @@ function QuizCard({
     )
   }
 
-  const choose = (choice: string) => {
-    if (!selected) {
-      setSelected(choice)
-      if (choice === answer) setScore((value) => value + 1)
-    }
-  }
+ const choose = (choice: string) => {
+  if (selected) return
+  setSelected(choice)
+  const isCorrect = choice === answer
+  if (isCorrect) setScore((value) => value + 1)
 
+  if (exam && sessionId && word) {
+    fetch('/api/exam/answer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId,
+        wordId: word.id,
+        isCorrect
+      })
+    }).catch((err) => console.error('Failed to save answer', err))
+  }
+}
   const next = () => {
     if (question < totalQuestions) {
       setQuestion((value) => value + 1)
