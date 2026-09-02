@@ -172,7 +172,7 @@ h3 {
 .content {
   max-width: 1180px;
   margin: auto;
-  padding: 28px;
+  padding: 20px;
 }
 .passport-header {
   display: flex;
@@ -533,10 +533,10 @@ h3 {
 }
 .room {
   max-width: 850px;
-  margin: 10px auto;
+  margin: 0 auto;
 }
 .room-heading {
-  margin-bottom: 25px;
+   margin-bottom: 16px;
 }
 .room-heading h2 {
   margin-top: 5px;
@@ -774,8 +774,8 @@ h3 {
   background: var(--surface);
   border-radius: 22px;
   box-shadow: var(--shadow);
-  padding: 25px;
-  margin-bottom: 18px;
+  padding: 20px;
+  margin-bottom: 14px;
 }
 .trail-label b {
   color: #7b63d0;
@@ -3226,7 +3226,7 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
 .exam-start-enhanced {
   border-radius: 32px;
   text-align: center;
-  padding: 30px 20px;
+ padding: 24px 16px;
   box-shadow: 0 16px 40px rgba(43, 37, 64, 0.08);
   position: relative;
   overflow: hidden;
@@ -3431,7 +3431,7 @@ html[data-theme='dark'] .exam-start-enhanced .pulse-effect {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .exam-level-tab {
