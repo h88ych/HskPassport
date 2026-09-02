@@ -129,7 +129,10 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
           <h3 id="stamp-trail-title">ตราประทับการเดินทาง</h3>
         </div>
         <span className="mini-badge">
-          {levelsData.filter((item) => Number(item.max_score || 0) >= 2).length}{' '}
+          {
+            levelsData.filter((item) => Number(item.max_score || 0) >= 95)
+              .length
+          }{' '}
           / 6 ดวง
         </span>
       </div>
@@ -208,7 +211,7 @@ function PassportHeader({
       </div>
       <div className="passport-meta">
         <div className="stamp-count">
-          <Medal size={17} /> <b>2</b>
+          <Medal size={17} /> <b>{passedCount}</b>
           <span>ตราประทับ</span>
         </div>
         <button className="icon-button" aria-label="ช่วยเหลือ">
@@ -219,8 +222,15 @@ function PassportHeader({
   )
 }
 
-function LevelCard({ item }: { item: any }) {
-  const isUnlocked = item.unlocked === 1 || item.unlocked === true
+function LevelCard({
+  item,
+  onSelect
+}: {
+  item: any
+  onSelect: (levelNumber: number) => void
+}) {
+  const isUnlocked =
+    item.level_number === 1 || item.unlocked === 1 || item.unlocked === true
   const maxScore = item.max_score || 0
   const isPassed = maxScore >= 95
 
@@ -255,6 +265,7 @@ function LevelCard({ item }: { item: any }) {
     <button
       className={`level-card ${state} ${colorClass}`}
       disabled={state === 'locked'}
+      onClick={() => onSelect(item.level_number)}
     >
       <div className="level-top">
         <span className="level-number">HSK {item.level_number}</span>
@@ -298,7 +309,7 @@ function Dashboard({
   displayName,
   levelsData
 }: {
-  onNavigate: (room: string) => void
+  onNavigate: (room: string, level?: number) => void
   displayName?: string
   levelsData?: any[]
 }) {
@@ -339,7 +350,11 @@ function Dashboard({
           <div className="level-path">
             {levelsData && levelsData.length > 0 ? (
               levelsData.map((levelItem) => (
-                <LevelCard item={levelItem} key={levelItem.id} />
+                <LevelCard
+                  item={levelItem}
+                  key={levelItem.id}
+                  onSelect={(levelNumber) => onNavigate('exam', levelNumber)}
+                />
               ))
             ) : (
               <p className="muted">กำลังโหลดข้อมูลด่าน...</p>
@@ -1399,9 +1414,11 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
 }
 
 function ExamRoom({
+  initialLevel,
   levelsData,
   onHome
 }: {
+  initialLevel?: number
   levelsData?: any[]
   onHome?: () => void
 }) {
@@ -1415,14 +1432,20 @@ function ExamRoom({
   }
 
   useEffect(() => {
+    // มาจากการกดที่ dashboard -> ไปด่านนั้นเลย (ถ้าปลดล็อกแล้ว)
+    if (initialLevel && isLevelUnlocked(initialLevel)) {
+      setSelectedLevel(initialLevel)
+      setStarted(true)
+      return
+    }
+    // ไม่งั้น auto-select ด่านที่ปลดล็อกล่าสุด
     if (!levelsData || levelsData.length === 0) return
-    // หาเลเวลที่ปลดล็อกสูงสุด เพื่อเลือกไว้เป็นค่าเริ่มต้น
     let highestUnlocked = 1
     for (let lvl = 1; lvl <= 6; lvl++) {
       if (isLevelUnlocked(lvl)) highestUnlocked = lvl
     }
     setSelectedLevel(highestUnlocked)
-  }, [levelsData])
+  }, [levelsData, initialLevel])
 
   if (started)
     return (
@@ -1774,9 +1797,18 @@ export default function AppUI({
   levelsData?: any[]
 }) {
   const [room, setRoom] = useState('dashboard')
+  const [examLevel, setExamLevel] = useState<number | null>(null)
+
   const displayName = dbNickname || user?.name?.split(' ')[0] || 'นักเดินทาง'
   const displayAvatar = avatarUrl || user?.image || '/placeholder-user.jpg'
+
   const [darkMode, setDarkMode] = useState(false)
+
+  const handleNavigate = (nextRoom: string, level?: number) => {
+    setRoom(nextRoom)
+    if (level) setExamLevel(level)
+  }
+
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? 'dark' : 'light'
   }, [darkMode])
@@ -1836,7 +1868,7 @@ export default function AppUI({
       <div className="content">
         {room === 'dashboard' && (
           <Dashboard
-            onNavigate={setRoom}
+            onNavigate={handleNavigate}
             displayName={displayName}
             levelsData={levelsData}
           />
@@ -1845,6 +1877,7 @@ export default function AppUI({
         {room === 'practice' && <PracticeRoom levelsData={levelsData} />}
         {room === 'exam' && (
           <ExamRoom
+            initialLevel={examLevel}
             levelsData={levelsData}
             onHome={() => setRoom('dashboard')}
           />
