@@ -433,6 +433,52 @@ const speak = (hanzi: string) => {
   }
 }
 
+let audioCtx: AudioContext | null = null
+function getAudioContext() {
+  if (typeof window === 'undefined') return null
+  if (!audioCtx) {
+    const AudioContextClass =
+      window.AudioContext || (window as any).webkitAudioContext
+    audioCtx = new AudioContextClass()
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume()
+  return audioCtx
+}
+
+function playTone(
+  frequency: number,
+  duration: number,
+  delay = 0,
+  volume = 0.05
+) {
+  const ctx = getAudioContext()
+  if (!ctx) return
+  const oscillator = ctx.createOscillator()
+  const gainNode = ctx.createGain()
+  oscillator.type = 'sine'
+  oscillator.frequency.value = frequency
+  gainNode.gain.value = 0
+  oscillator.connect(gainNode)
+  gainNode.connect(ctx.destination)
+  const startTime = ctx.currentTime + delay
+  gainNode.gain.setValueAtTime(0, startTime)
+  gainNode.gain.linearRampToValueAtTime(volume, startTime + 0.02)
+  gainNode.gain.linearRampToValueAtTime(0, startTime + duration)
+  oscillator.start(startTime)
+  oscillator.stop(startTime + duration + 0.02)
+}
+
+// เสียงถูก: โน้ตสูงขึ้นสองตัว ฟังดูสดใส
+const playCorrectSound = () => {
+  playTone(659.25, 0.12, 0, 0.07) // E5
+  playTone(880, 0.16, 0.1, 0.07) // A5
+}
+
+// เสียงผิด: โน้ตต่ำ นุ่มๆ สั้นๆ ไม่ทำให้ตกใจ
+const playWrongSound = () => {
+  playTone(220, 0.22, 0, 0.055) // A3
+}
+
 function VocabRoom() {
   const [level, setLevel] = useState(1)
   const [filter, setFilter] = useState<'all' | 'review'>('all')
@@ -849,7 +895,12 @@ function QuizCard({
     if (selected) return
     setSelected(choice)
     const isCorrect = choice === answer
-    if (isCorrect) setScore((value) => value + 1)
+    if (isCorrect) {
+      setScore((value) => value + 1)
+      playCorrectSound()
+    } else {
+      playWrongSound()
+    }
 
     if (exam && sessionId && word) {
       fetch('/api/exam/answer', {
@@ -1712,11 +1763,13 @@ function MatchingGame({
       (id) => cards.find((card) => card.id === id)!
     )
     if (first.pair === second.pair) {
+      playCorrectSound()
       window.setTimeout(() => {
         setMatched((value) => [...value, first.pair])
         setSelected([])
       }, 350)
     } else {
+      playWrongSound()
       setWrong(selected)
       window.setTimeout(() => {
         setWrong([])
