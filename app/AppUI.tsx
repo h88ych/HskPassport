@@ -584,6 +584,16 @@ function VocabRoom() {
     fetchVocab()
   }, [level])
 
+    if (loading) {
+    return (
+      <div className="room quiz-room">
+        <p className="muted" style={{ textAlign: 'center', marginTop: '50px' }}>
+          กำลังโหลดคลังคำศัพท์...
+        </p>
+      </div>
+    )
+  }
+
   const visibleWords = displayWords.filter((word) => {
     const matchesFilter = filter === 'all' || reviewedIds.includes(word.id)
     const q = searchQuery.trim().toLowerCase()
