@@ -1916,6 +1916,19 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   z-index: 1;
   animation: login-in 0.7s ease both;
 }
+@media (max-width: 400px) {
+  .login-shell {
+    padding: 20px 14px;
+  }
+  .login-card {
+    padding: 24px 18px;
+    border-radius: 24px;
+  }
+  .login-back {
+    top: 14px;
+    left: 14px;
+  }
+}
 .login-brand {
   display: flex;
   justify-content: center;
@@ -2039,6 +2052,190 @@ html[data-theme='dark'] .flashcard-controls .round-arrow:hover {
   bottom: 20px;
   color: var(--muted);
   font-size: 12px;
+}
+.login-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.login-back:hover {
+  color: var(--purple);
+}
+.landing-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 56px 24px 40px;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+.landing-wrap {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1080px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+}
+.landing-copy-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+.landing-copy-col .login-brand {
+  justify-content: flex-start;
+}
+.landing-title {
+  margin: 14px 0 14px;
+  font:
+    900 clamp(30px, 4.4vw, 46px)/1.16 'IBM Plex Sans Thai',
+    Nunito,
+    sans-serif;
+  letter-spacing: -1.2px;
+  text-align: left;
+}
+.landing-title em {
+  color: var(--purple);
+  font-style: normal;
+}
+.landing-lead {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 440px;
+  margin: 0 0 26px;
+}
+.landing-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.landing-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px 28px;
+  border-radius: 16px;
+  background: var(--purple);
+  color: var(--surface);
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    transform 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 14px 30px rgba(141, 117, 197, 0.28);
+}
+.landing-cta:hover {
+  transform: translateY(-2px);
+  background: var(--ink);
+}
+.landing-actions .login-note {
+  margin: 0;
+  justify-content: flex-start;
+}
+.landing-highlights {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 28px 0 0;
+  padding: 0;
+  font-size: 14px;
+}
+.landing-highlights li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.landing-highlights li svg {
+  color: var(--purple);
+  flex-shrink: 0;
+}
+.landing-hero-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.landing-hero-img {
+  width: 100%;
+  height: auto;
+  max-width: 560px;
+  filter: drop-shadow(0 30px 50px rgba(83, 65, 112, 0.22));
+  animation: float 5s ease-in-out infinite;
+}
+.landing-footer {
+  position: relative;
+  bottom: auto;
+  z-index: 1;
+}
+@media (max-width: 860px) {
+  .landing-wrap {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .landing-hero-col {
+    order: -1;
+  }
+  .landing-hero-img {
+    max-width: 340px;
+  }
+  .landing-copy-col {
+    align-items: center;
+    text-align: center;
+  }
+  .landing-copy-col .login-brand {
+    justify-content: center;
+  }
+  .landing-title,
+  .landing-lead {
+    text-align: center;
+  }
+  .landing-lead {
+    margin: 0 auto 26px;
+  }
+  .landing-actions {
+    align-items: center;
+  }
+  .landing-actions .login-note {
+    justify-content: center;
+  }
+  .landing-highlights {
+    align-items: center;
+  }
+  .landing-highlights li {
+    justify-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .landing-shell {
+    padding: 40px 16px 28px;
+  }
+  .landing-cta {
+    width: 100%;
+  }
+  .landing-hero-img {
+    max-width: 260px;
+  }
 }
 .login-orbit {
   position: absolute;

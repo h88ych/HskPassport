@@ -2,12 +2,13 @@ import { auth } from '@/lib/auth'
 import pool from '@/lib/db'
 import { redirect } from 'next/navigation'
 import AppUI from './AppUI'
+import LandingPage from './LandingPage'
 
 export default async function HomePage() {
   const session = await auth()
 
   if (!session || !session.user) {
-    redirect('/login')
+    return <LandingPage />
   }
 
   const [userRows]: any = await pool.query(

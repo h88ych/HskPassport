@@ -1,5 +1,6 @@
 import { auth, signIn } from '@/lib/auth'
-import { ArrowRight, Globe2, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Globe2, Sparkles } from 'lucide-react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 export default async function LoginPage() {
@@ -11,6 +12,9 @@ export default async function LoginPage() {
 
   return (
     <main className="login-shell">
+      <Link href="/" className="login-back">
+        <ArrowLeft size={15} /> กลับหน้าแรก
+      </Link>
       <div className="login-orbit orbit-one" />
       <div className="login-orbit orbit-two" />
       <section className="login-card">
