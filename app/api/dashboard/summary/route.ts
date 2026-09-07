@@ -27,19 +27,23 @@ export async function GET() {
     }
 
     // --- คำที่ทบทวนใน 7 วันล่าสุด ---
-    const [[weeklyCountRow]]: any = await connection.query(
-      `SELECT COUNT(DISTINCT word_id) AS cnt FROM word_reviews
-       WHERE user_id=? AND reviewed_at >= (CURDATE() - INTERVAL 6 DAY)`,
-      [userId]
-    )
+  const [[weeklyCountRow]]: any = await connection.query(
+  `SELECT COUNT(DISTINCT word_id) AS cnt
+   FROM word_review_history
+   WHERE user_id=?
+   AND reviewed_at >= (CURDATE() - INTERVAL 6 DAY)`,
+  [userId]
+)
 
-    const [dailyRows]: any = await connection.query(
-      `SELECT DATE(reviewed_at) AS d, COUNT(DISTINCT word_id) AS cnt
-       FROM word_reviews
-       WHERE user_id=? AND reviewed_at >= (CURDATE() - INTERVAL 6 DAY)
-       GROUP BY DATE(reviewed_at)`,
-      [userId]
-    )
+   const [dailyRows]: any = await connection.query(
+  `SELECT DATE(reviewed_at) AS d,
+          COUNT(DISTINCT word_id) AS cnt
+   FROM word_review_history
+   WHERE user_id=?
+   AND reviewed_at >= (CURDATE() - INTERVAL 6 DAY)
+   GROUP BY DATE(reviewed_at)`,
+  [userId]
+)
     const dailyMap: Record<string, number> = {}
     dailyRows.forEach((r: any) => {
       dailyMap[new Date(r.d).toDateString()] = r.cnt
