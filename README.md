@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✦ HSK Passport
 
-## Getting Started
+A gamified HSK (Chinese proficiency) vocabulary **web app** built with **Next.js**. Learners "travel" through HSK levels 1–6 like a passport journey — studying words, drilling them, then sitting an exam to earn a country stamp and unlock the next destination. 🇨🇳🛂
 
-First, run the development server:
+## 🏠 The 4 spaces in the web app
+
+The app is organized into a dashboard plus three practice "rooms," switchable from the top nav.
+
+### 🏡 Dashboard (`หน้าหลัก`)
+Your home base. Shows overall progress, HSK level cards, and lets you jump straight into an exam for any unlocked level.
+
+### 📚 Vocab Room — `ห้องจำศัพท์` (Memory Room)
+Where you meet the words for the first time.
+- Browse the full word list for a level, or flip through **flashcards** one at a time
+- Search by hanzi, pinyin, or meaning
+- Mark words as "reviewed" and filter to see only what you've studied
+- Shuffle the deck to mix up the order
+
+### 🏋️ Practice Room — `ห้องฝึกคำศัพท์` (Drill Room)
+Where you actually train, in three modes:
+- **Quiz** — multiple-choice practice by category
+- **Matching** — match hanzi to their meanings
+- **Dictation** — listen and write the character by hand on a canvas pad ✍️
+
+### 🎯 Exam Room — `ภารกิจสอบ` (Mission Room)
+Where you prove it.
+- Pick an HSK level (1–6) and how many questions to answer
+- Score a pass mark (default 95%) to unlock the next level and earn a **country stamp** 🏅
+- Higher levels stay locked until you pass the one before
+
+## 🛠️ Tech stack
+
+| Layer | Tech |
+|---|---|
+| Framework | Next.js 16 (App Router) + React 19 |
+| Styling | Tailwind CSS 4 + shadcn/ui |
+| Auth | NextAuth (Google sign-in) |
+| Database | MySQL |
+| Icons | lucide-react |
+| Analytics | Vercel Analytics |
+
+## 🚀 Getting started
 
 ```bash
+# install dependencies
+npm install   # or pnpm install
+
+# set up environment variables (create .env.local)
+DB_HOST=...
+DB_PORT=...
+DB_USER=...
+DB_PASSWORD=...
+DB_NAME=...
+AUTH_GOOGLE_ID=...
+AUTH_GOOGLE_SECRET=...
+AUTH_SECRET=...
+
+# run the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the web app in action.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Key folders
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/
+  AppUI.tsx          # main app shell — Dashboard, VocabRoom, PracticeRoom, ExamRoom
+  api/                # route handlers (vocab, quiz, exam, dashboard, auth)
+  login/, welcome/    # onboarding pages
+components/           # shared UI pieces (exam results, profile menu, tutorial modal)
+lib/
+  auth.ts             # NextAuth + Google + MySQL user upsert
+  db.ts               # MySQL connection pool
+public/trips/         # country illustrations & stamps used in the exam theme
+```
 
-## Learn More
+## 🎮 How the "trip" theme works
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Each HSK level maps to a country (China, Japan, Korea, Italy, France, Thailand). Passing an exam awards that country's stamp — so climbing HSK 1 → 6 doubles as a mini world tour, right from the browser. ✈️
