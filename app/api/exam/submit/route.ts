@@ -38,7 +38,10 @@ export async function POST(request: Request) {
         )
       }
 
-      const passed = examSession.score >= examSession.pass_score
+      const passThreshold = Math.ceil(
+        (examSession.total_questions * examSession.pass_score) / 100
+      )
+      const passed = examSession.score >= passThreshold
 
       await connection.query(
         `UPDATE exam_sessions SET passed = ?, completed_at = NOW() WHERE id = ?`,

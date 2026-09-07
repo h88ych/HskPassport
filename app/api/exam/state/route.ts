@@ -9,6 +9,7 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url)
   const levelNumber = Number(searchParams.get('level'))
+  const requestedCount = Number(searchParams.get('count'))
   const userId = session.user.id
 
   const connection = await pool.getConnection()
@@ -31,6 +32,20 @@ export async function GET(request: Request) {
       }
     }
 
+    const [[everPassed]]: any = await connection.query(
+      `SELECT 1 FROM exam_sessions
+       WHERE user_id=? AND level_id=? AND passed=TRUE
+       LIMIT 1`,
+      [userId, levelRow.id]
+    )
+    const canChooseCustomCount = !!everPassed
+
+    const [[wordCountRow]]: any = await connection.query(
+      `SELECT COUNT(*) AS cnt FROM words WHERE level_id=?`,
+      [levelRow.id]
+    )
+    const levelWordCount = wordCountRow.cnt
+
     // มี pool ที่ active อยู่ไหม
     const [[activePool]]: any = await connection.query(
       `SELECT id FROM exam_word_pools WHERE user_id=? AND level_id=? AND status='active'`,
@@ -40,11 +55,36 @@ export async function GET(request: Request) {
     let poolId: number
     if (activePool) {
       poolId = activePool.id
+      const [[poolCountRow]]: any = await connection.query(
+        `SELECT COUNT(*) AS cnt FROM exam_word_pool_items WHERE pool_id=?`,
+        [poolId]
+      )
+      if (poolCountRow.cnt < levelWordCount) {
+        const [missingWords]: any = await connection.query(
+          `SELECT w.id FROM words w
+           WHERE w.level_id=?
+             AND w.id NOT IN (
+               SELECT word_id FROM exam_word_pool_items WHERE pool_id=?
+             )
+           ORDER BY RAND()`,
+          [levelRow.id, poolId]
+        )
+        if (missingWords.length > 0) {
+          const values = missingWords.map((w: any, i: number) => [
+            poolId,
+            w.id,
+            poolCountRow.cnt + i
+          ])
+          await connection.query(
+            `INSERT INTO exam_word_pool_items (pool_id, word_id, position) VALUES ?`,
+            [values]
+          )
+        }
+      }
     } else {
-      // สร้าง pool ใหม่ + สุ่มคำ (ตัวอย่าง weighted-random แบบง่าย)
       const [words]: any = await connection.query(
-        `SELECT id FROM words WHERE level_id=? ORDER BY RAND() LIMIT ?`,
-        [levelRow.id, levelRow.total_questions]
+        `SELECT id FROM words WHERE level_id=? ORDER BY RAND()`,
+        [levelRow.id]
       )
       const [poolResult]: any = await connection.query(
         `INSERT INTO exam_word_pools (user_id, level_id, status) VALUES (?, ?, 'active')`,
@@ -58,23 +98,29 @@ export async function GET(request: Request) {
       )
     }
 
-    // มี session ที่ยังไม่จบ (completed_at IS NULL) สำหรับ pool นี้ไหม
+    const totalQuestions = !canChooseCustomCount
+      ? levelRow.total_questions
+      : Number.isInteger(requestedCount) && requestedCount > 0
+        ? Math.min(requestedCount, levelWordCount)
+        : levelRow.total_questions
+
     let [[openSession]]: any = await connection.query(
       `SELECT id, score, total_questions FROM exam_sessions
-       WHERE user_id=? AND pool_id=? AND completed_at IS NULL
+       WHERE user_id=? AND pool_id=? AND total_questions=? AND completed_at IS NULL
        ORDER BY id DESC LIMIT 1`,
-      [userId, poolId]
+      [userId, poolId, totalQuestions]
     )
+
     if (!openSession) {
       const [sResult]: any = await connection.query(
         `INSERT INTO exam_sessions (user_id, level_id, pool_id, total_questions, score, passed)
          VALUES (?, ?, ?, ?, 0, FALSE)`,
-        [userId, levelRow.id, poolId, levelRow.total_questions]
+        [userId, levelRow.id, poolId, totalQuestions]
       )
       openSession = {
         id: sResult.insertId,
         score: 0,
-        total_questions: levelRow.total_questions
+        total_questions: totalQuestions
       }
     }
 
@@ -87,15 +133,16 @@ export async function GET(request: Request) {
       `SELECT w.id, w.hanzi, w.pinyin, w.meaning_th AS meaning
        FROM exam_word_pool_items pwi
        JOIN words w ON w.id = pwi.word_id
-       WHERE pwi.pool_id=? ORDER BY pwi.position`,
-      [poolId]
+       WHERE pwi.pool_id=? ORDER BY pwi.position LIMIT ?`,
+      [poolId, openSession.total_questions]
     )
 
     return NextResponse.json({
       sessionId: openSession.id,
       words,
       answeredCount: answered.length,
-      score: openSession.score
+      score: openSession.score,
+      canChooseCustomCount
     })
   } finally {
     connection.release()

@@ -135,8 +135,7 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
         <span className="mini-badge">
           {
             levelsData.filter(
-              (item) =>
-                Number(item.max_score || 0) >= Number(item.pass_score ?? 95)
+              (item) => item.ever_passed === 1 || item.ever_passed === true
             ).length
           }{' '}
           / 6 ดวง
@@ -149,8 +148,7 @@ function StampDisplay({ levelsData = [] }: { levelsData?: any[] }) {
             (level) => Number(level.level_number) === levelNumber
           )
           const destination = countryByLevel[levelNumber]
-          const passed =
-            Number(item?.max_score || 0) >= Number(item?.pass_score ?? 95)
+          const passed = item?.ever_passed === 1 || item?.ever_passed === true
           const unlocked = item?.unlocked === 1 || item?.unlocked === true
           const state = passed
             ? 'passed'
@@ -209,7 +207,7 @@ function PassportHeader({
 }) {
   const passedCount =
     levelsData?.filter(
-      (item) => Number(item.max_score || 0) >= Number(item.pass_score ?? 95)
+      (item) => item.ever_passed === 1 || item.ever_passed === true
     ).length || 0
 
   return (
@@ -242,8 +240,8 @@ function LevelCard({
 }) {
   const isUnlocked =
     item.level_number === 1 || item.unlocked === 1 || item.unlocked === true
-  const maxScore = item.max_score || 0
-  const isPassed = maxScore >= (item.pass_score ?? 95)
+  const isPassed = item.ever_passed === 1 || item.ever_passed === true
+  const bestPercent = item.best_percent || 0
 
   let state = 'locked'
   if (isPassed) {
@@ -252,9 +250,7 @@ function LevelCard({
     state = 'open'
   }
 
-  const progressPercent = isPassed
-    ? 100
-    : Math.min(Math.round((maxScore / 100) * 100), 99)
+  const progressPercent = isPassed ? 100 : Math.min(Math.round(bestPercent), 99)
 
   const colors = ['mint', 'pink', 'yellow', 'purple', 'coral', 'mint']
   const colorClass = colors[(item.level_number - 1) % colors.length]
@@ -327,7 +323,9 @@ function Dashboard({
   onHelp: () => void
 }) {
   const passedCount =
-    levelsData?.filter((item) => (item.max_score || 0) >= 95).length || 0
+    levelsData?.filter(
+      (item) => item.ever_passed === 1 || item.ever_passed === true
+    ).length || 0
 
   const [summary, setSummary] = useState<{
     streak: number
@@ -905,8 +903,11 @@ function QuizCard({
   exam = false,
   level,
   category,
+  questionCount,
   passScore = 95,
+  onPassed,
   onBack,
+
   onMatching,
   onDictation,
   onHome
@@ -914,8 +915,11 @@ function QuizCard({
   exam?: boolean
   level?: number
   category?: string
+  questionCount?: number
   passScore?: number
+  onPassed?: () => void
   onBack: () => void
+
   onMatching?: () => void
   onDictation?: () => void
   onHome?: () => void
@@ -931,6 +935,8 @@ function QuizCard({
     'idle' | 'saving' | 'saved' | 'error'
   >('idle')
   const totalQuestions = words.length
+  const requestedQuestionCount = questionCount || 100
+
   const [showRestartConfirm, setShowRestartConfirm] = useState(false)
   const [restarting, setRestarting] = useState(false)
 
@@ -982,19 +988,33 @@ function QuizCard({
       .catch(() => setSubmitState('error'))
   }, [finished, exam, level, score, totalQuestions, submitState])
 
-  // เล่นเสียงฉลองเมื่อสอบผ่าน (ครั้งเดียวต่อการจบชุด)
-  useEffect(() => {
-    if (finished && exam && score >= passScore) playStampFanfare()
-  }, [finished, exam, score, passScore])
+  const passThreshold = Math.ceil((totalQuestions * passScore) / 100)
 
-  // เพิ่ม state สำหรับล็อกช้อยส์ของข้อปัจจุบัน
+  useEffect(() => {
+    if (finished && exam && score >= passThreshold) playStampFanfare()
+  }, [finished, exam, score, passThreshold])
+
+  useEffect(() => {
+    if (
+      finished &&
+      exam &&
+      requestedQuestionCount === 100 &&
+      score >= passThreshold
+    ) {
+      onPassed?.()
+    }
+  }, [finished, exam, requestedQuestionCount, score, passScore, onPassed])
+
   const [choices, setChoices] = useState<string[]>([])
 
   useEffect(() => {
     async function fetchExamState() {
       setLoading(true)
       try {
-        const res = await fetch(`/api/exam/state?level=${level || 1}`)
+        const res = await fetch(
+          `/api/exam/state?level=${level || 1}&count=${requestedQuestionCount}`
+        )
+
         const data = await res.json()
         setWords(Array.isArray(data.words) ? data.words : [])
         setSessionId(data.sessionId)
@@ -1114,9 +1134,8 @@ function QuizCard({
 
   // หน้าจอแสดงผลเมื่อทำครบทุกข้อ
   if (finished) {
-    console.log('Exam finished. Score:', score, '/', totalQuestions)
-    console.log(passScore, 'points needed to pass.')
-    const passed = exam ? score >= passScore : true
+    const passThreshold = Math.ceil((totalQuestions * passScore) / 100)
+    const passed = exam ? score >= passThreshold : true
     return (
       <ExamResult
         exam={exam}
@@ -1160,10 +1179,12 @@ function QuizCard({
         <div>
           <p className="eyebrow">
             {exam
-              ? 'ภารกิจสอบ · 100 ข้อ'
+              ? `ภารกิจสอบ · ${totalQuestions} ข้อ`
               : `ฝึกคำศัพท์ · HSK ${level} · ${category}`}
           </p>
-          <h2>{exam ? 'ทริปคำศัพท์ 100 ข้อ' : 'ฝึกคำศัพท์กัน'}</h2>
+          <h2>
+            {exam ? `ทริปคำศัพท์ ${totalQuestions} ข้อ` : 'ฝึกคำศัพท์กัน'}
+          </h2>
         </div>
         <div className="quiz-top-actions">
           <span className="counter">
@@ -1723,6 +1744,83 @@ function ExamRoom({
 }) {
   const [started, setStarted] = useState(false)
   const [selectedLevel, setSelectedLevel] = useState<number>(1) // เลเวลที่กำลังเลือกสอบ
+  const [selectedQuestionCount, setSelectedQuestionCount] = useState(100)
+  const [unlockedQuestionCounts, setUnlockedQuestionCounts] = useState<
+    Record<number, boolean>
+  >({})
+
+  const getQuestionOptions = (total: number) => {
+    const standardCounts = [20, 50, 100, 200, 500].filter(
+      (count) => count < total
+    )
+    return [...standardCounts, total].filter(
+      (count, index, values) => values.indexOf(count) === index
+    )
+  }
+
+  const getDefaultQuestionCount = (total: number) => {
+    const options = getQuestionOptions(total)
+    return options.includes(100) ? 100 : options[options.length - 1]
+  }
+
+  const loadQuestionPreference = (levelNumber: number, total: number) => {
+    if (typeof window === 'undefined') return getDefaultQuestionCount(total)
+    const saved = Number(
+      window.localStorage.getItem(`hsk_question_count_${levelNumber}`)
+    )
+    const options = getQuestionOptions(total)
+    return options.includes(saved) ? saved : getDefaultQuestionCount(total)
+  }
+
+  const selectLevel = (levelNumber: number) => {
+    setSelectedLevel(levelNumber)
+    const total =
+      levelsData?.find((level) => level.level_number === levelNumber)
+        ?.total_words || 100
+    setSelectedQuestionCount(loadQuestionPreference(levelNumber, total))
+  }
+
+  const selectQuestionCount = (count: number) => {
+    if (count !== 100 && !unlockedQuestionCounts[selectedLevel]) return
+    setSelectedQuestionCount(count)
+    window.localStorage.setItem(
+      `hsk_question_count_${selectedLevel}`,
+      String(count)
+    )
+  }
+
+  const unlockQuestionCounts = (levelNumber: number) => {
+    setUnlockedQuestionCounts((current) => ({
+      ...current,
+      [levelNumber]: true
+    }))
+    window.localStorage.setItem(`hsk_unlocked_${levelNumber}`, 'true')
+  }
+
+  useEffect(() => {
+    const level = selectedLevel
+    const total =
+      levelsData?.find((item) => item.level_number === level)?.total_words ||
+      100
+    setSelectedQuestionCount(loadQuestionPreference(level, total))
+
+    const levelInfo = levelsData?.find((item) => item.level_number === level)
+    const passedOnServer =
+      levelInfo?.ever_passed === 1 || levelInfo?.ever_passed === true
+
+    const unlockedInStorage =
+      typeof window !== 'undefined' &&
+      window.localStorage.getItem(`hsk_unlocked_${level}`) === 'true'
+
+    const unlocked = passedOnServer || unlockedInStorage
+
+    // sync กลับเข้า localStorage ด้วย เผื่อรอบหน้าจะได้ไม่ต้องพึ่ง levelsData อีก
+    if (passedOnServer && typeof window !== 'undefined') {
+      window.localStorage.setItem(`hsk_unlocked_${level}`, 'true')
+    }
+
+    setUnlockedQuestionCounts((current) => ({ ...current, [level]: unlocked }))
+  }, [selectedLevel, levelsData])
 
   const isLevelUnlocked = (levelNumber: number) => {
     if (levelNumber === 1) return true
@@ -1749,15 +1847,21 @@ function ExamRoom({
   const currentLevelInfo =
     levelsData?.find((l) => l.level_number === selectedLevel) || levelsData?.[0]
   const totalWords = currentLevelInfo?.total_words || 100
-  const maxScore = currentLevelInfo?.max_score || 0
-  const isPassed = maxScore >= (currentLevelInfo?.pass_score ?? 95)
+  const isPassed =
+    currentLevelInfo?.ever_passed === 1 ||
+    currentLevelInfo?.ever_passed === true
+  const bestPercent = currentLevelInfo?.best_percent || 0
+  const questionOptions = getQuestionOptions(totalWords)
+  const questionCountsUnlocked = unlockedQuestionCounts[selectedLevel] === true
 
   if (started)
     return (
       <QuizCard
         exam
         level={selectedLevel}
+        questionCount={selectedQuestionCount}
         passScore={currentLevelInfo?.pass_score ?? 95}
+        onPassed={() => unlockQuestionCounts(selectedLevel)}
         onBack={() => setStarted(false)}
         onHome={onHome}
       />
@@ -1770,7 +1874,9 @@ function ExamRoom({
           <p className="eyebrow">ภารกิจทดสอบความรู้</p>
           <h2>พร้อมลุยด่านนี้ไหม?</h2>
         </div>
-        <span className="target-badge">ผ่านที่ 95 / 100</span>
+        <span className="target-badge">
+          ผ่านที่ {currentLevelInfo?.pass_score ?? 95}%
+        </span>
       </div>
 
       <div className="exam-level-tabs">
@@ -1779,7 +1885,7 @@ function ExamRoom({
           return (
             <button
               key={num}
-              onClick={() => unlocked && setSelectedLevel(num)}
+              onClick={() => unlocked && selectLevel(num)}
               disabled={!unlocked}
               className={`exam-level-tab ${selectedLevel === num ? 'selected' : ''} ${!unlocked ? 'locked' : ''}`}
               aria-disabled={!unlocked}
@@ -1799,22 +1905,69 @@ function ExamRoom({
         <div className="trail-label">
           <span>คะแนนสูงสุดที่ทำได้</span>
           <b>
-            {maxScore} / {totalWords} {isPassed ? '🎉 (ผ่านแล้ว)' : ''}
+            {Math.round(bestPercent)}% {isPassed ? '🎉 (ผ่านแล้ว)' : ''}
           </b>
         </div>
         <div className="candy-trail">
           {Array.from({ length: 25 }).map((_, i) => (
             <span
-              className={i < Math.round((maxScore / 100) * 25) ? 'filled' : ''}
+              className={
+                i < Math.round((bestPercent / 100) * 25) ? 'filled' : ''
+              }
               key={i}
             >
-              {i === Math.min(Math.round((maxScore / 100) * 25), 24) && '🐼'}
+              {i === Math.min(Math.round((bestPercent / 100) * 25), 24) && '🐼'}
             </span>
           ))}
         </div>
         <p className="muted">
           สะสมคะแนนให้ถึง 95 คะแนนขึ้นไปเพื่อผ่านภารกิจนี้
         </p>
+      </div>
+
+      <div
+        className="question-count-picker"
+        role="group"
+        aria-label="จำนวนข้อสอบ"
+      >
+        <div className="question-count-heading">
+          <div>
+            <span className="eyebrow">เลือกจำนวนข้อ</span>
+            <strong>จำนวนข้อสอบ</strong>
+          </div>
+          <span className="muted">มีทั้งหมด {totalWords} คำ</span>
+        </div>
+        <div className="question-count-options">
+          {questionOptions.map((count) => {
+            const locked = count !== 100 && !questionCountsUnlocked
+            const isAll =
+              count === totalWords && ![20, 50, 100, 200, 500].includes(count)
+            return (
+              <button
+                key={count}
+                type="button"
+                className={`question-count-option ${selectedQuestionCount === count ? 'selected' : ''} ${locked ? 'locked' : ''}`}
+                onClick={() => selectQuestionCount(count)}
+                disabled={locked}
+                aria-pressed={selectedQuestionCount === count}
+                title={
+                  locked ? 'ต้องสอบ 100 ข้อให้ผ่านก่อนถึงจะปลดล็อก' : undefined
+                }
+              >
+                {locked && <LockKeyhole size={14} aria-hidden="true" />}
+                <span>{isAll ? `ทั้งหมด ${count}` : count}</span>
+                <small>ข้อ</small>
+              </button>
+            )
+          })}
+        </div>
+        {!questionCountsUnlocked &&
+          questionOptions.some((count) => count !== 100) && (
+            <p className="muted question-count-hint">
+              <LockKeyhole size={14} aria-hidden="true" /> สอบ 100
+              ข้อให้ผ่านก่อน เพื่อปลดล็อกชุดข้อสอบอื่น
+            </p>
+          )}
       </div>
 
       <div className={`exam-start-enhanced theme-${selectedLevel}`}>

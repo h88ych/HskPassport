@@ -41,14 +41,19 @@ export default async function HomePage() {
        WHERE w.level_id = hl.id
      ) AS total_words,
     (
-  SELECT MAX(es.score) 
-  FROM exam_sessions es 
-  WHERE es.user_id = ? AND es.level_id = hl.id AND es.completed_at IS NOT NULL
-) AS max_score
+      SELECT MAX(CASE WHEN es.passed THEN 1 ELSE 0 END)
+      FROM exam_sessions es
+      WHERE es.user_id = ? AND es.level_id = hl.id AND es.completed_at IS NOT NULL
+    ) AS ever_passed,
+    (
+      SELECT MAX(es.score / es.total_questions * 100)
+      FROM exam_sessions es
+      WHERE es.user_id = ? AND es.level_id = hl.id AND es.completed_at IS NOT NULL
+    ) AS best_percent
    FROM hsk_levels hl
    LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
    ORDER BY hl.level_number ASC`,
-    [session.user.id, session.user.id]
+    [session.user.id, session.user.id, session.user.id]
   )
 
   return (
