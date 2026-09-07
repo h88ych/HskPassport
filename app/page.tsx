@@ -5,16 +5,30 @@ import AppUI from './AppUI'
 import LandingPage from './LandingPage'
 
 export default async function HomePage() {
+  console.log('[HomePage] 1 - starting')
+
   const session = await auth()
 
+  console.log('[HomePage] 2 - session:', {
+    hasSession: !!session,
+    userId: session?.user?.id,
+  })
+
   if (!session || !session.user) {
+    console.log('[HomePage] 3 - no session')
     return <LandingPage />
   }
+
+  console.log('[HomePage] 4 - querying user')
 
   const [userRows]: any = await pool.query(
     'SELECT nickname, avatar_url FROM users WHERE id = ?',
     [session.user.id]
   )
+
+  console.log('[HomePage] 5 - user query complete', {
+    rows: userRows.length,
+  })
 
   if (userRows.length === 0) {
     redirect('/api/auth/signout?callbackUrl=/login')
@@ -27,29 +41,41 @@ export default async function HomePage() {
     redirect('/welcome')
   }
 
+  console.log('[HomePage] 6 - querying levels')
+
   const [levelsRows]: any = await pool.query(
     `SELECT 
-     hl.id, 
-     hl.level_number, 
-     hl.name, 
-     hl.total_questions,
-     hl.pass_score,
-     COALESCE(ulp.unlocked, FALSE) AS unlocked,
-     (
-       SELECT COUNT(*) 
-       FROM words w 
-       WHERE w.level_id = hl.id
-     ) AS total_words,
-    (
-  SELECT MAX(es.score) 
-  FROM exam_sessions es 
-  WHERE es.user_id = ? AND es.level_id = hl.id AND es.completed_at IS NOT NULL
-) AS max_score
-   FROM hsk_levels hl
-   LEFT JOIN user_level_progress ulp ON ulp.level_id = hl.id AND ulp.user_id = ?
-   ORDER BY hl.level_number ASC`,
+       hl.id, 
+       hl.level_number, 
+       hl.name, 
+       hl.total_questions,
+       hl.pass_score,
+       COALESCE(ulp.unlocked, FALSE) AS unlocked,
+       (
+         SELECT COUNT(*) 
+         FROM words w 
+         WHERE w.level_id = hl.id
+       ) AS total_words,
+       (
+         SELECT MAX(es.score)
+         FROM exam_sessions es
+         WHERE es.user_id = ? 
+           AND es.level_id = hl.id 
+           AND es.completed_at IS NOT NULL
+       ) AS max_score
+     FROM hsk_levels hl
+     LEFT JOIN user_level_progress ulp 
+       ON ulp.level_id = hl.id 
+       AND ulp.user_id = ?
+     ORDER BY hl.level_number ASC`,
     [session.user.id, session.user.id]
   )
+
+  console.log('[HomePage] 7 - levels query complete', {
+    rows: levelsRows.length,
+  })
+
+  console.log('[HomePage] 8 - rendering AppUI')
 
   return (
     <AppUI
