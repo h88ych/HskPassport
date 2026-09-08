@@ -1528,8 +1528,28 @@ function PracticeRoom({ levelsData }: { levelsData?: any[] }) {
               const colors = ['pink', 'yellow', 'mint', 'purple', 'coral']
               const colorClass = colors[index % colors.length]
 
-              // ฟังก์ชันเลือกไอคอนอีโมจิให้เข้ากับชื่อหมวดหมู่
               const getCategoryIcon = (name: string) => {
+                if (name.includes('ชีวิตคู่') || name.includes('ความสัมพันธ์'))
+                  return '💍'
+                if (name.includes('ภาษา') || name.includes('อ่านเขียน'))
+                  return '📖'
+                if (name.includes('เสื้อผ้า') || name.includes('แต่งกาย'))
+                  return '👕'
+                if (name.includes('บ้าน') || name.includes('อยู่อาศัย'))
+                  return '🏠'
+                if (name.includes('เทศกาล')) return '🎉'
+                if (name.includes('เงิน') || name.includes('ธุรกิจ'))
+                  return '💰'
+                if (name.includes('เทคโนโลยี') || name.includes('อินเทอร์เน็ต'))
+                  return '💻'
+                if (name.includes('การวัด') || name.includes('ลักษณนาม'))
+                  return '📏'
+                if (name.includes('สิ่งแวดล้อม') || name.includes('ภูมิประเทศ'))
+                  return '🏔️'
+                if (name.includes('คมนาคม')) return '🚆'
+                if (name.includes('การเคลื่อนไหว')) return '🏃'
+                if (name.includes('กริยา')) return '⚡'
+
                 if (name.includes('ตัวเลข')) return '🔢'
                 if (name.includes('เวลา') || name.includes('วัน')) return '⏰'
                 if (name.includes('ครอบครัว') || name.includes('คน'))
