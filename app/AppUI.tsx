@@ -2069,8 +2069,17 @@ function MatchingGame({
     if (level && category) fetchWords()
   }, [level, category])
 
+  const shuffleArray = <T,>(arr: T[]) => {
+    const copy = [...arr]
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[copy[i], copy[j]] = [copy[j], copy[i]]
+    }
+    return copy
+  }
+
   const createCards = (source: any[]) => {
-    const picked = source.slice(0, 6)
+    const picked = shuffleArray(source).slice(0, 6)
 
     type MatchCard = {
       id: string
